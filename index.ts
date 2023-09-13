@@ -2,7 +2,7 @@ import express, { Router } from "express";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import bodyParser from "body-parser";
-import userData from "./src/db/user"
+import userDB from "./src/db/user";
 
 class App {
   private app: express.Application;
@@ -26,6 +26,8 @@ class App {
   }
 
   start(): void {
+    let user = new userDB();
+    user.createUser("user", "hiimauser");
     this.registerPortListener();
     this.registerHelloWorld();
   }
