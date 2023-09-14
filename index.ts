@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import bodyParser from "body-parser";
+import userDB from "./src/db/user";
 
 class App {
   private app: express.Application;
