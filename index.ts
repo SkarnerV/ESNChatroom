@@ -26,8 +26,6 @@ class App {
   }
 
   start(): void {
-    let user = new userDB();
-    user.createUser("user", "hiimauser");
     this.registerPortListener();
     this.registerHelloWorld();
   }

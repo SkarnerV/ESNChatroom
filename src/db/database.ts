@@ -1,7 +1,7 @@
 import mongoose, { ConnectOptions } from "mongoose";
 
-class db {
-  private static instance: db;
+class Database {
+  private static instance: Database;
   private mongoDB: any;
 
   constructor() {
@@ -16,9 +16,9 @@ class db {
     this.mongoDB = mongoose;
   }
 
-  public static getInstance(): db {
+  public static getInstance(): Database {
     if (!this.instance) {
-      this.instance = new db();
+      this.instance = new Database();
     }
     return this.instance;
   }
@@ -32,4 +32,4 @@ class db {
   }
 }
 
-export default db;
+export default Database;

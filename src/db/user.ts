@@ -1,4 +1,4 @@
-import db from "./db";
+import Database from "./database";
 import { Schema, Model } from "mongoose";
 
 interface IUser {
@@ -14,10 +14,11 @@ class User {
       username: String,
       email: String,
     });
-    const my_db = db.getInstance().getDB();
+    const my_db = Database.getInstance().getDB();
     this.userModel = my_db.model("User", userSchema);
   }
 
+  //For Testing purpose
   async createUser(username: string, email: string): Promise<IUser> {
     try {
       const user = new this.userModel({ username, email });
