@@ -14,10 +14,9 @@ class LoginPage extends Page {
         const username = document.getElementById('username').value
         const password = document.getElementById('password').value
     
-        alert(username + ", " + password)
-        // check rules
+        // check Username Rule, Password Rule, and Basic Security Rule
     
-        // request to server
+        // request to server to check if already registered
     
         // if already registered, redirect to home page
     
@@ -31,15 +30,13 @@ class LoginPage extends Page {
         contentElement.textContent = 'confirm creation of account';
 
         const register = () => {
-            console.log('register')
+            // call register api
+
+            // if success, show welcome modal
             this.showWelcomeModal()
-            delete this
         }
 
-        const cancel = () => {
-            console.log('cancel')
-            delete this
-        }
+        const cancel = () => {}
 
         new Modal(contentElement, register, cancel)
     }
