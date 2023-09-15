@@ -10,6 +10,7 @@ class App {
   constructor() {
     this.app = express();
     this.server = createServer(this.app);
+    this.app.use(express.static("public"));
   }
 
   private registerPortListener(): void {
