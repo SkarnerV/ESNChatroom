@@ -11,7 +11,8 @@ class Database {
     mongoose.connect(mongodbKey, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-    } as ConnectOptions);
+    } as ConnectOptions)
+      .then(() => console.log('connect to db'));
 
     this.mongoDB = mongoose;
   }
