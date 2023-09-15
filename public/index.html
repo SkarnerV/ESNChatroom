@@ -3,22 +3,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emergency Social Network</title>
+    <link rel="stylesheet" type="text/css" href="styles/index.css">
 </head>
 <body>
-    <div class="page home-page">Home Page</div>
-    <div class="page login-page">
+    <div class="page" id="home-page">Home Page</div>
+    <div class="page" id="login-page">
         <h2>Join the community!</h2>
-        <form action="">
+        <form id="login-form">
             <label for="username">username</label>
             <input type="text" name="username" id="username">
             <label for="password">password</label>
             <input type="password" name="password" id="password">
             <input type="submit" value="Join">
         </form>
-        <div class="modal">
-            <p>This is the welcome message.</p>
-            <button>I acknowledge</button>
-        </div>
     </div>
+
+    <script type="module" src="scripts/index.js"></script>
 </body>
 </html>
