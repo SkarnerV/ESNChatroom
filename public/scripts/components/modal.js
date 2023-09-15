@@ -1,4 +1,12 @@
+/*
+ * This component can be used to display the information on a small block cover 
+ * current page. The parameter contentHTML is a DOM element that will be displayed 
+ * in the modal. And accept two callback functions onConfirm and onCancel for 
+ * further actions.
+ * If onCancel is not provided, the modal will not have a cancel button. 
+ */
 class Modal {
+    // contentHTML: DOM element
     constructor(contentHTML, onConfirm, onCancel = null) {
         this.modal = document.createElement('div')
         this.modal.classList.add('modal')
