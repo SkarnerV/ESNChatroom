@@ -32,10 +32,11 @@ class Modal {
         }
 
         this.modal.querySelector('.cancel-button')?.addEventListener('click', cancel)
-
         this.modal.querySelector('.confirm-button').addEventListener('click', confirm)
-
         this.modal.addEventListener('click', cancel)
+        this.modal.querySelector('.modal').addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
 
         document.body.appendChild(this.modal)
     }
