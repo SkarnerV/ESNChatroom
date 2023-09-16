@@ -1,6 +1,8 @@
 import Page from "./index.js";
 import Modal from "../components/modal.js";
 
+import reservedUsernames from "../constants/reservedUsernames.js";
+
 class LoginPage extends Page {
 
     constructor(app) {
@@ -15,6 +17,8 @@ class LoginPage extends Page {
         const password = document.getElementById('password').value
 
         // check Username Rule, Password Rule, and Basic Security Rule
+        if (!this.isUsernameValid(username)) return
+        if (!this.isPasswordValid(password)) return
 
         // request to server to check if already registered
 
@@ -107,6 +111,39 @@ class LoginPage extends Page {
         new Modal(contentElement, redirectToHome);
     }
 
+    showError(errMsg) {
+        // remove all error labels
+        const errorLabels = document.querySelectorAll('.error-label')
+        errorLabels.forEach(label => label.remove())
+
+        // append error label
+        const appendBelow = document.getElementById('password')
+        const errorElement = document.createElement('label')
+        errorElement.classList.add('error-label')
+        errorElement.textContent = errMsg
+        appendBelow.insertAdjacentElement('afterend', errorElement)
+    }
+
+    isUsernameValid(username) {
+        username = username.toLowerCase()
+        if (username.length < 3 ) {
+            this.showError('Username must be at least 3 characters long.')
+            return false
+        }
+        if(reservedUsernames.includes(username)) {
+            this.showError('Username is not allowed.')
+            return false
+        }
+        return true
+    }
+
+    isPasswordValid(password) {
+        if (password.length < 4) {
+            this.showError('Password must be at least 4 characters long.')
+            return false
+        }
+        return true
+    }
 
 }
 
