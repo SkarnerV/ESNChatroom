@@ -126,11 +126,11 @@ class LoginPage extends Page {
 
     isUsernameValid(username) {
         username = username.toLowerCase()
-        if (username.length < 3 ) {
+        if (username.length < 3) {
             this.showError('Username must be at least 3 characters long.')
             return false
         }
-        if(reservedUsernames.includes(username)) {
+        if (reservedUsernames.includes(username)) {
             this.showError('Username is not allowed.')
             return false
         }

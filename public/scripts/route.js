@@ -8,7 +8,7 @@ class Route {
     }
 
     redirectTo(page) {
-        if(!this.app.isLoggedIn) {
+        if (!this.app.isLoggedIn) {
             this.page = new Login(this.app);
             return;
         }
