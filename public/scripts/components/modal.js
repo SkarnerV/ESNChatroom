@@ -9,32 +9,33 @@ class Modal {
     // contentHTML: DOM element
     constructor(contentHTML, onConfirm, onCancel = null) {
         this.modal = document.createElement('div')
-        this.modal.classList.add('modal')
+        this.modal.classList.add('modal-container')
 
-        this.modal.appendChild(contentHTML);
+        this.modal.innerHTML = `
+            <div class="modal">
+                ${contentHTML.outerHTML}
+                <div class="modal-footer">
+                    ${onCancel ? '<button class="cancel-button button--secondary">Cancel</button>' : ''}
+                    <button class="confirm-button button--primary">Confirm</button>
+                </div>
+            </div>
+        `
 
-        const modalFooter = document.createElement('div')
-        modalFooter.classList.add('modal-footer')
-
-        if (onCancel) {
-            const cancelButton = document.createElement('button')
-            cancelButton.textContent = 'Cancel'
-            cancelButton.addEventListener('click', () => {
-                onCancel()
-                this.modal.remove()
-            })
-            modalFooter.appendChild(cancelButton)
+        const cancel = () => {
+            onCancel()
+            this.modal.remove()
         }
 
-        const confirmButton = document.createElement('button')
-        confirmButton.textContent = 'Confirm'
-        confirmButton.addEventListener('click', ()=>{
+        const confirm = () => {
             onConfirm()
             this.modal.remove()
-        })
-        modalFooter.appendChild(confirmButton)
+        }
 
-        this.modal.appendChild(modalFooter)
+        this.modal.querySelector('.cancel-button')?.addEventListener('click', cancel)
+
+        this.modal.querySelector('.confirm-button').addEventListener('click', confirm)
+
+        this.modal.addEventListener('click', cancel)
 
         document.body.appendChild(this.modal)
     }
