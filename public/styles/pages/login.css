@@ -1,0 +1,17 @@
+.orange-gradient {
+    font-size: 48px;
+    max-width: 360px;
+    background: linear-gradient(
+        90deg,#ea9618, #e0b108, #d07d00
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+#login-page small {
+    max-width: 360px;
+    color: #333;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
