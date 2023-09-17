@@ -12,6 +12,7 @@ class App {
         this.app = express()
         this.server = createServer(this.app)
         this.router = new userRouter()
+        this.app.use(express.static("public"));
     }
 
     private registerPortListener(): void {
