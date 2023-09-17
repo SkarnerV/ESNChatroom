@@ -1,0 +1,34 @@
+form {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1;
+    grid-gap: 8px;
+}
+
+form label {
+    color: slategray;
+}
+
+form input {
+    width: 100%;
+    margin-bottom: 10px;
+    border: slategray 1px solid;
+}
+
+form input[type="submit"] {
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    width: max-content;
+    justify-self: end;
+}
+
+label.error-label {
+    color: red;
+    display: block;
+}
