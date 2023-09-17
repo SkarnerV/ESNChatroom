@@ -1,5 +1,5 @@
 import express, { Request, Response, Router } from 'express'
-import { ESNUser } from '../model/types'
+import { ESNUser, LoginCredentials } from '../model/types'
 import UserController from '../controller/userController'
 
 export default class UserRouter {
@@ -16,8 +16,9 @@ export default class UserRouter {
         this.router.post(
             '/register',
             async (request: Request, response: Response) => {
-                const user = <ESNUser>request.body
-                const message = await this.controller.register(user)
+                const user: ESNUser = request.body
+                const message: LoginCredentials =
+                    await this.controller.createUser(user)
                 response.send(message)
             },
         )

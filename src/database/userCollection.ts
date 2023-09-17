@@ -1,8 +1,8 @@
 import { ESNUser } from '../model/types'
-import ESNCollection from './ESNCollection'
+import ESNDatabase from './ESNDatabase'
 import { Schema } from 'mongoose'
 
-export default class UserCollection extends ESNCollection {
+export default class UserCollection extends ESNDatabase {
     private esnUserModel
     constructor() {
         super()
@@ -23,7 +23,7 @@ export default class UserCollection extends ESNCollection {
     }
 
     // Check if user exist in the DB
-    async checkUserExits(username: string): Promise<boolean> {
+    async checkUserDuplication(username: string): Promise<boolean> {
         const user = await this.esnUserModel.exists({ username })
 
         return user ? true : false

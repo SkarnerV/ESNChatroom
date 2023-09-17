@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export default class ESNDatabase {
-    private db
+    private database
 
     constructor() {
         const mongodbKey = process.env.MONGODB_KEY || ''
@@ -12,17 +12,25 @@ export default class ESNDatabase {
             useUnifiedTopology: true,
         } as ConnectOptions)
 
-        this.db = mongoose.connection
-        this.db.on(
+        this.database = mongoose.connection
+        this.registerErrorListener()
+        this.registerSuccessConnectionListener()
+    }
+
+    private registerErrorListener() {
+        this.database.on(
             'error',
             console.error.bind(console, 'MongoDB connection error:'),
         )
-        this.db.once('open', () => {
+    }
+
+    private registerSuccessConnectionListener() {
+        this.database.once('open', () => {
             console.log('Connected to MongoDB database')
         })
     }
 
     getDatabase() {
-        return this.db
+        return this.database
     }
 }
