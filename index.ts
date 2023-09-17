@@ -1,18 +1,16 @@
-import express from 'express'
+import express, { Router } from 'express'
 import { createServer, Server as HttpServer } from 'http'
 import bodyParser from 'body-parser'
-import userRouter from './src/userRouter'
+import UserRouter from './src/router/userRouter'
 
 class App {
     private app: express.Application
     private server: HttpServer
-    private router: userRouter
 
     constructor() {
         this.app = express()
         this.server = createServer(this.app)
-        this.router = new userRouter()
-        this.app.use(express.static("public"));
+
     }
 
     private registerPortListener(): void {
@@ -26,17 +24,19 @@ class App {
     }
 
     private registerRoutes(): void {
-        this.app.use(express.static(__dirname + '/public'))
-        this.app.get('/')
+        const userRouter: Router = new UserRouter().getRouter()
+        this.app.use('/auth', userRouter)
+    }
 
-        // Handles register action
-        this.app.post('/auth/register', this.router.register)
+    private registerFrontend(): void {
+        this.app.use(express.static('public'))
     }
 
     start(): void {
         this.registerPortListener()
         this.registerBodyParser()
         this.registerRoutes()
+        this.registerFrontend()
     }
 }
 
