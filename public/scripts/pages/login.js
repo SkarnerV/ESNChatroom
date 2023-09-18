@@ -1,17 +1,16 @@
-import Page from "./index.js";
-import Modal from "../components/modal.js";
+import Page from './index.js'
+import Modal from '../components/modal.js'
 
-import reservedUsernames from "../constants/reservedUsernames.js";
+import reservedUsernames from '../constants/reservedUsernames.js'
 
 class LoginPage extends Page {
-
     constructor(app) {
-        super(app, 'login-page');
+        super(app, 'login-page')
         const loginForm = document.getElementById('login-form')
         loginForm.addEventListener('submit', this.hangleLoginFormSubmit)
     }
 
-    hangleLoginFormSubmit = (event) => {
+    hangleLoginFormSubmit = event => {
         event.preventDefault()
         const username = document.getElementById('username').value
         const password = document.getElementById('password').value
@@ -20,40 +19,114 @@ class LoginPage extends Page {
         if (!this.isUsernameValid(username)) return
         if (!this.isPasswordValid(password)) return
 
-        // request to server to check if already registered
+        // request to server to check if users can login
+        fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password,
+            }),
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Successful response (status code 200-299)
+                    return response.json()
+                } else {
+                    // Handle error response
+                    throw new Error('HTTP error: ' + response.status)
+                }
+            })
+            .then(data => {
+                const status = data.status
+                const message = data.message
+                //const token = data.token
 
-        // if already registered, redirect to home page
-
-        // else show register modal
-        this.showConfirmModal()
-
+                // Iteration0-A1: if the user is already a community member
+                // (the username already exists and the password is correct), then nothing happens
+                if (status === 200) {
+                    this.showWelcomeModal()
+                    return
+                }
+                // if the username already exists but the password is incorrect (does not match the existing username),
+                // the system informs the Citizen that he needs to re-enter the username and/or password.
+                else if (status === 401) {
+                    this.showError(message)
+                    return
+                }
+                // user does not exist, show confirmation modal for user to start registration
+                else {
+                    this.showConfirmModal()
+                }
+            })
+            .catch(error => {
+                // Handle error during the API call
+                this.showError(error)
+            })
     }
 
     showConfirmModal() {
-        const contentElement = document.createElement('div');
-        contentElement.textContent = 'By clicking "Confirm," you will create a user account in Emergency Social Network.';
-        contentElement.style.width = '300px';
+        const contentElement = document.createElement('div')
+        contentElement.textContent =
+            'By clicking "Confirm," you will create a user account in Emergency Social Network.'
+        contentElement.style.width = '300px'
+        const username = document.getElementById('username').value
+        const password = document.getElementById('password').value
 
         const register = () => {
-            // call register api
+            // request to server to register a user account
+            fetch('/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password,
+                }),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json()
+                    } else {
+                        // Handle error response
+                        throw new Error('HTTP error: ' + response.status)
+                    }
+                })
+                .then(data => {
+                    const status = data.status
+                    const message = data.messagea
 
-            // if success, show welcome modal
-            this.showWelcomeModal()
+                    if (status === 201) {
+                        // if success, show welcome modal
+                        this.showWelcomeModal()
+                    } else if (status === 400) {
+                        this.showError(message)
+                        return
+                    }
+                })
+                .catch(error => {
+                    // Handle error during the API call
+                    this.showError(error)
+                })
         }
 
-        const cancel = () => { }
+        const cancel = () => {}
 
         new Modal(contentElement, register, cancel)
     }
 
     showWelcomeModal() {
-        const contentElement = document.createElement('div');
-        contentElement.classList.add('welcome-modal');
-        contentElement.textContent = 'Welcome to Emergency Social Network. Please review the status categories below:';
+        const contentElement = document.createElement('div')
+        contentElement.classList.add('welcome-modal')
+        contentElement.textContent =
+            'Welcome to Emergency Social Network. Please review the status categories below:'
 
         // Create a table to display status information
-        const statusTable = document.createElement('table');
-        statusTable.classList.add('status-table');
+        const statusTable = document.createElement('table')
+        statusTable.classList.add('status-table')
 
         // Define the table headers
         const tableHeader = `
@@ -65,7 +138,7 @@ class LoginPage extends Page {
                     <th>Icon</th>
                 </tr>
             </thead>
-        `;
+        `
 
         // Define the table rows for each status
         const tableRows = `
@@ -95,20 +168,20 @@ class LoginPage extends Page {
                     <td>❓</td>
                 </tr>
             </tbody>
-        `;
+        `
 
-        statusTable.innerHTML = tableHeader + tableRows;
-        const tableContainer = document.createElement('div');
-        tableContainer.classList.add('table-container');
-        tableContainer.appendChild(statusTable);
-        contentElement.appendChild(tableContainer);
+        statusTable.innerHTML = tableHeader + tableRows
+        const tableContainer = document.createElement('div')
+        tableContainer.classList.add('table-container')
+        tableContainer.appendChild(statusTable)
+        contentElement.appendChild(tableContainer)
 
         const redirectToHome = () => {
             this.app.isLoggedIn = true
             this.app.route.redirectTo('home')
         }
 
-        new Modal(contentElement, redirectToHome);
+        new Modal(contentElement, redirectToHome)
     }
 
     showError(errMsg) {
@@ -144,7 +217,6 @@ class LoginPage extends Page {
         }
         return true
     }
-
 }
 
-export default LoginPage;
+export default LoginPage

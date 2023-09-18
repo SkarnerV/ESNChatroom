@@ -22,6 +22,15 @@ export default class UserRouter {
                 response.send(message)
             },
         )
+        this.router.post(
+            '/login',
+            async (request: Request, response: Response) => {
+                const user: ESNUser = request.body
+                const message: LoginCredentials =
+                    await this.controller.loginUser(user)
+                response.send(message)
+            },
+        )
     }
 
     getRouter(): Router {

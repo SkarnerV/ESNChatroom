@@ -23,9 +23,25 @@ export default class UserCollection extends ESNDatabase {
     }
 
     // Check if user exist in the DB
+    // considering removing below function
     async checkUserDuplication(username: string): Promise<boolean> {
         const user = await this.esnUserModel.exists({ username })
 
         return user ? true : false
+    }
+
+    async checkUserLogin(
+        username: string,
+        password: string,
+    ): Promise<{ userExists: boolean; passwordMatch: boolean }> {
+        const user = await this.esnUserModel.findOne({ username })
+        if (user) {
+            // User exists, check password
+            const isPasswordMatch = user.password === password
+            return { userExists: true, passwordMatch: isPasswordMatch }
+        } else {
+            // User does not exist
+            return { userExists: false, passwordMatch: false }
+        }
     }
 }
