@@ -108,7 +108,7 @@ class LoginPage extends Page {
                     const status = data.status
                     const message = data.messagea
                     const token = data.token
-
+                    console.log(data)
                     if (status === 201) {
                         // if user successfully created, show welcome modal
                         this.showWelcomeModal()

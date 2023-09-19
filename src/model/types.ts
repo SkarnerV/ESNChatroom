@@ -10,3 +10,8 @@ export interface LoginCredentials {
     message: string
     token?: string
 }
+
+export interface LoginAuthentication {
+    userExists: boolean
+    passwordMatch: boolean
+}
