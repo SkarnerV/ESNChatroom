@@ -71,6 +71,12 @@ export default class UserController {
         )
     }
 
+    /**
+     * Check if the user is authenticated to login
+     *
+     * @param user The user that is trying to login
+     * @returns a LoginCrednetials message that shows the current request status
+     */
     async loginUser(user: ESNUser): Promise<LoginCredentials> {
         const isExistingUser: { userExists: boolean; passwordMatch: boolean } =
             await this.userCollection.checkUserLogin(
@@ -78,8 +84,17 @@ export default class UserController {
                 user.password,
             )
 
+        // If both conditions are true, it generates a token and returns a successful login response.
         if (isExistingUser.userExists && isExistingUser.passwordMatch) {
-            return ResponseGenerator.getLoginResponse(200, 'User Logined')
+            const userId = await this.userCollection.getUserId(user.username)
+            if (userId !== '') {
+                const token: string = UserController.createUserToken(userId)
+                return ResponseGenerator.getLoginResponse(
+                    200,
+                    'User Logined',
+                    token,
+                )
+            }
         } else if (isExistingUser.userExists && !isExistingUser.passwordMatch) {
             return ResponseGenerator.getLoginResponse(
                 401,

@@ -42,12 +42,15 @@ class LoginPage extends Page {
             .then(data => {
                 const status = data.status
                 const message = data.message
-                //const token = data.token
+                const token = data.token
 
                 // Iteration0-A1: if the user is already a community member
                 // (the username already exists and the password is correct), then nothing happens
                 if (status === 200) {
-                    this.showWelcomeModal()
+                    // remove any error message
+                    this.showError()
+                    // this.showWelcomeModal()
+                    localStorage.setItem('token', token)
                     return
                 }
                 // if the username already exists but the password is incorrect (does not match the existing username),
@@ -98,10 +101,12 @@ class LoginPage extends Page {
                 .then(data => {
                     const status = data.status
                     const message = data.messagea
+                    const token = data.token
 
                     if (status === 201) {
-                        // if success, show welcome modal
+                        // if user successfully created, show welcome modal
                         this.showWelcomeModal()
+                        localStorage.setItem('token', token)
                     } else if (status === 400) {
                         this.showError(message)
                         return
