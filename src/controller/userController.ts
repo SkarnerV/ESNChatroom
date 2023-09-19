@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { LoginCredentials, ESNUser } from '../model/types'
+import { LoginCredentials, ESNUser, LoginAuthentication } from '../model/types'
 import UserCollection from '../database/userCollection'
 import ResponseGenerator from '../util/responseGenerator'
 
@@ -45,12 +45,6 @@ export default class UserController {
     async createUser(user: ESNUser): Promise<LoginCredentials> {
         if (UserController.isValidCredential(user)) {
             // considering removing isDuplicatedUser
-            const isDuplicatedUser: boolean =
-                await this.userCollection.checkUserDuplication(user.username)
-
-            if (isDuplicatedUser) {
-                return ResponseGenerator.getLoginResponse(400, 'Account Exist')
-            }
 
             const createdUserID: string =
                 await this.userCollection.createUser(user)
@@ -78,7 +72,7 @@ export default class UserController {
      * @returns a LoginCrednetials message that shows the current request status
      */
     async loginUser(user: ESNUser): Promise<LoginCredentials> {
-        const isExistingUser: { userExists: boolean; passwordMatch: boolean } =
+        const isExistingUser: LoginAuthentication =
             await this.userCollection.checkUserLogin(
                 user.username,
                 user.password,
