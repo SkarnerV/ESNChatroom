@@ -31,7 +31,7 @@ export default class UserController {
         const { username, password } = user
 
         const isUsernameValid: boolean = username !== ''
-        const isPasswordValid: boolean = password !== '' && password.length > 8
+        const isPasswordValid: boolean = password !== '' && password.length >= 4
 
         return isUsernameValid && isPasswordValid
     }
@@ -44,6 +44,7 @@ export default class UserController {
      */
     async createUser(user: ESNUser): Promise<LoginCredentials> {
         if (UserController.isValidCredential(user)) {
+            // considering removing isDuplicatedUser
             const isDuplicatedUser: boolean =
                 await this.userCollection.checkUserDuplication(user.username)
 
@@ -60,6 +61,44 @@ export default class UserController {
                 201,
                 'Account Created Successfully!',
                 token,
+            )
+        }
+        return Promise.resolve(
+            ResponseGenerator.getLoginResponse(
+                400,
+                'Username and Password are required',
+            ),
+        )
+    }
+
+    /**
+     * Check if the user is authenticated to login
+     *
+     * @param user The user that is trying to login
+     * @returns a LoginCrednetials message that shows the current request status
+     */
+    async loginUser(user: ESNUser): Promise<LoginCredentials> {
+        const isExistingUser: { userExists: boolean; passwordMatch: boolean } =
+            await this.userCollection.checkUserLogin(
+                user.username,
+                user.password,
+            )
+
+        // If both conditions are true, it generates a token and returns a successful login response.
+        if (isExistingUser.userExists && isExistingUser.passwordMatch) {
+            const userId = await this.userCollection.getUserId(user.username)
+            if (userId !== '') {
+                const token: string = UserController.createUserToken(userId)
+                return ResponseGenerator.getLoginResponse(
+                    200,
+                    'User Logined',
+                    token,
+                )
+            }
+        } else if (isExistingUser.userExists && !isExistingUser.passwordMatch) {
+            return ResponseGenerator.getLoginResponse(
+                401,
+                'Re-enter the username and/or password',
             )
         }
         return Promise.resolve(
