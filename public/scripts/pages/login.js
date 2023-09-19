@@ -19,6 +19,9 @@ class LoginPage extends Page {
         if (!this.isUsernameValid(username)) return
         if (!this.isPasswordValid(password)) return
 
+        // Hash the password
+        const hashedPassword = CryptoJS.MD5(password).toString()
+
         // request to server to check if users can login
         fetch('/auth/login', {
             method: 'POST',
@@ -27,7 +30,7 @@ class LoginPage extends Page {
             },
             body: JSON.stringify({
                 username: username,
-                password: password,
+                password: hashedPassword,
             }),
         })
             .then(response => {
@@ -78,6 +81,9 @@ class LoginPage extends Page {
         const username = document.getElementById('username').value
         const password = document.getElementById('password').value
 
+        // Hash the password
+        const hashedPassword = CryptoJS.MD5(password).toString()
+
         const register = () => {
             // request to server to register a user account
             fetch('/auth/register', {
@@ -87,7 +93,7 @@ class LoginPage extends Page {
                 },
                 body: JSON.stringify({
                     username: username,
-                    password: password,
+                    password: hashedPassword,
                 }),
             })
                 .then(response => {
