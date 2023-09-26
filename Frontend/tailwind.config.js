@@ -34,6 +34,50 @@ module.exports = {
     "hover:bg-blue-600",
     "transition",
     "duration-300",
+    // Classes used for the "Open Modal" button
+    "bg-blue-500",
+    "text-white",
+    "p-2",
+    "rounded",
+    "hover:bg-blue-600",
+
+    // Classes used for the modal itself
+    "hidden", // Used to hide the modal by default
+    "fixed",
+    "inset-0",
+    "flex",
+    "items-center",
+    "justify-center",
+    "z-50",
+
+    // Classes used for the modal overlay
+    "modal-overlay",
+    "bg-black",
+    "opacity-30",
+
+    // Classes used for the modal container
+    "modal-container",
+    "bg-white",
+    "w-96",
+    "mx-auto",
+    "rounded",
+    "shadow-lg",
+    "z-50",
+    "overflow-y-auto",
+
+    // Classes used for modal content
+    "modal-content",
+    "p-4",
+    "text-2xl",
+    "font-semibold",
+    "mb-4",
+
+    // Classes used for the "Close" button
+    "bg-red-500",
+    "text-white",
+    "p-2",
+    "rounded",
+    "hover:bg-red-600",
   ],
   plugins: [],
 };
