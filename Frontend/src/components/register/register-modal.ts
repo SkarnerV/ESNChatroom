@@ -1,17 +1,17 @@
-import { userRegister } from "../api/user";
-import { modalStatic } from "../static/modal-static";
+import { userRegister } from "../../api/user";
+import { registerModalTemplate } from "../../templates/register-modal-template";
 
-class Modal extends HTMLElement {
+class RegisterModal extends HTMLElement {
   constructor() {
     super();
   }
   connectedCallback() {
-    this.innerHTML = modalStatic;
+    this.innerHTML = registerModalTemplate;
   }
 }
 
 const modal = document.getElementById("welcome-modal");
-customElements.define("esn-modal", Modal);
+customElements.define("register-modal", RegisterModal);
 const cancelButton = document.getElementById("modal-cancel");
 const confirmButton = document.getElementById("modal-confirm");
 
@@ -50,7 +50,6 @@ function showWelcomeModal() {
   confirmButton!.style.display = "none";
   continueButton!.style.display = "block";
   cancelButton!.style.display = "none";
-  console.log(confirmMessage);
   confirmMessage!.style.display = "none";
   continueButton!.onclick = async () => redirectToHomePage();
 }

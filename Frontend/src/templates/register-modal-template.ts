@@ -1,4 +1,4 @@
-export const modalStatic = `<div class="fixed inset-0 flex items-center justify-center z-50">
+export const registerModalTemplate = `<div class="fixed inset-0 flex items-center justify-center z-50">
 <div class="modal-overlay fixed inset-0 bg-black opacity-30 z-40"></div>
 <div
   class="modal-container bg-white w-96 mx-auto rounded shadow-lg z-50 overflow-y-auto"

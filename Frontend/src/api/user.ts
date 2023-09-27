@@ -29,7 +29,6 @@ export const userRegister = async (
       return response.json();
     } else {
       // Handle error response
-      console.log("response ", response);
       throw new Error("HTTP error:" + response.status);
     }
   });
