@@ -12,15 +12,8 @@
 
 - TypeScript: Easy to manage code between teammates; ES6 enforced;
 - Express.js: REST API; Socket.io; Project requirement
-- JWT: Convenient for password protection and user credentials manage between backend and frontend
-- Passport.js: Convenient for password protection
-
-### Backend
-
-- TypeScript: Easy to manage code between teammates; ES6 enforced;
-- Express.js: REST API; Socket.io; Project requirement
 - JWT: Convenient for password protection and user credentials management between backend and frontend
-- Passport.js: Convenient for password protection
+- Crypto-js.js: Convenient for password protection
 - Socket.io: real-time communication between frontend and backend
 
 ### Database

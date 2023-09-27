@@ -31,7 +31,8 @@ export default class UserController {
         const { username, password } = user
 
         const isUsernameValid: boolean = username !== ''
-        const isPasswordValid: boolean = password !== '' && password.length >= 4
+        const isPasswordValid: boolean =
+            password !== '' && password?.length >= 4
 
         return isUsernameValid && isPasswordValid
     }
@@ -96,10 +97,7 @@ export default class UserController {
             )
         }
         return Promise.resolve(
-            ResponseGenerator.getLoginResponse(
-                400,
-                'Username and Password are required',
-            ),
+            ResponseGenerator.getLoginResponse(400, 'Account does not exits'),
         )
     }
 }
