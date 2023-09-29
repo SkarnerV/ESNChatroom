@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  db:
+    container_name: esn-database
+    image: mysql:latest
+    restart: always
+    ports:
+      - 8675:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "sb1"
+      MYSQL_DATABASE: "sb1"
+      MYSQL_USER: "team-sb1"
+      MYSQL_PASSWORD: "sb1"

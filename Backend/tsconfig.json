@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "outDir": "dist",
     "strict": true,
     "lib": ["ESNext"],
     "esModuleInterop": true,
     "moduleResolution": "node"
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts", "prettier.config.js"]
 }
