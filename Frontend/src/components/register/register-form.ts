@@ -1,6 +1,6 @@
 import { userLogin } from "../../api/user";
 import reservedUsernames from "../../constants/reserved-names";
-import { registerFormTemplate } from "../../templates/register-form-template";
+import { registerFormTemplate } from "../../templates/register/register-form-template";
 import CryptoJS from "crypto-js";
 class RegisterForm extends HTMLElement {
   constructor() {

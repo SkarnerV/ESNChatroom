@@ -8,5 +8,9 @@
     "esModuleInterop": true,
     "moduleResolution": "node"
   },
-  "include": ["**/*.ts", "prettier.config.js"]
+  "include": [
+    "**/*.ts",
+    "prettier.config.js",
+    "../Frontend/src/util/formatter.ts"
+  ]
 }

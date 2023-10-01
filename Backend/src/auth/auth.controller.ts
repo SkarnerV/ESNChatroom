@@ -17,8 +17,8 @@ export default class UserController {
    * @param id user id that is used to generate a token
    * @return the generated token
    */
-  private static createUserToken(id: string): string {
-    return jwt.sign({ id: id }, "esn", { expiresIn: "1h" });
+  private static createUserToken(id: string, username: string): string {
+    return jwt.sign({ id: id, username: username }, "esn", { expiresIn: "1h" });
   }
 
   /**
@@ -47,7 +47,10 @@ export default class UserController {
     if (UserController.isValidCredential(user)) {
       const createdUserID: string = await this.userCollection.createUser(user);
 
-      const token: string = UserController.createUserToken(createdUserID);
+      const token: string = UserController.createUserToken(
+        createdUserID,
+        user.username
+      );
 
       return ResponseGenerator.getLoginResponse(
         201,
@@ -75,7 +78,10 @@ export default class UserController {
     if (isExistingUser.userExists && isExistingUser.passwordMatch) {
       const userId = await this.userCollection.getUserId(user.username);
       if (userId !== "") {
-        const token: string = UserController.createUserToken(userId);
+        const token: string = UserController.createUserToken(
+          userId,
+          user.username
+        );
         return ResponseGenerator.getLoginResponse(200, "User Logined", token);
       }
     } else if (isExistingUser.userExists && !isExistingUser.passwordMatch) {

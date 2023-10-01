@@ -1,5 +1,5 @@
 import { userRegister } from "../../api/user";
-import { registerModalTemplate } from "../../templates/register-modal-template";
+import { registerModalTemplate } from "../../templates/register/register-modal-template";
 
 class RegisterModal extends HTMLElement {
   constructor() {

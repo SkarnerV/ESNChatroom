@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import { DataSource } from "typeorm";
 import { ESNUser } from "../user/user";
+import { PublicMessage } from "../message/publicMessage.entity";
 
 dotenv.config();
 
@@ -8,14 +9,14 @@ export default class ESNDatabase {
   private database: DataSource;
   private static instance: ESNDatabase;
 
-  private static prodDataSource = new DataSource({
+  private static devDataSource = new DataSource({
     type: "mysql",
     host: "localhost",
     port: 8675,
     username: "team-sb1",
     password: "sb1",
     database: "sb1",
-    entities: [ESNUser],
+    entities: [ESNUser, PublicMessage],
     dropSchema: true,
     logging: true,
     synchronize: true,
@@ -24,14 +25,14 @@ export default class ESNDatabase {
   private static testDataSource = new DataSource({
     type: "sqlite",
     database: ":memory:",
-    entities: [ESNUser],
+    entities: [ESNUser, PublicMessage],
     dropSchema: true,
     logging: true,
     synchronize: true,
   });
 
   private constructor() {
-    this.database = ESNDatabase.prodDataSource;
+    this.database = ESNDatabase.devDataSource;
   }
 
   async initializeDatabase(): Promise<void> {
@@ -42,8 +43,8 @@ export default class ESNDatabase {
     this.database = ESNDatabase.testDataSource;
   }
 
-  setProdDatabase(): void {
-    this.database = ESNDatabase.prodDataSource;
+  setDevDatabase(): void {
+    this.database = ESNDatabase.devDataSource;
   }
 
   static getDatabaseInstance(): ESNDatabase {
