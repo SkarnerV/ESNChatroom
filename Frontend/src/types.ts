@@ -7,4 +7,5 @@ export interface ESNMessage {
 export interface ESNUserStatus {
   username: string;
   lastStatus: string;
+  is_online: boolean;
 }
