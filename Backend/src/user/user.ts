@@ -10,4 +10,7 @@ export class ESNUser {
 
   @Column()
   password!: string;
+
+  @Column()
+    is_online: boolean = false;
 }
