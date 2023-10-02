@@ -6,7 +6,8 @@
     "strict": true,
     "lib": ["ESNext"],
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "resolveJsonModule": true
   },
   "include": [
     "**/*.ts",

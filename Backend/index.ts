@@ -7,6 +7,10 @@ import UserRouter from "./src/auth/auth.router";
 import ESNDatabase from "./src/database/ESNDatabase";
 import MessageRouter from "./src/message/message.router";
 
+import swaggerUI from "swagger-ui-express";
+import * as swaggerDoc from "./public/swagger.json";
+
+
 class App {
   private app: express.Application;
   private server: HttpServer;
@@ -41,6 +45,7 @@ class App {
   }
 
   private registerRoutes(): void {
+    this.app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc));
     const userRouter: Router = new UserRouter().getRouter();
     const messageRouter: Router = new MessageRouter().getRouter();
     this.app.use("/users", userRouter);
