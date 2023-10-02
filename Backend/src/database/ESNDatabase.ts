@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import { DataSource } from "typeorm";
-import { ESNUser } from "../user/user";
+import { ESNUser } from "../user/user.entity";
 import { PublicMessage } from "../message/publicMessage.entity";
 
 dotenv.config();

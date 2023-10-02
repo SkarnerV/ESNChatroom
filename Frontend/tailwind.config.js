@@ -38,7 +38,6 @@ module.exports = {
     "bg-blue-500",
     "text-white",
     "p-2",
-    "rounded",
     "hover:bg-blue-600",
 
     // Classes used for the modal itself
@@ -60,7 +59,6 @@ module.exports = {
     "bg-white",
     "w-96",
     "mx-auto",
-    "rounded",
     "shadow-lg",
     "z-50",
     "overflow-y-auto",
@@ -76,7 +74,6 @@ module.exports = {
     "bg-red-500",
     "text-white",
     "p-2",
-    "rounded",
     "hover:bg-red-600",
     'bg-gray-200',
     'container',
@@ -103,6 +100,27 @@ module.exports = {
     'bg-blue-500',
     'text-white',
     'px-4',
+
+    // Classes used for the ESN Directory
+    "modal-container",
+    "w-96",
+    "mx-auto",
+    "shadow-lg",
+    "z-50",
+    "overflow-y-auto",
+    "divide-y",
+    "gap-x-4",
+    "py-2",
+    "px-4",
+    "leading-6",
+    "flex-none",
+    "bg-gray-50",
+    "text-sm",
+    "gap-x-1.5",
+    "bg-emerald-500",
+    "bg-gray-500",
+    "bg-yellow-300",
+    "bg-red-700"
   ],
   plugins: [],
 };

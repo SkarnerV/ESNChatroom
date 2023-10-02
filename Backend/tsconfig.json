@@ -11,6 +11,7 @@
   },
   "include": [
     "**/*.ts",
+    "**/*.entity.ts",
     "prettier.config.js",
     "../Frontend/src/util/formatter.ts"
   ]

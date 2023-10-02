@@ -1,4 +1,4 @@
-import { loginApi, registerApi } from "./routes";
+import { loginApi, registerApi, getAllUserStatusApi} from "./routes";
 import { fetchRequest } from "./util";
 
 export const userLogin = async (username: string, hashedPassword: string) => {
@@ -30,6 +30,16 @@ export const userRegister = async (
     } else {
       // Handle error response
       throw new Error("HTTP error:" + response.status);
+    }
+  });
+};
+
+export const getAllUserStatus = async () => {
+  return await fetchRequest(getAllUserStatusApi, "GET").then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error("HTTP error: " + response.status);
     }
   });
 };

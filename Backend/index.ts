@@ -3,13 +3,13 @@ import { createServer, Server as HttpServer } from "http";
 import { Server, Socket } from "socket.io";
 import cors from "cors";
 import bodyParser from "body-parser";
-import UserRouter from "./src/auth/auth.router";
+import AuthRouter from "./src/auth/auth.router";
+import UserRouter from "./src/user/user.router";
 import ESNDatabase from "./src/database/ESNDatabase";
 import MessageRouter from "./src/message/message.router";
 
 import swaggerUI from "swagger-ui-express";
 import * as swaggerDoc from "./public/swagger.json";
-
 
 class App {
   private app: express.Application;
@@ -45,9 +45,11 @@ class App {
   }
 
   private registerRoutes(): void {
+    const authRouter: Router = new AuthRouter().getRouter();
     this.app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc));
     const userRouter: Router = new UserRouter().getRouter();
     const messageRouter: Router = new MessageRouter().getRouter();
+    this.app.use("/users", authRouter);
     this.app.use("/users", userRouter);
     this.app.use("/messages", messageRouter);
   }

@@ -4048,7 +4048,10 @@ socket.io-parser@~4.2.4:
     "@socket.io/component-emitter" "~3.1.0"
     debug "~4.3.1"
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> d70cef221a24ed20f6918a1309a992a9f1273a7f
 socket.io@^4.7.2:
   version "4.7.2"
   resolved "https://registry.npmjs.org/socket.io/-/socket.io-4.7.2.tgz"
@@ -4391,7 +4394,7 @@ typeorm@^0.3.17:
     uuid "^9.0.0"
     yargs "^17.6.2"
 
-typescript@^5.1.6, typescript@>=2.7, typescript@>=4.2.0, "typescript@>=4.3 <6":
+typescript@^5.2.2, typescript@>=2.7, typescript@>=4.2.0, "typescript@>=4.3 <6":
   version "5.2.2"
   resolved "https://registry.npmjs.org/typescript/-/typescript-5.2.2.tgz"
   integrity sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==

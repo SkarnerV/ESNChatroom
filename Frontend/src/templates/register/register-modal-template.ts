@@ -47,7 +47,7 @@ export const registerModalTemplate = `<div class="fixed inset-0 flex items-cente
             <td>Undefined</td>
             <td>The user has not provided any status info.</td>
             <td style="background-color: gray"></td>
-            <td>❓</td>
+            <td>❔</td>
           </tr>
         </tbody>
       </table>

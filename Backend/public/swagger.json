@@ -25,6 +25,19 @@
         "type": "object",
         "additionalProperties": false
       },
+      "UserStatus": {
+        "properties": {
+          "username": {
+            "type": "number"
+          },
+          "lastStatus": {
+            "type": "string"
+          }
+        },
+        "required": ["username", "lastStatus"],
+        "type": "object",
+        "additionalProperties": false
+      },
       "PublicMessage": {
         "properties": {
           "id": {
@@ -118,6 +131,29 @@
             }
           }
         }
+      }
+    },
+    "/users/status": {
+      "get": {
+        "operationId": "getUserStatus",
+        "responses": {
+          "200": {
+            "description": "user status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/UserStatus"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          }
+        },
+        "description": "get all user status",
+        "security": [],
+        "parameters": []
       }
     },
     "/messages/public": {

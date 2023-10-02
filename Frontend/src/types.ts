@@ -3,3 +3,8 @@ export interface ESNMessage {
   sender: string;
   time: string;
 }
+
+export interface ESNUserStatus {
+  username: string;
+  lastStatus: string;
+}

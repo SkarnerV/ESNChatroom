@@ -1,9 +1,9 @@
 import { LoginAuthentication } from "../types/types";
 import ESNDatabase from "../database/ESNDatabase";
-import { ESNUser } from "../user/user";
+import { ESNUser } from "../user/user.entity";
 import { Repository } from "typeorm";
 
-export default class UserCollection {
+export default class AuthCollection {
   private userDatabase: Repository<ESNUser>;
   constructor() {
     this.userDatabase = ESNDatabase.getDatabaseInstance()
@@ -16,6 +16,9 @@ export default class UserCollection {
     const user = this.userDatabase.create();
     user.username = esnUser.username;
     user.password = esnUser.password;
+
+    //In RestApi spreadsheet, the user should have a default status as GREEN
+    user.lastStatus = "GREEN";
 
     const createdUser = await this.userDatabase.save(user);
     return createdUser.id.toString();

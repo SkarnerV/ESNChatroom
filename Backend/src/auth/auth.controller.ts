@@ -1,14 +1,14 @@
 import jwt from "jsonwebtoken";
 import { LoginCredentials, LoginAuthentication } from "../types/types";
-import UserCollection from "./auth.dao";
+import AuthCollection from "./auth.dao";
 import ResponseGenerator from "../util/responseGenerator";
-import { ESNUser } from "../user/user";
+import { ESNUser } from "../user/user.entity";
 
-export default class UserController {
-  private userCollection: UserCollection;
+export default class AuthController {
+  private authCollection: AuthCollection;
 
   constructor() {
-    this.userCollection = new UserCollection();
+    this.authCollection = new AuthCollection();
   }
 
   /**
@@ -44,10 +44,10 @@ export default class UserController {
    * @return a LoginCrednetials message that shows the current request status
    */
   async createUser(user: ESNUser): Promise<LoginCredentials> {
-    if (UserController.isValidCredential(user)) {
-      const createdUserID: string = await this.userCollection.createUser(user);
+    if (AuthController.isValidCredential(user)) {
+      const createdUserID: string = await this.authCollection.createUser(user);
 
-      const token: string = UserController.createUserToken(
+      const token: string = AuthController.createUserToken(
         createdUserID,
         user.username
       );
@@ -72,13 +72,14 @@ export default class UserController {
    */
   async loginUser(user: ESNUser): Promise<LoginCredentials> {
     const isExistingUser: LoginAuthentication =
-      await this.userCollection.checkUserLogin(user.username, user.password);
+      await this.authCollection.checkUserLogin(user.username, user.password);
 
     // If both conditions are true, it generates a token and returns a successful login response.
     if (isExistingUser.userExists && isExistingUser.passwordMatch) {
-      const userId = await this.userCollection.getUserId(user.username);
+      const userId = await this.authCollection.getUserId(user.username);
+
       if (userId !== "") {
-        const token: string = UserController.createUserToken(
+        const token: string = AuthController.createUserToken(
           userId,
           user.username
         );
