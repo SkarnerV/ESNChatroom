@@ -23,6 +23,7 @@ describe("createUser", () => {
       username: "test_username",
       password: "test_password",
       lastStatus: "GREEN",
+      is_online: false,
     };
 
     const loginCredential: LoginCredentials =
@@ -38,18 +39,21 @@ describe("createUser", () => {
       username: "",
       password: "test_password",
       lastStatus: "GREEN",
+      is_online: false,
     };
     const noPasswordUser: ESNUser = {
       id: 2,
       username: "user",
       password: "",
       lastStatus: "GREEN",
+      is_online: false,
     };
     const illegalPasswordUser: ESNUser = {
       id: 2,
       username: "user",
       password: "tes",
       lastStatus: "GREEN",
+      is_online: false,
     };
 
     const noStatusUser: ESNUser = {
@@ -57,6 +61,7 @@ describe("createUser", () => {
       username: "user",
       password: "test_password",
       lastStatus: "",
+      is_online: false,
     };
 
     const loginCredential1: LoginCredentials =

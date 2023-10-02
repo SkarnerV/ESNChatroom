@@ -12,6 +12,7 @@ const testUser1: ESNUser = {
   username: "test1",
   password: "1234",
   lastStatus: "1",
+  is_online: false,
 };
 
 const testUser2: ESNUser = {
@@ -19,6 +20,7 @@ const testUser2: ESNUser = {
   username: "test2",
   password: "1234",
   lastStatus: "2",
+  is_online: false,
 };
 
 beforeEach(async () => {
@@ -65,8 +67,8 @@ describe("getAllESNUserStatus", () => {
     const allUsers = await userDao.getAllESNUserStatus();
     expect(allUsers).not.toBeNull();
     expect(allUsers).toEqual([
-      { lastStatus: "1", username: "test1" },
-      { lastStatus: "2", username: "test2" },
+      { lastStatus: "1", username: "test1", is_online: false },
+      { lastStatus: "2", username: "test2", is_online: false },
     ]);
   });
 });
