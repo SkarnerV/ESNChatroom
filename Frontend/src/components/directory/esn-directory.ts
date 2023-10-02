@@ -81,14 +81,9 @@ getAllUserStatus().then((response) => {
     }
   }
 
+  //display users as online first then offline
   const usersStatus: ESNUserStatus[] = onlineUser.concat(offlineUser);
-  // const usersStatus: ESNUserStatus[] = userStatusRed
-  //   .sort(sortFunction)
-  //   .concat(
-  //     userStatusYellow.sort(sortFunction),
-  //     userStatusGreen.sort(sortFunction),
-  //     userStatusUndefine.sort(sortFunction)
-  //   );
+  
 
   for (const userStatusInfo of usersStatus) {
     renderStatus(userStatusInfo);
