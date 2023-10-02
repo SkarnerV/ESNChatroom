@@ -52,7 +52,7 @@ export default class AuthController {
         user.username
       );
 
-      await this.userCollection.updateUserOnlineStatus(user.username, true);
+      await this.authCollection.updateUserOnlineStatus(user.username, true);
 
       return ResponseGenerator.getLoginResponse(
         201,
@@ -85,7 +85,7 @@ export default class AuthController {
           userId,
           user.username
         );
-        await this.userCollection.updateUserOnlineStatus(user.username, true);
+        await this.authCollection.updateUserOnlineStatus(user.username, true);
         return ResponseGenerator.getLoginResponse(200, "User Logined", token);
       }
     } else if (isExistingUser.userExists && !isExistingUser.passwordMatch) {
@@ -109,7 +109,7 @@ export default class AuthController {
     try {
       const decodedToken = jwt.verify(token, "esn");
       const user = decodedToken as { id: string; username: string };
-      await this.userCollection.updateUserOnlineStatus(user.username, false);
+      await this.authCollection.updateUserOnlineStatus(user.username, false);
       return ResponseGenerator.getLoginResponse(200, "User Logouted");
     } catch (error) {
       return ResponseGenerator.getLoginResponse(400, "Account does not exits");
