@@ -31,6 +31,12 @@ joinButton!.onclick = async () => {
 
   await userLogin(username.toLowerCase(), hashedPassword).then((response) => {
     handleLoginRequest(response);
+
+    //prevent hashedPassword on password textbox if password is entered incorrect
+    if (response.status != 401) {
+      (document.getElementById("password") as HTMLInputElement).value =
+        hashedPassword;
+    }
   });
 };
 
@@ -83,6 +89,7 @@ function handleLoginRequest(response) {
   // the system informs the Citizen that he needs to re-enter the username and/or password.
   else if (response.status === 401) {
     showError(response.message);
+    (document.getElementById("password") as HTMLInputElement).value = "";
     return;
   }
   // user does not exist, show confirmation modal for user to start registration
