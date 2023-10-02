@@ -22,6 +22,7 @@ describe("createUser", () => {
       id: 0,
       username: "test_username",
       password: "test_password",
+      is_online: false,
     };
 
     const loginCredential: LoginCredentials =
@@ -36,16 +37,19 @@ describe("createUser", () => {
       id: 1,
       username: "",
       password: "test_password",
+      is_online: false,
     };
     const noPasswordUser: ESNUser = {
       id: 2,
       username: "user",
       password: "",
+      is_online: false,
     };
     const illegalPasswordUser: ESNUser = {
       id: 2,
       username: "user",
       password: "tes",
+      is_online: false,
     };
 
     const loginCredential1: LoginCredentials =
