@@ -1,0 +1,218 @@
+{
+  "components": {
+    "schemas": {
+      "LoginWithToken": {
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": ["status", "token"],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "UserCredentialInput": {
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["username", "password"],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "UserStatus": {
+        "properties": {
+          "username": {
+            "type": "number"
+          },
+          "lastStatus": {
+            "type": "string"
+          }
+        },
+        "required": ["username", "lastStatus"],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "PublicMessage": {
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "content": {
+            "type": "string"
+          },
+
+          "time": {
+            "type": "string"
+          },
+          "sender": {
+            "type": "string"
+          }
+        },
+        "required": ["content", "time", "sender"],
+        "type": "object",
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {}
+  },
+  "info": {
+    "title": "esn api",
+    "version": "0.0.1",
+    "license": {
+      "name": "MIT"
+    },
+    "contact": {
+      "name": "sb1"
+    }
+  },
+  "openapi": "3.0.0",
+  "paths": {
+    "/users/register": {
+      "post": {
+        "operationId": "Register",
+        "responses": {
+          "200": {
+            "description": "LoginWithToken",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginWithToken"
+                }
+              }
+            }
+          }
+        },
+        "description": "Register a user using the provided username and password",
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCredentialInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "operationId": "LoginUser",
+        "responses": {
+          "200": {
+            "description": "LoginWithToken",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginWithToken"
+                }
+              }
+            }
+          }
+        },
+        "description": "login a user with provided username and password",
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCredentialInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/status": {
+      "get": {
+        "operationId": "getUserStatus",
+        "responses": {
+          "200": {
+            "description": "user status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/UserStatus"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          }
+        },
+        "description": "get all user status",
+        "security": [],
+        "parameters": []
+      }
+    },
+    "/messages/public": {
+      "get": {
+        "operationId": "GetPublicMessages",
+        "responses": {
+          "200": {
+            "description": "public messages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PublicMessage"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          }
+        },
+        "description": "get all public messages",
+        "security": [],
+        "parameters": []
+      }
+    },
+    "/messages/public_post": {
+      "post": {
+        "operationId": "PublicPost",
+        "responses": {
+          "200": {
+            "description": "PublicPost",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicMessage"
+                }
+              }
+            }
+          }
+        },
+        "description": "post a public message",
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicMessage"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ]
+}

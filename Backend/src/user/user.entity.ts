@@ -12,5 +12,8 @@ export class ESNUser {
   password!: string;
 
   @Column()
-    is_online: boolean = false;
+  lastStatus!: string;
+
+  @Column()
+  is_online: boolean = false;
 }

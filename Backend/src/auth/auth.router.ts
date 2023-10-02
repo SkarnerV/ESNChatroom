@@ -1,14 +1,14 @@
 import express, { Request, Response, Router } from "express";
 import { LoginCredentials } from "../types/types";
-import UserController from "./auth.controller";
-import { ESNUser } from "../user/user";
+import AuthController from "./auth.controller";
+import { ESNUser } from "../user/user.entity";
 
 export default class UserRouter {
   private router: Router;
-  private controller: UserController;
+  private controller: AuthController;
 
   constructor() {
-    this.controller = new UserController();
+    this.controller = new AuthController();
     this.router = express.Router();
     this.init();
   }

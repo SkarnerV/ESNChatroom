@@ -6,10 +6,12 @@
     "strict": true,
     "lib": ["ESNext"],
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "resolveJsonModule": true
   },
   "include": [
     "**/*.ts",
+    "**/*.entity.ts",
     "prettier.config.js",
     "../Frontend/src/util/formatter.ts"
   ]

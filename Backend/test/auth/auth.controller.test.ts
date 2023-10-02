@@ -1,7 +1,7 @@
 import AuthController from "../../src/auth/auth.controller";
 import ESNDatabase from "../../src/database/ESNDatabase";
 import { LoginCredentials } from "../../src/types/types";
-import { ESNUser } from "../../src/user/user";
+import { ESNUser } from "../../src/user/user.entity";
 
 const databaseInstance = ESNDatabase.getDatabaseInstance();
 let authController: AuthController;
@@ -22,6 +22,7 @@ describe("createUser", () => {
       id: 0,
       username: "test_username",
       password: "test_password",
+      lastStatus: "GREEN",
       is_online: false,
     };
 
@@ -37,18 +38,29 @@ describe("createUser", () => {
       id: 1,
       username: "",
       password: "test_password",
+      lastStatus: "GREEN",
       is_online: false,
     };
     const noPasswordUser: ESNUser = {
       id: 2,
       username: "user",
       password: "",
+      lastStatus: "GREEN",
       is_online: false,
     };
     const illegalPasswordUser: ESNUser = {
       id: 2,
       username: "user",
       password: "tes",
+      lastStatus: "GREEN",
+      is_online: false,
+    };
+
+    const noStatusUser: ESNUser = {
+      id: 2,
+      username: "user",
+      password: "test_password",
+      lastStatus: "",
       is_online: false,
     };
 
@@ -58,10 +70,13 @@ describe("createUser", () => {
       await authController.createUser(noPasswordUser);
     const loginCredential3: LoginCredentials =
       await authController.createUser(illegalPasswordUser);
+    const loginCredential4: LoginCredentials =
+      await authController.createUser(noStatusUser);
 
     expect(loginCredential1).not.toBeNull();
     expect(loginCredential2).not.toBeNull();
     expect(loginCredential3).not.toBeNull();
+    expect(loginCredential4).not.toBeNull();
     expect(loginCredential1.status).toEqual(400);
     expect(loginCredential2.status).toEqual(400);
     expect(loginCredential3.status).toEqual(400);
