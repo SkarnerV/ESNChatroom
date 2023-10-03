@@ -52,6 +52,8 @@ export default class AuthController {
         user.username
       );
 
+      await this.authCollection.updateUserOnlineStatus(user.username, true);
+
       return ResponseGenerator.getLoginResponse(
         201,
         "Account Created Successfully!",
@@ -83,6 +85,7 @@ export default class AuthController {
           userId,
           user.username
         );
+        await this.authCollection.updateUserOnlineStatus(user.username, true);
         return ResponseGenerator.getLoginResponse(200, "User Logined", token);
       }
     } else if (isExistingUser.userExists && !isExistingUser.passwordMatch) {
@@ -94,5 +97,22 @@ export default class AuthController {
     return Promise.resolve(
       ResponseGenerator.getLoginResponse(400, "Account does not exits")
     );
+  }
+
+  /**
+   * Logout the user
+   *
+   * @param user The user that is trying to logout
+   * @returns a LoginCrednetials message that shows the current request status
+   */
+  async logoutUser(token: string): Promise<LoginCredentials> {
+    try {
+      const decodedToken = jwt.verify(token, "esn");
+      const user = decodedToken as { id: string; username: string };
+      await this.authCollection.updateUserOnlineStatus(user.username, false);
+      return ResponseGenerator.getLoginResponse(200, "User Logouted");
+    } catch (error) {
+      return ResponseGenerator.getLoginResponse(400, "Account does not exits");
+    }
   }
 }

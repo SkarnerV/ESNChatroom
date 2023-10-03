@@ -48,4 +48,16 @@ export default class AuthCollection {
       return { userExists: false, passwordMatch: false };
     }
   }
+
+  // Update user online status
+  async updateUserOnlineStatus(
+    username: string,
+    isOnline: boolean
+  ): Promise<void> {
+    const user = await this.userDatabase.findOneBy({ username: username });
+    if (user) {
+      user.isOnline = isOnline;
+      await this.userDatabase.save(user);
+    }
+  }
 }

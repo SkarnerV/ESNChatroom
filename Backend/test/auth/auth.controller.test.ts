@@ -23,7 +23,8 @@ describe("createUser", () => {
       username: "test_username",
       password: "test_password",
       lastStatus: "GREEN",
-      is_online: false,
+      isOnline: false,
+
     };
 
     const loginCredential: LoginCredentials =
@@ -39,21 +40,21 @@ describe("createUser", () => {
       username: "",
       password: "test_password",
       lastStatus: "GREEN",
-      is_online: false,
+      isOnline: false,
     };
     const noPasswordUser: ESNUser = {
       id: 2,
       username: "user",
       password: "",
       lastStatus: "GREEN",
-      is_online: false,
+      isOnline: false,
     };
     const illegalPasswordUser: ESNUser = {
       id: 2,
       username: "user",
       password: "tes",
       lastStatus: "GREEN",
-      is_online: false,
+      isOnline: false,
     };
 
     const noStatusUser: ESNUser = {
@@ -61,7 +62,7 @@ describe("createUser", () => {
       username: "user",
       password: "test_password",
       lastStatus: "",
-      is_online: false,
+      isOnline: false,
     };
 
     const loginCredential1: LoginCredentials =
@@ -81,4 +82,62 @@ describe("createUser", () => {
     expect(loginCredential2.status).toEqual(400);
     expect(loginCredential3.status).toEqual(400);
   });
+});
+
+describe("loginLogoutUser", () => {
+  it("should update user's online status to true when login", async () => {
+    const testESNUser: ESNUser = {
+      id: 0,
+      username: "test_username",
+      password: "test_password",
+      lastStatus: "GREEN",
+      isOnline: false,
+    };
+
+    await authController.createUser(testESNUser);
+    await authController.loginUser(testESNUser);
+
+    const user = await databaseInstance
+      .getDataSource()
+      .getRepository(ESNUser)
+      .findOneBy({username: testESNUser.username});
+    expect(user?.isOnline).toBe(true);
+  });
+
+  it("should update user's online status to false when logout", async () => {
+    const testESNUser: ESNUser = {
+      id: 0,
+      username: "test_username",
+      password: "test_password",
+      lastStatus: "GREEN",
+      isOnline: false,
+    };
+    
+    await authController.createUser(testESNUser);
+    await authController.loginUser(testESNUser);
+    const loginCredential: LoginCredentials =
+      await authController.loginUser(testESNUser);
+    
+    if (loginCredential.token) {
+      await authController.logoutUser(loginCredential.token);
+
+      const user = await databaseInstance
+        .getDataSource()
+        .getRepository(ESNUser)
+        .findOneBy({username: testESNUser.username});
+      expect(user?.isOnline).toBe(false);
+    } else {
+      fail();
+    }
+  });
+
+  it("should return error message if token is not valid", async () => {
+    const invalidToken = "invalid token";
+    const response = await authController.logoutUser(invalidToken);
+  
+    expect(response).toBeDefined();
+    expect(response.status).toEqual(400);
+    expect(response.message).toEqual("Account does not exits");
+  });
+  
 });

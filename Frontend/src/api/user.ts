@@ -16,6 +16,20 @@ export const userLogin = async (username: string, hashedPassword: string) => {
   });
 };
 
+export const userLogout = async (token: string) => {
+  return await fetchRequest(loginApi, "PUT", {
+    token,
+  }).then((response) => {
+    if (response.ok) {
+      // Successful response (status code 200-299)
+      return response.json();
+    } else {
+      // Handle error response
+      throw new Error("HTTP error: " + response.status);
+    }
+  });
+}
+
 export const userRegister = async (
   username: string,
   hashedPassword: string
