@@ -33,7 +33,7 @@ export default class UserDao {
 
   async getAllESNUserStatus(): Promise<ESNUser[]> {
     const allUsers = await this.ESNUserDatabase.find({
-      select: ["username", "lastStatus", "is_online"],
+      select: ["username", "lastStatus", "isOnline"],
     });
     return allUsers;
   }
