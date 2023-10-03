@@ -53,30 +53,30 @@ getAllUserStatus().then((response) => {
   userStatusUndefine.sort(sortFunction);
 
   for (const userStatusInfo of userStatusRed) {
-    if (userStatusInfo.is_online === true) {
+    if (userStatusInfo.isOnline === true) {
       onlineUser.push(userStatusInfo);
-    } else if (userStatusInfo.is_online === false) {
+    } else if (userStatusInfo.isOnline === false) {
       offlineUser.push(userStatusInfo);
     }
   }
   for (const userStatusInfo of userStatusYellow) {
-    if (userStatusInfo.is_online === true) {
+    if (userStatusInfo.isOnline === true) {
       onlineUser.push(userStatusInfo);
-    } else if (userStatusInfo.is_online === false) {
+    } else if (userStatusInfo.isOnline === false) {
       offlineUser.push(userStatusInfo);
     }
   }
   for (const userStatusInfo of userStatusGreen) {
     if (userStatusInfo.isOnline === true) {
       onlineUser.push(userStatusInfo);
-    } else if (userStatusInfo.is_online === false) {
+    } else if (userStatusInfo.isOnline === false) {
       offlineUser.push(userStatusInfo);
     }
   }
   for (const userStatusInfo of userStatusUndefine) {
     if (userStatusInfo.isOnline === true) {
       onlineUser.push(userStatusInfo);
-    } else if (userStatusInfo.is_online === false) {
+    } else if (userStatusInfo.isOnline === false) {
       offlineUser.push(userStatusInfo);
     }
   }
