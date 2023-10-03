@@ -100,7 +100,7 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
   const userStatusP = document.createElement("div");
   const currentUserStatus = currentUser.username === userStatus.username;
 
-  if (userStatus.is_online === true) {
+  if (userStatus.isOnline === true) {
     statusBody.className = "flex justify-between gap-x-6 py-5 px-4";
   } else {
     statusBody.className = "flex justify-between gap-x-6 py-5 px-4 bg-gray-300";
