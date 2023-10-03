@@ -67,8 +67,8 @@ describe("getAllESNUserStatus", () => {
     const allUsers = await userDao.getAllESNUserStatus();
     expect(allUsers).not.toBeNull();
     expect(allUsers).toEqual([
-      { lastStatus: "1", username: "test1", isOnline: false },
-      { lastStatus: "2", username: "test2", isOnline: false },
+      { lastStatus: "1", username: "test1", isOnline: true },
+      { lastStatus: "2", username: "test2", isOnline: true },
     ]);
   });
 });

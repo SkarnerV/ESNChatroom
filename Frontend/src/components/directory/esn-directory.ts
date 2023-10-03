@@ -29,6 +29,8 @@ getAllUserStatus().then((response) => {
   let userStatusYellow: ESNUserStatus[] = [];
   let userStatusGreen: ESNUserStatus[] = [];
   let userStatusUndefine: ESNUserStatus[] = [];
+  let onlineUser: ESNUserStatus[] = [];
+  let offlineUser: ESNUserStatus[] = [];
   let sortFunction = function (a, b) {
     return a.username < b.username ? -1 : a.username == b.username ? 0 : 1;
   };
@@ -45,13 +47,43 @@ getAllUserStatus().then((response) => {
     }
   }
 
-  const usersStatus: ESNUserStatus[] = userStatusRed
-    .sort(sortFunction)
-    .concat(
-      userStatusYellow.sort(sortFunction),
-      userStatusGreen.sort(sortFunction),
-      userStatusUndefine.sort(sortFunction)
-    );
+  userStatusRed.sort(sortFunction);
+  userStatusYellow.sort(sortFunction);
+  userStatusGreen.sort(sortFunction);
+  userStatusUndefine.sort(sortFunction);
+
+  for (const userStatusInfo of userStatusRed) {
+    if (userStatusInfo.isOnline === true) {
+      onlineUser.push(userStatusInfo);
+    } else if (userStatusInfo.isOnline === false) {
+      offlineUser.push(userStatusInfo);
+    }
+  }
+  for (const userStatusInfo of userStatusYellow) {
+    if (userStatusInfo.isOnline === true) {
+      onlineUser.push(userStatusInfo);
+    } else if (userStatusInfo.isOnline === false) {
+      offlineUser.push(userStatusInfo);
+    }
+  }
+  for (const userStatusInfo of userStatusGreen) {
+    if (userStatusInfo.isOnline === true) {
+      onlineUser.push(userStatusInfo);
+    } else if (userStatusInfo.isOnline === false) {
+      offlineUser.push(userStatusInfo);
+    }
+  }
+  for (const userStatusInfo of userStatusUndefine) {
+    if (userStatusInfo.isOnline === true) {
+      onlineUser.push(userStatusInfo);
+    } else if (userStatusInfo.isOnline === false) {
+      offlineUser.push(userStatusInfo);
+    }
+  }
+
+  //display users as online first then offline
+  const usersStatus: ESNUserStatus[] = onlineUser.concat(offlineUser);
+  
 
   for (const userStatusInfo of usersStatus) {
     renderStatus(userStatusInfo);
@@ -68,7 +100,11 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
   const userStatusP = document.createElement("div");
   const currentUserStatus = currentUser.username === userStatus.username;
 
-  statusBody.className = "flex justify-between gap-x-6 py-5 px-4";
+  if (userStatus.isOnline === true) {
+    statusBody.className = "flex justify-between gap-x-6 py-5 px-4";
+  } else {
+    statusBody.className = "flex justify-between gap-x-6 py-5 px-4 bg-gray-300";
+  }
   usernameBody.className = "flex items-center min-w-0 gap-x-4";
   userAvatar.className = "h-9 w-9 flex-none rounded-full bg-gray-50";
   usernameP.className = "text-sm font-semibold leading-6 text-gray-900";

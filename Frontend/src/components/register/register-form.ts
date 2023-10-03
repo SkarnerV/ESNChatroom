@@ -31,8 +31,12 @@ joinButton!.onclick = async () => {
 
   await userLogin(username.toLowerCase(), hashedPassword).then((response) => {
     handleLoginRequest(response);
-    (document.getElementById("password") as HTMLInputElement).value =
-      hashedPassword;
+
+    //prevent hashedPassword on password textbox if password is entered incorrect
+    if (response.status != 401) {
+      (document.getElementById("password") as HTMLInputElement).value =
+        hashedPassword;
+    }
   });
 };
 
@@ -73,17 +77,19 @@ function isPasswordValid(password: string) {
 
 function handleLoginRequest(response) {
   // Iteration0-A1: if the user is already a community member
-  // (the username already exists and the password is correct), then nothing happens
+  // (the username already exists and the password is correct), redirect to home page (show ESN Directory)
   if (response.status === 200) {
     // remove any error message
     showError("");
     localStorage.setItem("token", response.token);
+    window.location.href = "/home";
     return;
   }
   // if the username already exists but the password is incorrect (does not match the existing username),
   // the system informs the Citizen that he needs to re-enter the username and/or password.
   else if (response.status === 401) {
     showError(response.message);
+    (document.getElementById("password") as HTMLInputElement).value = "";
     return;
   }
   // user does not exist, show confirmation modal for user to start registration

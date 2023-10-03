@@ -24,6 +24,7 @@ describe("createUser", () => {
       password: "test_password",
       lastStatus: "GREEN",
       isOnline: false,
+
     };
 
     const loginCredential: LoginCredentials =
