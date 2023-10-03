@@ -61,9 +61,9 @@ describe("getAllUserStatus", () => {
 
     const returnedAllUserStatus = await userController.getAllUserStatus();
     expect(returnedAllUserStatus).toEqual([
-      { lastStatus: "1", username: "test1", isOnline: false },
-      { lastStatus: "2", username: "test2", isOnline: false },
-      { lastStatus: "3", username: "test3", isOnline: false },
+      { lastStatus: "1", username: "test1", isOnline: true },
+      { lastStatus: "2", username: "test2", isOnline: true },
+      { lastStatus: "3", username: "test3", isOnline: true },
     ]);
   });
 });
