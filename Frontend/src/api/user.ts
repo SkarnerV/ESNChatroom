@@ -17,7 +17,7 @@ export const userLogin = async (username: string, hashedPassword: string) => {
 };
 
 export const userLogout = async (token: string) => {
-  return await fetchRequest(loginApi, "POST", {
+  return await fetchRequest(loginApi, "PUT", {
     token,
   }).then((response) => {
     if (response.ok) {

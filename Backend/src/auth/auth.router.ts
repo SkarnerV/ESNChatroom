@@ -28,12 +28,13 @@ export default class UserRouter {
       const message: LoginCredentials = await this.controller.loginUser(user);
       response.send(message);
     });
-    this.router.post("/logout", async (request: Request, response: Response) => {
+    this.router.put("/logout", async (request: Request, response: Response) => {
       const token: string = request.body;
       const message: LoginCredentials = await this.controller.logoutUser(token);
       response.send(message);
     });
   }
+
 
   getRouter(): Router {
     return this.router;
