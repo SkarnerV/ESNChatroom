@@ -67,14 +67,14 @@ getAllUserStatus().then((response) => {
     }
   }
   for (const userStatusInfo of userStatusGreen) {
-    if (userStatusInfo.is_online === true) {
+    if (userStatusInfo.isOnline === true) {
       onlineUser.push(userStatusInfo);
     } else if (userStatusInfo.is_online === false) {
       offlineUser.push(userStatusInfo);
     }
   }
   for (const userStatusInfo of userStatusUndefine) {
-    if (userStatusInfo.is_online === true) {
+    if (userStatusInfo.isOnline === true) {
       onlineUser.push(userStatusInfo);
     } else if (userStatusInfo.is_online === false) {
       offlineUser.push(userStatusInfo);
