@@ -3,14 +3,14 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 export class PublicMessage {
   @PrimaryGeneratedColumn()
-  id!: number;
+    id!: number;
 
   @Column()
-  content!: string;
+    content!: string;
 
   @Column()
-  time!: string;
+    time!: string;
 
   @Column()
-  sender!: string;
+    sender!: string;
 }

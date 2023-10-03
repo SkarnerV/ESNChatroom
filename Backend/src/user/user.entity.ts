@@ -3,14 +3,17 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 export class ESNUser {
   @PrimaryGeneratedColumn()
-  id!: number;
+    id!: number;
 
   @Column()
-  username!: string;
+    username!: string;
 
   @Column()
-  password!: string;
+    password!: string;
 
   @Column()
-  lastStatus!: string;
+    lastStatus!: string;
+
+  @Column()
+    isOnline: boolean = false;
 }

@@ -1,5 +1,5 @@
 import { esnDirectoryContainer } from "../../templates/directory/esn-directory-template";
-import { getAllUserStatus } from "../../api/user";
+import { userLogout, getAllUserStatus } from "../../api/user";
 import { ESNUserStatus } from "../../types";
 import { UserStatus } from "../../constants/user-status";
 import StatusClassifier from "../../util/statusClassifier";
@@ -103,10 +103,10 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
   }
 };
 
-const directory_display = document.getElementById("directory_display");
 const quitButton = document.getElementById("quit-directory");
 
 quitButton!.onclick = async () => {
-  directory_display!.style.display = "none";
-  // localStorage.setItem("esnDirectoryDisplay", "false");
+  await userLogout(localStorage.getItem("token")!);
+  localStorage.removeItem("token")
+  window.location.href = "/";
 };
