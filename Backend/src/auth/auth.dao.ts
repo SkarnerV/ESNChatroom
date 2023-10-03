@@ -56,7 +56,7 @@ export default class AuthCollection {
   ): Promise<void> {
     const user = await this.userDatabase.findOneBy({ username: username });
     if (user) {
-      user.is_online = isOnline;
+      user.isOnline = isOnline;
       await this.userDatabase.save(user);
     }
   }

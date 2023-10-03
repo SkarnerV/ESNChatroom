@@ -23,7 +23,7 @@ describe("createUser", () => {
       username: "test_username",
       password: "test_password",
       lastStatus: "GREEN",
-      is_online: false,
+      isOnline: false,
     };
 
     const loginCredential: LoginCredentials =
@@ -39,21 +39,21 @@ describe("createUser", () => {
       username: "",
       password: "test_password",
       lastStatus: "GREEN",
-      is_online: false,
+      isOnline: false,
     };
     const noPasswordUser: ESNUser = {
       id: 2,
       username: "user",
       password: "",
       lastStatus: "GREEN",
-      is_online: false,
+      isOnline: false,
     };
     const illegalPasswordUser: ESNUser = {
       id: 2,
       username: "user",
       password: "tes",
       lastStatus: "GREEN",
-      is_online: false,
+      isOnline: false,
     };
 
     const noStatusUser: ESNUser = {
@@ -61,7 +61,7 @@ describe("createUser", () => {
       username: "user",
       password: "test_password",
       lastStatus: "",
-      is_online: false,
+      isOnline: false,
     };
 
     const loginCredential1: LoginCredentials =
@@ -90,7 +90,7 @@ describe("loginLogoutUser", () => {
       username: "test_username",
       password: "test_password",
       lastStatus: "GREEN",
-      is_online: false,
+      isOnline: false,
     };
 
     await authController.createUser(testESNUser);
@@ -100,7 +100,7 @@ describe("loginLogoutUser", () => {
       .getDataSource()
       .getRepository(ESNUser)
       .findOneBy({username: testESNUser.username});
-    expect(user?.is_online).toBe(true);
+    expect(user?.isOnline).toBe(true);
   });
 
   it("should update user's online status to false when logout", async () => {
@@ -109,7 +109,7 @@ describe("loginLogoutUser", () => {
       username: "test_username",
       password: "test_password",
       lastStatus: "GREEN",
-      is_online: false,
+      isOnline: false,
     };
     
     await authController.createUser(testESNUser);
@@ -124,7 +124,7 @@ describe("loginLogoutUser", () => {
         .getDataSource()
         .getRepository(ESNUser)
         .findOneBy({username: testESNUser.username});
-      expect(user?.is_online).toBe(false);
+      expect(user?.isOnline).toBe(false);
     } else {
       fail();
     }
