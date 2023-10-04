@@ -30,11 +30,11 @@ export default class AuthController {
    */
   private static isValidCredential(user: ESNUser): boolean {
     const { username, password } = user;
-
+    const notNullUser = username != null && password != null;
     const isUsernameValid: boolean = username !== "";
-    const isPasswordValid: boolean = password !== "" && password?.length >= 4;
+    const isPasswordValid: boolean = password !== "" && password.length >= 4;
 
-    return isUsernameValid && isPasswordValid;
+    return notNullUser && isUsernameValid && isPasswordValid;
   }
 
   /**

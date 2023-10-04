@@ -1,6 +1,6 @@
 import { userRegister } from "../../api/user";
 import { registerModalTemplate } from "../../templates/register/register-modal-template";
-
+import CryptoJS from "crypto-js";
 class RegisterModal extends HTMLElement {
   constructor() {
     super();
@@ -22,8 +22,9 @@ cancelButton!.onclick = async () => {
 confirmButton!.onclick = async () => {
   const username =
     (document.getElementById("username") as HTMLInputElement).value || "";
-  const hashedPassword =
+  const password =
     (document.getElementById("password") as HTMLInputElement).value || "";
+  const hashedPassword = CryptoJS.MD5(password).toString();
 
   await userRegister(username.toLowerCase(), hashedPassword)
     .then((data) => {

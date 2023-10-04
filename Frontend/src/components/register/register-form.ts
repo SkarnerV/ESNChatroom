@@ -2,6 +2,7 @@ import { userLogin } from "../../api/user";
 import reservedUsernames from "../../constants/reserved-names";
 import { registerFormTemplate } from "../../templates/register/register-form-template";
 import CryptoJS from "crypto-js";
+
 class RegisterForm extends HTMLElement {
   constructor() {
     super();
@@ -31,12 +32,7 @@ joinButton!.onclick = async () => {
 
   await userLogin(username.toLowerCase(), hashedPassword).then((response) => {
     handleLoginRequest(response);
-
-    //prevent hashedPassword on password textbox if password is entered incorrect
-    if (response.status != 401) {
-      (document.getElementById("password") as HTMLInputElement).value =
-        hashedPassword;
-    }
+    (document.getElementById("password") as HTMLInputElement).value = password;
   });
 };
 
@@ -76,20 +72,16 @@ function isPasswordValid(password: string) {
 }
 
 function handleLoginRequest(response) {
-  // Iteration0-A1: if the user is already a community member
-  // (the username already exists and the password is correct), redirect to home page (show ESN Directory)
+  // if the user is already a community member, the system displays the ESN Directory
   if (response.status === 200) {
-    // remove any error message
-    showError("");
-    localStorage.setItem("token", response.token);
     window.location.href = "/home";
+    localStorage.setItem("token", response.token);
     return;
   }
   // if the username already exists but the password is incorrect (does not match the existing username),
   // the system informs the Citizen that he needs to re-enter the username and/or password.
   else if (response.status === 401) {
     showError(response.message);
-    (document.getElementById("password") as HTMLInputElement).value = "";
     return;
   }
   // user does not exist, show confirmation modal for user to start registration

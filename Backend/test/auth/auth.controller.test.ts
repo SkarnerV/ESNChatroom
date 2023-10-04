@@ -24,7 +24,6 @@ describe("createUser", () => {
       password: "test_password",
       lastStatus: "GREEN",
       isOnline: false,
-
     };
 
     const loginCredential: LoginCredentials =
@@ -81,5 +80,77 @@ describe("createUser", () => {
     expect(loginCredential1.status).toEqual(400);
     expect(loginCredential2.status).toEqual(400);
     expect(loginCredential3.status).toEqual(400);
+  });
+});
+
+describe("loginUser", () => {
+  beforeEach(async () => {
+    const testESNUser: ESNUser = {
+      id: 0,
+      username: "test_username",
+      password: "test_password",
+      lastStatus: "GREEN",
+      isOnline: false,
+    };
+
+    const loginCredential: LoginCredentials =
+      await authController.createUser(testESNUser);
+
+    expect(loginCredential).not.toBeNull();
+    expect(loginCredential.status).toEqual(201);
+  });
+
+  it("Should login a user if the username and password are correct", async () => {
+    const testESNUser: ESNUser = {
+      id: 0,
+      username: "test_username",
+      password: "test_password",
+      lastStatus: "GREEN",
+      isOnline: false,
+    };
+
+    const loginCredential: LoginCredentials =
+      await authController.loginUser(testESNUser);
+
+    expect(loginCredential).not.toBeNull();
+    expect(loginCredential.status).toEqual(200);
+    expect(loginCredential.message).toEqual("User Logined");
+    expect(loginCredential.token).not.toBeNull();
+  });
+
+  it("Should return an error if the password is incorrect", async () => {
+    const testESNUser: ESNUser = {
+      id: 0,
+      username: "test_username",
+      password: "wrong_password",
+      lastStatus: "GREEN",
+      isOnline: false,
+    };
+
+    const loginCredential: LoginCredentials =
+      await authController.loginUser(testESNUser);
+
+    expect(loginCredential).not.toBeNull();
+    expect(loginCredential.status).toEqual(401);
+    expect(loginCredential.message).toEqual(
+      "Re-enter the username and/or password"
+    );
+  });
+
+  it("Should return an error if the account does not exist", async () => {
+    const testESNUser: ESNUser = {
+      id: 0,
+      username: "wrong_username",
+      password: "test_password",
+      lastStatus: "GREEN",
+      isOnline: false,
+    };
+
+    const loginCredential: LoginCredentials =
+      await authController.loginUser(testESNUser);
+
+    expect(loginCredential).not.toBeNull();
+    expect(loginCredential.status).toEqual(400);
+    expect(loginCredential.message).toEqual("Account does not exits");
   });
 });

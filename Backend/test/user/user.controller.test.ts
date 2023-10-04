@@ -14,7 +14,7 @@ const testUser1: ESNUser = {
   username: "test1",
   password: "1234",
   lastStatus: "1",
-  isOnline: false
+  isOnline: false,
 };
 
 const testUser2: ESNUser = {
@@ -22,7 +22,7 @@ const testUser2: ESNUser = {
   username: "test2",
   password: "1234",
   lastStatus: "2",
-  isOnline: false
+  isOnline: false,
 };
 
 const testUser3: ESNUser = {
@@ -30,7 +30,7 @@ const testUser3: ESNUser = {
   username: "test3",
   password: "1234",
   lastStatus: "3",
-  isOnline: false
+  isOnline: false,
 };
 
 beforeEach(async () => {
