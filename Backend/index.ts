@@ -27,6 +27,12 @@ class App {
       socket.on("chat message", (message: string) => {
         this.io.emit("chat message", message);
       });
+      socket.on("online", (username: string) => {
+        this.io.emit("online", username);
+      });
+      socket.on("offline", (username: string) => {
+        this.io.emit("offline", username);
+      });
     });
   }
 

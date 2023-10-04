@@ -16,6 +16,15 @@ export default class UserRouter {
       const users = await this.userController.getAllUserStatus();
       response.send(users);
     });
+    this.router.put("/onlinestatus", async (request: Request, response: Response) => {
+      const username = request.body.username;
+      const isOnline = request.body.isOnline;
+      const user = await this.userController.updateUserOnlineStatus(
+        username,
+        isOnline
+      );
+      response.send(user);
+    });
   }
 
   getRouter(): Router {

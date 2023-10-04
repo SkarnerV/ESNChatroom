@@ -1,10 +1,9 @@
-import { io, Socket } from "socket.io-client";
 import jwt from "jsonwebtoken";
 import { chatAreaTemplate } from "../../templates/chat/chat-area-template";
 import { ESNMessage } from "../../types";
 import { getAllPublicMessages, postPublicMessage } from "../../api/message";
-import { endpoint } from "../../api/routes";
 import Formatter from "../../util/formatter";
+import { socket } from "../../scripts/socket";
 
 class ChatArea extends HTMLElement {
   constructor() {
@@ -18,9 +17,6 @@ class ChatArea extends HTMLElement {
 customElements.define("chat-area", ChatArea);
 const currentUser = jwt.decode(localStorage.getItem("token"), "esn");
 
-const socket: Socket = io(endpoint, {
-  transports: ["websocket"],
-});
 const postButton = document.getElementById("post-button");
 const messageArea = document.getElementById("message-area");
 const messageInput = document.getElementById("message-input");

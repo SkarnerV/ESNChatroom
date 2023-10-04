@@ -16,4 +16,16 @@ export default class UserController {
 
     return allUsers;
   }
+  async updateUserOnlineStatus(
+    username: string,
+    isOnline: string
+  ): Promise<ESNUser> {
+    let user: ESNUser = new ESNUser();
+
+    await this.userDao
+      .updateUserOnlineStatus(username, isOnline === "true" ? true : false)
+      .then((response) => (user = response));
+
+    return user;
+  }
 }

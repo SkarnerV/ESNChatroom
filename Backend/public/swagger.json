@@ -3,11 +3,17 @@
     "schemas": {
       "LoginWithToken": {
         "properties": {
-          "token": {
-            "type": "string"
+          "status": { 
+            "type": "number" 
+          },
+          "message": { 
+            "type": "string" 
+          },
+          "token": { 
+            "type": "string" 
           }
         },
-        "required": ["status", "token"],
+        "required": ["status", "message"],
         "type": "object",
         "additionalProperties": false
       },
@@ -55,6 +61,16 @@
           }
         },
         "required": ["content", "time", "sender"],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "JwtToken": {
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": ["token"],
         "type": "object",
         "additionalProperties": false
       }
@@ -127,6 +143,44 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UserCredentialInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/onlinestatus": {
+      "put": {
+        "operationId": "UpdateOnlineStatus",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "id": { "type": "number" },
+                    "username": { "type": "string" },
+                    "lastStatus": { "type": "string" },
+                    "isOnline": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "logout a user with provided username and password",
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "username": { "type": "string" },
+                  "status": { "type": "boolean" }
+                }
               }
             }
           }

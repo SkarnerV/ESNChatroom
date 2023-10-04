@@ -37,4 +37,23 @@ export default class UserDao {
     });
     return allUsers;
   }
+
+  async updateUserOnlineStatus(
+    username: string,
+    isOnline: boolean
+  ): Promise<ESNUser> {
+    const userToUpdate = await this.ESNUserDatabase.findOneBy({
+      username
+    });
+    if (userToUpdate) {
+      // Update user properties
+      userToUpdate.isOnline = isOnline;
+
+      // Save the updated user
+      await this.ESNUserDatabase.save(userToUpdate);
+
+      return userToUpdate;
+    }
+    throw new notFoundException("User not exist");
+  }
 }

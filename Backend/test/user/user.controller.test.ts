@@ -3,6 +3,7 @@ import UserController from "../../src/user/user.controller";
 import UserDAO from "../../src/user/user.dao";
 import { ESNUser } from "../../src/user/user.entity";
 import AuthController from "../../src/auth/auth.controller";
+import { notFoundException } from "../../src/util/exceptionHandler";
 
 const databaseInstance = ESNDatabase.getDatabaseInstance();
 let userController: UserController;
@@ -61,9 +62,38 @@ describe("getAllUserStatus", () => {
 
     const returnedAllUserStatus = await userController.getAllUserStatus();
     expect(returnedAllUserStatus).toEqual([
-      { lastStatus: "1", username: "test1", isOnline: true },
-      { lastStatus: "2", username: "test2", isOnline: true },
-      { lastStatus: "3", username: "test3", isOnline: true },
+      { lastStatus: "1", username: "test1", isOnline: false},
+      { lastStatus: "2", username: "test2", isOnline: false},
+      { lastStatus: "3", username: "test3", isOnline: false},
     ]);
+  });
+});
+
+describe("updateUserOnlineStatus", () => {
+  it("Should return null user if user does not exist", async () => {
+    try {
+      await userController.updateUserOnlineStatus(
+        testUser1.username,
+        "true"
+      );
+    } catch (error) {
+      expect(error).toBeInstanceOf(notFoundException);
+    }
+  });
+
+  it("Should change the status of user if user exists", async () => {
+    await authController.createUser(testUser1);
+    const updatedUser = await userController.updateUserOnlineStatus(
+      testUser1.username,
+      "true"
+    );
+    expect(updatedUser).not.toBeNull();
+    expect(updatedUser.username).toEqual(testUser1.username);
+    expect(updatedUser.isOnline).toEqual(true);
+    const updatedUser2 = await userController.updateUserOnlineStatus(
+      testUser1.username,
+      "false"
+    );
+    expect(updatedUser2.isOnline).toEqual(false);
   });
 });

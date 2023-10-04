@@ -1,4 +1,4 @@
-import { loginApi, registerApi, getAllUserStatusApi} from "./routes";
+import { loginApi, registerApi, getAllUserStatusApi, putUserOnlineStatusApi} from "./routes";
 import { fetchRequest } from "./util";
 
 export const userLogin = async (username: string, hashedPassword: string) => {
@@ -16,9 +16,9 @@ export const userLogin = async (username: string, hashedPassword: string) => {
   });
 };
 
-export const userLogout = async (token: string) => {
-  return await fetchRequest(loginApi, "PUT", {
-    token,
+export const updateOnlineStatus = async (username: string, isOnline: string) => {
+  return await fetchRequest(putUserOnlineStatusApi, "PUT",{
+    username, isOnline
   }).then((response) => {
     if (response.ok) {
       // Successful response (status code 200-299)
