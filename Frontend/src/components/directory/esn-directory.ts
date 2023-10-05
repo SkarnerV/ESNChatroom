@@ -1,5 +1,5 @@
 import { esnDirectoryContainer } from "../../templates/directory/esn-directory-template";
-import { getAllUserStatus } from "../../api/user";
+import { getAllUserStatus, updateOnlineStatus } from "../../api/user";
 import { ESNUserStatus } from "../../types";
 import StatusClassifier from "../../util/statusClassifier";
 import jwt from "jsonwebtoken";
@@ -21,43 +21,21 @@ class ESNDirectory extends HTMLElement {
 }
 
 const currentUser = jwt.decode(localStorage.getItem("token"), "esn");
+let onlineUsers: string[] = [];
 
 customElements.define("esn-directory", ESNDirectory);
 const userStatusList = document.getElementById("user-status-list");
-// Test user should be removed in the future
-const testUsers: ESNUserStatus[] = [
-  {
-    username: "test1",
-    lastStatus: UserStatus.GREEN,
-    isOnline: true,
-  },
-  {
-    username: "test2",
-    lastStatus: UserStatus.YELLOW,
-    isOnline: true,
-  },
-  {
-    username: "test3",
-    lastStatus: UserStatus.RED,
-    isOnline: true,
-  },
-  {
-    username: "test4",
-    lastStatus: UserStatus.UNDEFINE,
-    isOnline: true,
-  }
-]
 
-getAllUserStatus().then((response) => {
-  for (const userInfo of response) {
-    renderStatus(userInfo);
-  }
-  // Test user should be removed in the future
-  for (const userInfo of testUsers) {
-    renderStatus(userInfo);
-  }
-  sortUserStatusList();
-});
+const getUserStatusData = async () => {
+  getAllUserStatus().then((response) => {
+    userStatusList!.innerHTML = "";
+    for (const userInfo of response) {
+      renderStatus(userInfo);
+    }
+    updateUserStatus();
+    sortUserStatusList();
+  });
+};
 
 const sortUserStatusList = () => {
   const userStatusListChildren = userStatusList?.children;
@@ -66,7 +44,7 @@ const sortUserStatusList = () => {
       const userStatus = e.id.split("-");
       const username = userStatus[1];
       const lastStatus = userStatus[2];
-      const isOnline = userStatus[3] === "true";
+      const isOnline = !e.classList.contains("bg-gray-300");
       return { e, username, lastStatus, isOnline };
     }
   );
@@ -74,7 +52,7 @@ const sortUserStatusList = () => {
     [UserStatus.RED]: 0,
     [UserStatus.YELLOW]: 1,
     [UserStatus.GREEN]: 2,
-    [UserStatus.UNDEFINE]: 3
+    [UserStatus.UNDEFINE]: 3,
   };
   userStatusListArray.sort((a, b) => {
     if (b.isOnline === a.isOnline) {
@@ -85,8 +63,8 @@ const sortUserStatusList = () => {
     }
     return b.isOnline ? 1 : -1;
   });
-  for (const userStatus of userStatusListArray) {
-    userStatusList?.appendChild(userStatus.e);
+  for (const userElement of userStatusListArray) {
+    userStatusList?.appendChild(userElement.e);
   }
 };
 
@@ -100,13 +78,8 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
   const userStatusP = document.createElement("div");
   const isCurrentUser = currentUser.username === userStatus.username;
 
-  statusBody.id = `user-${userStatus.username}-${userStatus.lastStatus}-${
-    isCurrentUser || userStatus.isOnline ? "true" : "false"
-  }`;
+  statusBody.id = `user-${userStatus.username}-${userStatus.lastStatus}`;
   statusBody.className = "flex justify-between gap-x-6 py-5 px-4";
-  if (!userStatus.isOnline && !isCurrentUser) {
-    statusBody.classList.add("bg-gray-300");
-  }
   usernameBody.className = "flex items-center min-w-0 gap-x-4";
   userAvatar.className = "h-9 w-9 flex-none rounded-full bg-gray-50";
   usernameP.className = "text-sm font-semibold leading-6 text-gray-900";
@@ -144,32 +117,45 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
 const quitButton = document.getElementById("quit-directory");
 
 quitButton!.onclick = async () => {
+  await updateOnlineStatus(currentUser.username, "false");
+  socket.emit("offline", currentUser.username);
   localStorage.removeItem("token");
   window.location.href = "/";
 };
 
-const updateUserStatus = (username: string, isOnline: boolean) => {
-  const userStatusListChildren = userStatusList?.children;
-  const userItem = Array.from(userStatusListChildren!).find((e: Element) => {
-    const userStatus = e.id.split("-");
-    return userStatus[1] === username;
+const updateUserStatus = () => {
+  const userItems = document.querySelectorAll("li");
+
+  // check if new user exists
+  let hasNewUser = false;
+  onlineUsers.forEach((username) => {
+    let isNewUser = true;
+    userItems.forEach((userItem) => {
+      const user = userItem.id.split("-")[1];
+      if (user === username) {
+        isNewUser = false;
+      }
+    });
+    if (isNewUser) {
+      hasNewUser = true;
+      getUserStatusData();
+    }
   });
-  const userStatus = userItem?.id.split("-");
-  userItem!.id = `user-${userStatus![1]}-${userStatus![2]}-${
-    isOnline ? "true" : "false"
-  }`;
-  if (!isOnline) {
-    userItem!.classList.add("bg-gray-300");
-  } else {
-    userItem!.classList.remove("bg-gray-300");
-  }
-  sortUserStatusList();
+
+  userItems.forEach((userItem) => {
+    const username = userItem.id.split("-")[1];
+    if (!onlineUsers.includes(username)) {
+      userItem.classList.add("bg-gray-300");
+    } else {
+      userItem.classList.remove("bg-gray-300");
+    }
+  });
 };
 
-socket.on("online", (username: string) => {
-  updateUserStatus(username, true);
-});
-
-socket.on("offline", (username: string) => {
-  updateUserStatus(username, false);
+getUserStatusData().then(() => {
+  socket.on("online users", (users: string[]) => {
+    onlineUsers = users;
+    updateUserStatus();
+    sortUserStatusList();
+  });
 });

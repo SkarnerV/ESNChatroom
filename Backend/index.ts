@@ -24,14 +24,26 @@ class App {
 
   private registerMessageListener(): void {
     this.io.on("connection", (socket: Socket) => {
+      const currentUser = socket.handshake.query.username;
+      console.log(currentUser, "connected");
+
+      const onlineUsers = Array.from(this.io.sockets.sockets).map(
+        ([, socket]) => socket.handshake.query.username
+      );
+      console.log("current users:", onlineUsers);
+      this.io.emit("online users", onlineUsers);
+
+      socket.on("disconnect", () => {
+        console.log(currentUser, "disconnected");
+        const updatedOnlineUsers = Array.from(this.io.sockets.sockets).map(
+          ([, socket]) => socket.handshake.query.username
+        );
+        console.log("current users:", updatedOnlineUsers);
+        this.io.emit("online users", updatedOnlineUsers);
+      });
+
       socket.on("chat message", (message: string) => {
         this.io.emit("chat message", message);
-      });
-      socket.on("online", (username: string) => {
-        this.io.emit("online", username);
-      });
-      socket.on("offline", (username: string) => {
-        this.io.emit("offline", username);
       });
     });
   }
