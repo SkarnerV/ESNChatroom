@@ -5,6 +5,7 @@ import StatusClassifier from "../../util/statusClassifier";
 import jwt from "jsonwebtoken";
 import { socket } from "../../scripts/socket";
 import { UserStatus } from "../../constants/user-status";
+import { IllegalUserActionHandler } from "../../util/illegalUserHandler";
 
 class ESNDirectory extends HTMLElement {
   constructor() {
@@ -12,18 +13,18 @@ class ESNDirectory extends HTMLElement {
   }
 
   connectedCallback() {
-    const shouldDisplay = localStorage.getItem("esnDirectoryDisplay");
-
-    // if (shouldDisplay !== "false") {
     this.innerHTML = esnDirectoryContainer;
-    // }
   }
 }
 
+customElements.define("esn-directory", ESNDirectory);
+
+IllegalUserActionHandler.redirectToLogin();
+
 const currentUser = jwt.decode(localStorage.getItem("token"), "esn");
+
 let onlineUsers: string[] = [];
 
-customElements.define("esn-directory", ESNDirectory);
 const userStatusList = document.getElementById("user-status-list");
 
 const getUserStatusData = async () => {
@@ -107,11 +108,6 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
   statusBody.appendChild(usernameBody);
   statusBody.appendChild(userStatusInfoBody);
   userStatusList?.appendChild(statusBody);
-
-  if (isCurrentUser) {
-    const scroll = userStatusList || new HTMLDivElement();
-    scroll.scrollTop = scroll.scrollHeight || 0;
-  }
 };
 
 const quitButton = document.getElementById("quit-directory");

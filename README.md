@@ -5,12 +5,13 @@
 ### Frontend
 
 - HTML: Project requirement
-- JavaScrip: Project requirement
-- CSS: Project requirement
+- Webcomponent : Enhance frontend code modularity
+- TypeScript: Easy to manage code between teammates; ES6 enforced
+- Tailwind CSS: No need to write any css file by using Tailwind CSS
 
 ### Backend
 
-- TypeScript: Easy to manage code between teammates; ES6 enforced;
+- TypeScript: Easy to manage code between teammates; ES6 enforced
 - Express.js: REST API; Socket.io; Project requirement
 - JWT: Convenient for password protection and user credentials management between backend and frontend
 - Crypto-js.js: Convenient for password protection
@@ -18,9 +19,10 @@
 
 ### Database
 
-- MongoDB: Lightweight database, easy to deploy either through MongoDB's official website or hosted services;
-  Everyone is familiar with the database
+- MySQL : We are all familiar with MySQL and it works pretty well with Typeorm and database switching
+- Sqlite : Test friendly database which allow us to do in memory database testing
+- Typeorm : Easier to do query
 
 ### API
-- https://docs.google.com/spreadsheets/d/1pDObgEGiBythBGKF-2qJI6mm0zssBVoS_7-uYysZm-s/edit?usp=sharing
 
+- https://localhost:3000/doc

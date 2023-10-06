@@ -4,6 +4,7 @@ import { ESNMessage } from "../../types";
 import { getAllPublicMessages, postPublicMessage } from "../../api/message";
 import Formatter from "../../util/formatter";
 import { socket } from "../../scripts/socket";
+import { IllegalUserActionHandler } from "../../util/illegalUserHandler";
 
 class ChatArea extends HTMLElement {
   constructor() {
@@ -15,6 +16,8 @@ class ChatArea extends HTMLElement {
 }
 
 customElements.define("chat-area", ChatArea);
+
+IllegalUserActionHandler.redirectToLogin();
 const currentUser = jwt.decode(localStorage.getItem("token"), "esn");
 
 const postButton = document.getElementById("post-button");

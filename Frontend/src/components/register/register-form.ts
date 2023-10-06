@@ -2,6 +2,7 @@ import { userLogin } from "../../api/user";
 import reservedUsernames from "../../constants/reserved-names";
 import { registerFormTemplate } from "../../templates/register/register-form-template";
 import CryptoJS from "crypto-js";
+import { IllegalUserActionHandler } from "../../util/illegalUserHandler";
 
 class RegisterForm extends HTMLElement {
   constructor() {
@@ -11,6 +12,8 @@ class RegisterForm extends HTMLElement {
     this.innerHTML = registerFormTemplate;
   }
 }
+
+IllegalUserActionHandler.redirectToHome();
 
 customElements.define("register-form", RegisterForm);
 
