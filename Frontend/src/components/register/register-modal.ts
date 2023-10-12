@@ -56,5 +56,5 @@ function showWelcomeModal() {
 }
 
 function redirectToHomePage() {
-  window.location.href = "/home";
+  window.location.href = "/home.html";
 }

@@ -4,6 +4,10 @@ services:
     container_name: esn-database
     image: mysql:latest
     restart: always
+    networks:
+      - esn
+    expose:
+      - 3306
     ports:
       - 8675:3306
     environment:
@@ -11,3 +15,38 @@ services:
       MYSQL_DATABASE: "sb1"
       MYSQL_USER: "team-sb1"
       MYSQL_PASSWORD: "sb1"
+  service:
+    container_name: esn-service
+    image: esn-service
+    environment:
+      - DBHOST=esn-database
+      - DBPORT=3306
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - esn
+  client:
+    container_name: esn-client
+    image: esn-client
+    build:
+      context: ./Frontend
+      args:
+        SERVICEPOINT: http://localhost:3000
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - esn
+    depends_on:
+      - service
+    ports:
+      - 2333:80
+
+networks:
+  esn:
+    driver: bridge

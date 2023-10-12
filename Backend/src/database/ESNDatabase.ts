@@ -11,8 +11,8 @@ export default class ESNDatabase {
 
   private static devDataSource = new DataSource({
     type: "mysql",
-    host: "localhost",
-    port: 8675,
+    host: process.env.DBHOST || "localhost",
+    port: Number(process.env.DBPORT) || 8675,
     username: "team-sb1",
     password: "sb1",
     database: "sb1",

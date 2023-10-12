@@ -1,4 +1,4 @@
-export const endpoint = "http://localhost:3000";
+export const endpoint = process.env.SERVICEENDPOINT || "http://localhost:3000";
 
 export const registerApi = `${endpoint}/users/register`;
 export const loginApi = `${endpoint}/users/login`;

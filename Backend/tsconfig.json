@@ -3,16 +3,14 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "outDir": "dist",
+    "rootDir": ".",
     "strict": true,
     "lib": ["ESNext"],
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   },
-  "include": [
-    "**/*.ts",
-    "**/*.entity.ts",
-    "prettier.config.js",
-    "../Frontend/src/util/formatter.ts"
-  ]
+  "include": ["index.ts", "src/**/*.ts", "test/**/*.ts"],
+  "exclude": ["node_modules/**/*.*"]
 }

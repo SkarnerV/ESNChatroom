@@ -77,7 +77,7 @@ function isPasswordValid(password: string) {
 function handleLoginRequest(response) {
   // if the user is already a community member, the system displays the ESN Directory
   if (response.status === 200) {
-    window.location.href = "/home";
+    window.location.href = "/home.html";
     localStorage.setItem("token", response.token);
     return;
   }
