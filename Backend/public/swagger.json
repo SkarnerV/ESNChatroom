@@ -3,14 +3,14 @@
     "schemas": {
       "LoginWithToken": {
         "properties": {
-          "status": { 
-            "type": "number" 
+          "status": {
+            "type": "number"
           },
-          "message": { 
-            "type": "string" 
+          "message": {
+            "type": "string"
           },
-          "token": { 
-            "type": "string" 
+          "token": {
+            "type": "string"
           }
         },
         "required": ["status", "message"],
@@ -71,6 +71,16 @@
           }
         },
         "required": ["token"],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "lastStatus": {
+        "properties": {
+          "lastStatus": {
+            "type": "string"
+          }
+        },
+        "required": ["lastStatus"],
         "type": "object",
         "additionalProperties": false
       }
@@ -208,6 +218,27 @@
         "description": "get all user status",
         "security": [],
         "parameters": []
+      },
+      "put": {
+        "operationId": "updateLastStatus",
+        "responses": {
+          "200": {
+            "description": "user status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/UserStatus"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          }
+        },
+        "description": "Update Current User's Status",
+        "security": [],
+        "parameters": []
       }
     },
     "/messages/public": {
@@ -261,6 +292,98 @@
             }
           }
         }
+      }
+    },
+    "/messages/:room/post": {
+      "post": {
+        "operationId": "post message to room",
+        "responses": {
+          "200": {
+            "description": "PostMessage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicMessage"
+                }
+              }
+            }
+          }
+        },
+        "description": "post a public message",
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicMessage"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/messages/:room/all": {
+      "post": {
+        "operationId": "get all messages from the room",
+        "responses": {
+          "200": {
+            "description": "GetMessages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicMessage"
+                }
+              }
+            }
+          }
+        },
+        "description": "get all messages from the room number",
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicMessage"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/:username/status": {
+      "get": {
+        "operationId": "getUserStatusByUsername",
+        "responses": {
+          "200": {
+            "description": "user status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/lastStatus"
+                  },
+                  "lastStatus": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "description": "get the selected user's status with their username as api",
+        "security": [],
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "name": "username",
+            "in": "path"
+          }
+        ]
       }
     }
   },
