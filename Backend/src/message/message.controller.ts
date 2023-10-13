@@ -15,6 +15,10 @@ export default class MessageController {
       throw new BadRequestException("Sender Unknown");
     }
 
+    if (!publicMessage.senderStatus) {
+      throw new BadRequestException("Sender's Status Unkonwn");
+    }
+
     if (!publicMessage.time) {
       throw new BadRequestException("Time Unkonwn");
     }

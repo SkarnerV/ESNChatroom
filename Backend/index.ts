@@ -45,6 +45,10 @@ class App {
       socket.on("chat message", (message: string) => {
         this.io.emit("chat message", message);
       });
+
+      socket.on("last status", (lastStatus: string[]) => {
+        this.io.emit("last status", lastStatus);
+      });
     });
   }
 

@@ -2,7 +2,9 @@ import jwt from "jsonwebtoken";
 import { chatAreaTemplate } from "../../templates/chat/chat-area-template";
 import { ESNMessage } from "../../types";
 import { getAllPublicMessages, postPublicMessage } from "../../api/message";
+import { getUserStatusByUsername } from "../../api/user";
 import Formatter from "../../util/formatter";
+import StatusClassifier from "../../util/statusClassifier";
 import { socket } from "../../scripts/socket";
 import { IllegalUserActionHandler } from "../../util/illegalUserHandler";
 
@@ -19,10 +21,15 @@ customElements.define("chat-area", ChatArea);
 
 IllegalUserActionHandler.redirectToLogin();
 const currentUser = jwt.decode(localStorage.getItem("token"), "esn");
+let currentUserStatus = "";
 
 const postButton = document.getElementById("post-button");
 const messageArea = document.getElementById("message-area");
 const messageInput = document.getElementById("message-input");
+
+getUserStatusByUsername(currentUser.username).then((response) => {
+  currentUserStatus = response.lastStatus;
+});
 
 getAllPublicMessages().then((response) => {
   for (const message of response) {
@@ -35,6 +42,7 @@ postButton!.onclick = () => {
     sender: currentUser.username,
     content: (messageInput as HTMLInputElement).value,
     time: Formatter.formatDate(new Date()),
+    senderStatus: currentUserStatus,
   };
   recordMessage(message);
 };
@@ -56,6 +64,7 @@ const renderMessage = (message: ESNMessage): void => {
   const messageBody = document.createElement("div");
   const messageContent = document.createElement("p");
   const messageHeader = document.createElement("div");
+  const userInfoBody = document.createElement("div");
   const userAvatar = document.createElement("div");
   const userAvatarContainer = document.createElement("div");
   const currentUserAvatarContainer = document.createElement("div");
@@ -69,6 +78,7 @@ const renderMessage = (message: ESNMessage): void => {
     "bg-black items-center rounded-lg p-4 shadow-md ml-2 mr-2 mb-4 w-full";
   messageContent.className = "ml-2 mt-2 text-white  break-normal break-all";
   messageHeader.className = "flex justify-between items-center mb-2";
+  userInfoBody.className = "flex space-x-2 justify-between items-center";
   userAvatarContainer.className = "min-w-1/10 w-1/10";
   userAvatar.className = "rounded-full h-10 w-10 bg-gray-500";
   currentUserAvatarContainer.className = "min-w-1/10 w-1/10 items-center";
@@ -77,12 +87,14 @@ const renderMessage = (message: ESNMessage): void => {
   messageTime.className = "text-white";
 
   messageContent.textContent = message.content;
-  userNickname.textContent = currentUserMessager
-    ? "Me ✅"
-    : message.sender + "✅";
+  userNickname.textContent = currentUserMessager ? "Me" : message.sender;
+  const htmlElement = StatusClassifier.classifyStatus(message.senderStatus);
+  const userStatusIcon = htmlElement[1];
 
   messageTime.textContent = message.time || "";
-  messageHeader.appendChild(userNickname);
+  userInfoBody.appendChild(userNickname);
+  userInfoBody.innerHTML += userStatusIcon;
+  messageHeader.appendChild(userInfoBody);
   // TODO : user Avatar
   // currentUserMessager
   //   ? currentUserAvatarContainer.appendChild(currentUserAvatar)

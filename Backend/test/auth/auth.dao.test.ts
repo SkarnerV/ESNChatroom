@@ -6,6 +6,15 @@ import { ESNUser } from "../../src/user/user.entity";
 const databaseInstance = ESNDatabase.getDatabaseInstance();
 let authDao: AuthDao;
 
+const defaultESNUser = {
+  id: null,
+  username: "",
+  password: "",
+  lastStatus: "GREEN",
+  isOnline: false,
+  lastTimeUpdateStatus: new Date(),
+};
+
 beforeEach(async () => {
   databaseInstance.setTestDatabase();
   await databaseInstance.getDataSource().initialize();
@@ -19,11 +28,10 @@ afterEach(async () => {
 describe("createUser", () => {
   it("should create user", async () => {
     const testESNUser: ESNUser = {
+      ...defaultESNUser,
       id: 1,
       username: "test_username",
       password: "test_password",
-      lastStatus: "GREEN",
-      isOnline: false,
     };
 
     const userId: string = await authDao.createUser(testESNUser);
@@ -34,11 +42,10 @@ describe("createUser", () => {
 describe("getUserId", () => {
   it("should get user ID", async () => {
     const testESNUser: ESNUser = {
+      ...defaultESNUser,
       id: 1,
       username: "test_username",
       password: "test_password",
-      lastStatus: "GREEN",
-      isOnline: false,
     };
 
     await authDao.createUser(testESNUser);
@@ -56,11 +63,10 @@ describe("getUserId", () => {
 describe("checkUserLogin", () => {
   it("should check user login successfully", async () => {
     const testESNUser: ESNUser = {
+      ...defaultESNUser,
       id: 1,
       username: "test_username",
       password: "test_password",
-      lastStatus: "GREEN",
-      isOnline: false,
     };
 
     await authDao.createUser(testESNUser);
@@ -75,11 +81,10 @@ describe("checkUserLogin", () => {
 
   it("should fail user login due to incorrect password", async () => {
     const testESNUser: ESNUser = {
+      ...defaultESNUser,
       id: 1,
       username: "test_username",
       password: "test_password",
-      lastStatus: "GREEN",
-      isOnline: false,
     };
 
     await authDao.createUser(testESNUser);

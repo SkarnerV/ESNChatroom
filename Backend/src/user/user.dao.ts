@@ -1,9 +1,8 @@
 import { Repository } from "typeorm";
 import { ESNUser } from "./user.entity";
 import ESNDatabase from "../database/ESNDatabase";
-import { notFoundException } from "../util/exceptionHandler";
 
-export default class UserDao {
+export default class UserDAO {
   private ESNUserDatabase: Repository<ESNUser>;
 
   constructor() {
@@ -13,22 +12,22 @@ export default class UserDao {
   }
 
   async updateESNUserStatus(
-    ESNUser: ESNUser,
+    username: string,
     lastStatus: string
-  ): Promise<ESNUser> {
+  ): Promise<ESNUser | null> {
     const userToUpdate = await this.ESNUserDatabase.findOneBy({
-      id: ESNUser.id,
+      username,
     });
     if (userToUpdate) {
       // Update user properties
       userToUpdate.lastStatus = lastStatus;
-
+      userToUpdate.lastTimeUpdateStatus = new Date();
       // Save the updated user
       await this.ESNUserDatabase.save(userToUpdate);
 
       return userToUpdate;
     }
-    throw new notFoundException("User not exist");
+    return null;
   }
 
   async getAllESNUserStatus(): Promise<ESNUser[]> {
@@ -38,22 +37,31 @@ export default class UserDao {
     return allUsers;
   }
 
+  async getUserStatus(username: string): Promise<string | null> {
+    const user = await this.ESNUserDatabase.findOneBy({
+      username,
+    });
+    if (user) {
+      return user.lastStatus;
+    }
+    return null;
+  }
+
   async updateUserOnlineStatus(
     username: string,
     isOnline: boolean
-  ): Promise<ESNUser> {
+  ): Promise<ESNUser | null> {
     const userToUpdate = await this.ESNUserDatabase.findOneBy({
-      username
+      username,
     });
     if (userToUpdate) {
       // Update user properties
       userToUpdate.isOnline = isOnline;
-
       // Save the updated user
       await this.ESNUserDatabase.save(userToUpdate);
 
       return userToUpdate;
     }
-    throw new notFoundException("User not exist");
+    return null;
   }
 }

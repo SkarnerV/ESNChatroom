@@ -11,6 +11,7 @@ const testMessage1: PublicMessage = {
   content: "this is a test mesage1 ",
   time: "12:11 PM",
   sender: "test1",
+  senderStatus: "GREEN",
 };
 
 const testMessage2: PublicMessage = {
@@ -18,6 +19,7 @@ const testMessage2: PublicMessage = {
   content: "this is a test mesage1 ",
   time: "12:11 PM",
   sender: "test1",
+  senderStatus: "GREEN",
 };
 
 const testMessage3: PublicMessage = {
@@ -25,6 +27,7 @@ const testMessage3: PublicMessage = {
   content: "this is a test mesage1 ",
   time: "12:11 PM",
   sender: "test1",
+  senderStatus: "GREEN",
 };
 
 const testBadMessage1: PublicMessage = {
@@ -32,6 +35,7 @@ const testBadMessage1: PublicMessage = {
   content: "this is a bad mesage2 ",
   time: "",
   sender: "test2",
+  senderStatus: "GREEN",
 };
 
 const testBadMessage2: PublicMessage = {
@@ -39,6 +43,15 @@ const testBadMessage2: PublicMessage = {
   content: "this is a bad mesage2 ",
   time: "12:33PM",
   sender: "",
+  senderStatus: "GREEN",
+};
+
+const testBadMessage3: PublicMessage = {
+  id: 3,
+  content: "this is a bad mesage3 ",
+  time: "12:33PM",
+  sender: "test3",
+  senderStatus: "",
 };
 
 beforeEach(async () => {
@@ -70,6 +83,14 @@ describe("postPublicMessage", () => {
   it("Should throw BadRequestException if sender is not provided.", async () => {
     try {
       await messageController.postPublicMessage(testBadMessage2);
+    } catch (error) {
+      expect((error as Exception).status).toEqual(statusCode.BAD_REQUEST_CODE);
+    }
+  });
+
+  it("Should throw BadRequestException if sender status is not provided.", async () => {
+    try {
+      await messageController.postPublicMessage(testBadMessage3);
     } catch (error) {
       expect((error as Exception).status).toEqual(statusCode.BAD_REQUEST_CODE);
     }

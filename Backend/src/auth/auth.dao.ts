@@ -19,6 +19,7 @@ export default class AuthCollection {
 
     //In RestApi spreadsheet, the user should have a default status as GREEN
     user.lastStatus = "GREEN";
+    user.lastTimeUpdateStatus = new Date();
 
     const createdUser = await this.userDatabase.save(user);
     return createdUser.id.toString();

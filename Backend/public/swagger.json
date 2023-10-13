@@ -34,7 +34,7 @@
       "UserStatus": {
         "properties": {
           "username": {
-            "type": "number"
+            "type": "string"
           },
           "lastStatus": {
             "type": "string"
@@ -197,12 +197,44 @@
         }
       }
     },
+    "/users/:username/status": {
+      "get": {
+        "operationId": "getUserStatusByUsername",
+        "responses": {
+          "200": {
+            "description": "user status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/lastStatus"
+                  },
+                  "lastStatus": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "description": "get the selected user's status with their username as api",
+        "security": [],
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "name": "username",
+            "in": "path"
+          }
+        ]
+      }
+    },
     "/users/status": {
       "get": {
         "operationId": "getUserStatus",
         "responses": {
           "200": {
-            "description": "user status",
+            "description": "All user status",
             "content": {
               "application/json": {
                 "schema": {
@@ -240,6 +272,7 @@
         "security": [],
         "parameters": []
       }
+      
     },
     "/messages/public": {
       "get": {

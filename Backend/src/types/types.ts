@@ -8,3 +8,7 @@ export interface LoginAuthentication {
   userExists: boolean;
   passwordMatch: boolean;
 }
+
+export interface lastStatusResponse {
+  lastStatus: string;
+}

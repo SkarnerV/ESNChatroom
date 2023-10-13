@@ -17,8 +17,15 @@ export default class AuthController {
    * @param id user id that is used to generate a token
    * @return the generated token
    */
-  private static createUserToken(id: string, username: string): string {
-    return jwt.sign({ id: id, username: username }, "esn", { expiresIn: "1h" });
+  private static createUserToken(
+    id: string,
+    username: string,
+  ): string {
+    return jwt.sign(
+      { id: id, username: username},
+      "esn",
+      { expiresIn: "1h" }
+    );
   }
 
   /**
@@ -49,7 +56,7 @@ export default class AuthController {
 
       const token: string = AuthController.createUserToken(
         createdUserID,
-        user.username
+        user.username,
       );
 
       return ResponseGenerator.getLoginResponse(

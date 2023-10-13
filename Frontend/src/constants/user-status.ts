@@ -1,3 +1,5 @@
+import { iconGREEN, iconRED, iconUNDEFINE, iconYELLOW } from "./svg-icon";
+
 export enum UserStatus {
   GREEN = "GREEN",
   YELLOW = "YELLOW",
@@ -6,10 +8,10 @@ export enum UserStatus {
 }
 
 export enum UserStatusIcon {
-  GREEN = "✅",
-  YELLOW = "⚠️",
-  RED = "🆘",
-  UNDEFINE = "❔",
+  GREEN = iconGREEN,
+  YELLOW = iconYELLOW,
+  RED = iconRED,
+  UNDEFINE = iconUNDEFINE,
 }
 
 export enum UserStatusCircle {

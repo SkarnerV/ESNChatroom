@@ -5,6 +5,14 @@ import { ESNUser } from "../../src/user/user.entity";
 
 const databaseInstance = ESNDatabase.getDatabaseInstance();
 let authController: AuthController;
+const defaultESNUser = {
+  id: null,
+  username: "",
+  password: "",
+  lastStatus: "GREEN",
+  isOnline: false,
+  lastTimeUpdateStatus: new Date(),
+};
 
 beforeEach(async () => {
   databaseInstance.setTestDatabase();
@@ -19,11 +27,10 @@ afterEach(async () => {
 describe("createUser", () => {
   it("Should create a new user if provided username does not exist in database.", async () => {
     const testESNUser: ESNUser = {
+      ...defaultESNUser,
       id: 0,
       username: "test_username",
       password: "test_password",
-      lastStatus: "GREEN",
-      isOnline: false,
     };
 
     const loginCredential: LoginCredentials =
@@ -35,25 +42,22 @@ describe("createUser", () => {
 
   it("Should return error message if username is not valid", async () => {
     const noUsernameUser: ESNUser = {
+      ...defaultESNUser,
       id: 1,
       username: "",
       password: "test_password",
-      lastStatus: "GREEN",
-      isOnline: false,
     };
     const noPasswordUser: ESNUser = {
+      ...defaultESNUser,
       id: 2,
       username: "user",
       password: "",
-      lastStatus: "GREEN",
-      isOnline: false,
     };
     const illegalPasswordUser: ESNUser = {
+      ...defaultESNUser,
       id: 2,
       username: "user",
       password: "tes",
-      lastStatus: "GREEN",
-      isOnline: false,
     };
 
     const noStatusUser: ESNUser = {
@@ -62,6 +66,7 @@ describe("createUser", () => {
       password: "test_password",
       lastStatus: "",
       isOnline: false,
+      lastTimeUpdateStatus: new Date(),
     };
 
     const loginCredential1: LoginCredentials =
@@ -91,6 +96,7 @@ describe("loginUser", () => {
       password: "test_password",
       lastStatus: "GREEN",
       isOnline: false,
+      lastTimeUpdateStatus: new Date(),
     };
 
     const loginCredential: LoginCredentials =
@@ -107,6 +113,7 @@ describe("loginUser", () => {
       password: "test_password",
       lastStatus: "GREEN",
       isOnline: false,
+      lastTimeUpdateStatus: new Date(),
     };
 
     const loginCredential: LoginCredentials =
@@ -125,6 +132,7 @@ describe("loginUser", () => {
       password: "wrong_password",
       lastStatus: "GREEN",
       isOnline: false,
+      lastTimeUpdateStatus: new Date(),
     };
 
     const loginCredential: LoginCredentials =
@@ -139,11 +147,10 @@ describe("loginUser", () => {
 
   it("Should return an error if the account does not exist", async () => {
     const testESNUser: ESNUser = {
+      ...defaultESNUser,
       id: 0,
       username: "wrong_username",
       password: "test_password",
-      lastStatus: "GREEN",
-      isOnline: false,
     };
 
     const loginCredential: LoginCredentials =

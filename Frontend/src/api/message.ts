@@ -1,5 +1,8 @@
 import { ESNMessage } from "../types";
-import { getAllPublicMessagesApi, postPublicMessageApi } from "./routes";
+import {
+  getAllPublicMessagesApi,
+  postPublicMessageApi,
+} from "./routes";
 import { fetchRequest } from "./util";
 
 export const getAllPublicMessages = async () => {
@@ -17,6 +20,7 @@ export const postPublicMessage = async (message: ESNMessage) => {
     content: message.content,
     sender: message.sender,
     time: message.time,
+    senderStatus: message.senderStatus,
   }).then((response) => {
     if (response.ok) {
       return response.json();

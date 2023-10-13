@@ -4,7 +4,6 @@ import ESNDatabase from "../database/ESNDatabase";
 
 export default class MessageDAO {
   private publicMessageDatabase: Repository<PublicMessage>;
-
   constructor() {
     this.publicMessageDatabase = ESNDatabase.getDatabaseInstance()
       .getDataSource()
@@ -18,7 +17,7 @@ export default class MessageDAO {
     message.content = publicMessage.content;
     message.sender = publicMessage.sender;
     message.time = publicMessage.time;
-
+    message.senderStatus = publicMessage.senderStatus;
     const createdMessage = await this.publicMessageDatabase.save(message);
     return createdMessage;
   }

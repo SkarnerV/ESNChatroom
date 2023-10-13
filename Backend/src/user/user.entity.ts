@@ -16,4 +16,7 @@ export class ESNUser {
 
   @Column()
   isOnline: boolean = false;
+
+  @Column()
+  lastTimeUpdateStatus!: Date;
 }

@@ -24,12 +24,14 @@ export default class MessageRouter {
           content: content,
           sender: sender,
           time: time,
+          senderStatus: status,
         }: PublicMessage = request.body;
         const returnedMessage = await this.messageController.postPublicMessage({
           id: id,
           content: content,
           sender: sender,
           time: time,
+          senderStatus: status,
         });
         response.send(returnedMessage);
       }

@@ -1,12 +1,50 @@
+import {
+  dropDownIcon,
+  iconRED,
+  iconGREEN,
+  iconUNDEFINE,
+  iconYELLOW,
+} from "../../constants/svg-icon";
+
 export const esnDirectoryContainer = `
-  <div class="fixed inset-0 flex items-center justify-center z-50 h-25">
-    <div class="modal-overlay fixed inset-0 bg-black opacity-30 z-40"></div>
-    <div class="modal-container bg-white w-96 mx-auto rounded shadow-lg z-50 divide-y divide-gray-200">
-      <div class="justify-between flex items-center justify-center gap-x-4 py-2 px-4 font-semibold leading-6 text-gray-900 ">
-        <p class="flex min-w-0 gap-x-3 font-semibold text-gray-900">Directory</p>
-        <button id="quit-directory" class="w-[15%] mt-2 bg-black text-white p-1 rounded hover:bg-gray-800">Quit</button>
+<div class="modal-container flex flex-col w-96 mx-auto rounded shadow-2xl z-50 divide-y-2 divide-rose-500 w-screen bg-rose-500 h-screen">
+  <div class="flex justify-between items-center py-2 px-4 bg-black text-white">
+      <p id="home-page-header" class="font-semibold">Directory</p>
+      <div class="flex space-x-2 justify-between items-center">
+          <div class="relative">
+              <button id="change-status" class="inline-flex w-16 items-center text-sm font-semibold bg-rose-500 rounded-t rounded-b text-white p-1 hover:bg-rose-700">
+                  Status ${dropDownIcon}
+              </button>
+              <ul id="status-dropdown" class="items-center justify-between absolute left-0 w-16 bg-white rounded-b shadow-lg hidden">
+                  <li>
+                      <label class="space-x-2 flex items-center p-2 hover:bg-gray-300">
+                          <input id="status-GREEN" type="radio" value="GREEN" name="status" class="w-8 h-8 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                          <label for="status-GREEN" class="w-full ml-2">${iconGREEN}</label>
+                      </label>
+                  </li>
+                  <li>
+                      <label class="space-x-2 flex items-center p-2 hover:bg-gray-300">
+                          <input id="status-YELLOW" type="radio" value="YELLOW" name="status" class="w-8 h-8 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                          <label for="status-YELLOW" class="w-full ml-2">${iconYELLOW}</label>
+                      </label>
+                  </li>
+                  <li>
+                      <label class="space-x-2 flex items-center p-2 hover:bg-gray-300">
+                          <input id="status-RED" type="radio" value="RED" name="status" class="w-8 h-8 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                          <label for="status-RED" class="w-full ml-2">${iconRED}</label>
+                      </label>
+                  </li>
+                  <li>
+                      <label class="space-x-2 flex items-center p-2 hover:bg-gray-300">
+                          <input id="status-UNDEFINE" type="radio" value="UNDEFINE" name="status" class="w-8 h-8 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                          <label for="status-UNDEFINE" class="w-full ml-2">${iconUNDEFINE}</label>
+                      </label>
+                  </li>
+              </ul>
+          </div>
+          <button id="quit-directory" class="w-16 items-center flex-row text-sm font-semibold bg-rose-500 text-white p-1 rounded hover:bg-rose-700">Quit</button>
       </div>
-      <ul id="user-status-list" role="list" class="overflow-y-auto max-h-96 min-h-80 divide-y divide-gray-200"></ul>
-    </div>
   </div>
+  <ul id="user-status-list" role="list" class="flex-grow flex flex-col overflow-y-auto divide-y divide-rose-500 pb-14"></ul>
+</div>
 `;

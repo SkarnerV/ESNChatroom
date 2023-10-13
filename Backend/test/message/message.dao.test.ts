@@ -9,6 +9,7 @@ const testMessage1: PublicMessage = {
   content: "this is a test mesage1 ",
   time: "12:11 PM",
   sender: "test1",
+  senderStatus: "GREEN",
 };
 
 const testMessage2: PublicMessage = {
@@ -16,6 +17,7 @@ const testMessage2: PublicMessage = {
   content: "this is a test mesage2 ",
   time: "12:22PM",
   sender: "test2",
+  senderStatus: "GREEN",
 };
 
 beforeEach(async () => {
