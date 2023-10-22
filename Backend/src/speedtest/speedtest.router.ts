@@ -26,7 +26,7 @@ export default class SpeedTestRouter {
       async (request: Request, response: Response) => {
         const messages = await this.testController.getAllPublicMessage(
           request.params.sender,
-          "Lobby"
+          "test"
         );
         response.send(messages);
       }
@@ -44,7 +44,7 @@ export default class SpeedTestRouter {
         const returnedMessage = await this.testController.postPublicMessage({
           content: content,
           sender: sender,
-          sendee: sendee,
+          sendee: 'test',
           senderStatus: status,
         });
         response.send(returnedMessage);
