@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { chatAreaTemplate } from "../../templates/chat/chat-area-template";
 import { ESNMessage } from "../../types";
-import { getAllMessages, postPublicMessage } from "../../api/message";
+import { getAllMessages, postESNMessage } from "../../api/message";
 import { getUserStatusByUsername } from "../../api/user";
 import Formatter from "../../util/formatter";
 import StatusClassifier from "../../util/statusClassifier";
@@ -67,7 +67,7 @@ const postMessage = (): void => {
 };
 
 const recordMessage = (message: ESNMessage) => {
-  postPublicMessage(message).then((response) => {
+  postESNMessage(message).then((response) => {
     if (response) {
       postMessage();
     }

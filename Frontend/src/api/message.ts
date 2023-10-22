@@ -14,7 +14,7 @@ export const getAllMessages = async (sender: string, sendee: string) => {
   );
 };
 
-export const postPublicMessage = async (message: ESNMessage) => {
+export const postESNMessage = async (message: ESNMessage) => {
   return await fetchRequest(messagesApi, "POST", {
     content: message.content,
     sender: message.sender,
