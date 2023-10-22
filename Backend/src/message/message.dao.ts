@@ -1,29 +1,57 @@
-import { Repository } from "typeorm";
-import { PublicMessage } from "./publicMessage.entity";
+import { In, MoreThan, Repository } from "typeorm";
+import { Message } from "./message.entity";
 import ESNDatabase from "../database/ESNDatabase";
+import { PostMessageInput } from "../types/types";
 
 export default class MessageDAO {
-  private publicMessageDatabase: Repository<PublicMessage>;
+  private messageDatabase: Repository<Message>;
   constructor() {
-    this.publicMessageDatabase = ESNDatabase.getDatabaseInstance()
+    this.messageDatabase = ESNDatabase.getDatabaseInstance()
       .getDataSource()
-      .getRepository(PublicMessage);
+      .getRepository(Message);
   }
 
-  async createPublicMessage(
-    publicMessage: PublicMessage
-  ): Promise<PublicMessage> {
-    const message = this.publicMessageDatabase.create();
-    message.content = publicMessage.content;
-    message.sender = publicMessage.sender;
-    message.time = publicMessage.time;
-    message.senderStatus = publicMessage.senderStatus;
-    const createdMessage = await this.publicMessageDatabase.save(message);
+  async createMessage(
+    message: PostMessageInput,
+    messageTime: string
+  ): Promise<Message> {
+    const newMessage = this.messageDatabase.create();
+    newMessage.content = message.content;
+    newMessage.sender = message.sender;
+    newMessage.time = messageTime;
+    newMessage.senderStatus = message.senderStatus;
+    newMessage.sendee = message.sendee;
+    const createdMessage = await this.messageDatabase.save(newMessage);
     return createdMessage;
   }
 
-  async getAllPublicMessage(): Promise<PublicMessage[]> {
-    const allMessages = await this.publicMessageDatabase.find();
+  async getAllMessages(sender: string, sendee: string): Promise<Message[]> {
+    const allMessages = await this.messageDatabase.find({
+      where: {
+        sender: In([sendee, sender]),
+        sendee: In([sender, sendee]),
+      },
+    });
+    return allMessages;
+  }
+
+  async getAllPublicMessages(): Promise<Message[]> {
+    const allMessages = await this.messageDatabase.findBy({
+      sendee: "Lobby",
+    });
+    return allMessages;
+  }
+
+  async getUnreadMessages(
+    sendee: string,
+    lastOnlineTime: string
+  ): Promise<Message[]> {
+    const allMessages = await this.messageDatabase.find({
+      where: {
+        sendee: sendee,
+        time: MoreThan(lastOnlineTime),
+      },
+    });
     return allMessages;
   }
 }

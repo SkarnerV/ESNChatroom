@@ -2,31 +2,30 @@ import ESNDatabase from "../../src/database/ESNDatabase";
 import UserDAO from "../../src/user/user.dao";
 import { ESNUser } from "../../src/user/user.entity";
 import AuthController from "../../src/auth/auth.controller";
-import { Exception, statusCode } from "../../src/util/exceptionHandler";
-import { notFoundException } from "../../src/util/exceptionHandler";
 
 const databaseInstance = ESNDatabase.getDatabaseInstance();
 let userDao: UserDAO;
 let authController: AuthController;
 const defaultESNUser = {
   id: null,
-  username: "",
-  password: "",
+  username: "aaa",
+  password: "aaaa",
   lastStatus: "GREEN",
   isOnline: false,
   lastTimeUpdateStatus: new Date(),
+  lastOnlineTime: new Date().getTime().toString(),
 };
 const testUser1: ESNUser = {
   ...defaultESNUser,
   id: 1,
-  username: "test1",
+  username: "aaa1",
   password: "1234",
 };
 
 const testUser2: ESNUser = {
   ...defaultESNUser,
   id: 2,
-  username: "test2",
+  username: "aaa2",
   password: "1234",
 };
 
@@ -69,8 +68,8 @@ describe("getAllESNUserStatus", () => {
     const allUsers = await userDao.getAllESNUserStatus();
     expect(allUsers).not.toBeNull();
     expect(allUsers).toEqual([
-      { lastStatus: "1", username: "test1", isOnline: false },
-      { lastStatus: "2", username: "test2", isOnline: false },
+      { lastStatus: "1", username: "aaa1", isOnline: false },
+      { lastStatus: "2", username: "aaa2", isOnline: false },
     ]);
   });
 });

@@ -1,9 +1,9 @@
-import { LoginAuthentication } from "../types/types";
+import { CreateUserInput, LoginAuthentication } from "../types/types";
 import ESNDatabase from "../database/ESNDatabase";
 import { ESNUser } from "../user/user.entity";
 import { Repository } from "typeorm";
 
-export default class AuthCollection {
+export default class AuthDAO {
   private userDatabase: Repository<ESNUser>;
   constructor() {
     this.userDatabase = ESNDatabase.getDatabaseInstance()
@@ -12,16 +12,17 @@ export default class AuthCollection {
   }
 
   // Create user and store in the DB
-  async createUser(esnUser: ESNUser): Promise<string> {
-    const user = this.userDatabase.create();
-    user.username = esnUser.username;
-    user.password = esnUser.password;
+  async createUser(userInput: CreateUserInput): Promise<string> {
+    const newUser = this.userDatabase.create();
+    newUser.username = userInput.username;
+    newUser.password = userInput.password;
 
     //In RestApi spreadsheet, the user should have a default status as GREEN
-    user.lastStatus = "GREEN";
-    user.lastTimeUpdateStatus = new Date();
+    newUser.lastStatus = "GREEN";
+    newUser.lastTimeUpdateStatus = new Date();
+    newUser.lastOnlineTime = new Date().getTime().toString();
 
-    const createdUser = await this.userDatabase.save(user);
+    const createdUser = await this.userDatabase.save(newUser);
     return createdUser.id.toString();
   }
 
@@ -32,6 +33,15 @@ export default class AuthCollection {
       return "";
     }
     return user.id.toString();
+  }
+
+  // Get user from the DB
+  async getUser(username: string): Promise<ESNUser | null> {
+    const user = await this.userDatabase.findOneBy({ username: username });
+    if (!user) {
+      return null;
+    }
+    return user;
   }
 
   // Check if user exists and password is correct

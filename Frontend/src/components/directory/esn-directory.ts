@@ -6,10 +6,10 @@ import {
   updateLastStatus,
 } from "../../api/user";
 import { UserStatus, UserStatusIcon } from "../../constants/user-status";
-import { ESNUserStatus } from "../../types";
+import { ESNMessage, ESNUserStatus } from "../../types";
 import StatusClassifier from "../../util/statusClassifier";
 import jwt from "jsonwebtoken";
-import { socket } from "../../scripts/socket";
+import { socket } from "../../util/socket";
 import { IllegalUserActionHandler } from "../../util/illegalUserHandler";
 
 class ESNDirectory extends HTMLElement {
@@ -27,6 +27,10 @@ customElements.define("esn-directory", ESNDirectory);
 IllegalUserActionHandler.redirectToLogin();
 
 const currentUser = jwt.decode(localStorage.getItem("token"), "esn");
+const unreadUsers: string =
+  localStorage.getItem("unreadUsers") || JSON.stringify([]);
+
+let unreadUsersList: string[] = JSON.parse(unreadUsers) as string[];
 
 let onlineUsers: string[] = [];
 
@@ -78,23 +82,25 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
   const userAvatarBody = document.createElement("div");
   const userAvatar = document.createElement("img");
   const usernameText = document.createElement("span");
-  const currentUserIndicator = document.createElement("span");
   const userStatusInfoBody = document.createElement("div");
   const userStatusInfo = document.createElement("div");
+  const unreadSign = document.createElement("div");
   const isCurrentUser = currentUser.username === userStatus.username;
 
+  // statusBody.id = `user-${userStatus.username}-${userStatus.lastStatus}`;
   statusBody.id = `user-${userStatus.username}-${userStatus.lastStatus}`;
   statusBody.className = "flex bg-black justify-between py-5 px-4";
-  usernameBody.className = "flex items-center min-w-0 gap-x-2";
+  usernameBody.className = "flex items-center gap-x-2";
   userAvatarBody.className = "relative";
   userAvatar.className = "h-8 w-8 flex-none rounded-full bg-gray-50";
   usernameText.className =
     "w-40 text-white text-sm font-semibold text-gray-900";
-  currentUserIndicator.className =
-    "w-8 text-white text-sm font-semibold leading-6 text-gray-900";
+
   usernameText.id = "user-directory-display-name";
   userStatusInfoBody.className =
     "shrink-0 sm:flex mt-1 flex items-center gap-x-1.5";
+  unreadSign.className = "text-red-500";
+  unreadSign.id = `${userStatus.username}-unread`;
   userStatusInfoBody.id = `${userStatus.username}-status-info-container`;
   userStatusInfo.className = "absolute top-0 right-0 w-3 h-3 rounded-full";
   userStatusInfo.id = `${userStatus.username}-last-status-info`;
@@ -108,11 +114,11 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
   usernameText.textContent = userStatus.username;
 
   if (usernameText.textContent.length > 16) {
-    usernameText.textContent = usernameText.textContent.slice(0, 13) + "...";
+    usernameText.textContent = usernameText.textContent.slice(0, 12) + "...";
   }
 
   if (isCurrentUser) {
-    usernameText.textContent += " (Me)";
+    usernameText.textContent = "Me";
     const myStatusSelection = document.getElementById(
       `status-${userStatus.lastStatus}`
     ) as HTMLInputElement;
@@ -122,14 +128,31 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
   userAvatarBody.appendChild(userStatusInfo);
   userAvatarBody.appendChild(userAvatar);
   userStatusInfoBody.innerHTML += userStatusSVGIcon;
-
+  unreadSign.textContent = "New Message!";
   usernameBody.appendChild(userAvatarBody);
   usernameBody.appendChild(usernameText);
-  usernameBody.appendChild(currentUserIndicator);
 
   statusBody.appendChild(usernameBody);
+
+  if (!unreadUsersList.includes(userStatus.username)) {
+    unreadSign!.style.display = "none";
+  } else {
+    unreadSign!.style.display = "block";
+  }
+  statusBody.appendChild(unreadSign);
   statusBody.appendChild(userStatusInfoBody);
+
   userStatusList?.appendChild(statusBody);
+
+  if (!isCurrentUser) {
+    statusBody.onclick = () => {
+      unreadUsersList = unreadUsersList.filter(
+        (username) => username !== userStatus.username
+      );
+      localStorage.setItem("unreadUsers", JSON.stringify(unreadUsersList));
+      window.location.href = "chat.html?contact=" + userStatus.username;
+    };
+  }
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -171,7 +194,6 @@ radios.forEach((radio) => {
   radio.addEventListener("change", async function () {
     if (this.checked) {
       await updateLastStatus(currentUser.username, this.value);
-      socket.emit("last status", [currentUser.username, this.value]);
     }
   });
 });
@@ -183,7 +205,7 @@ quitButton!.onclick = async () => {
 };
 
 publicChatButton!.onclick = async () => {
-  window.location.href = "/chat";
+  window.location.href = "/chat.html?contact=Lobby";
 };
 
 homeButton!.onclick = () => {
@@ -309,3 +331,18 @@ getUserStatusData().then(() => {
     sortUserStatusList();
   });
 });
+
+const updateUnreadUsers = (message: ESNMessage) => {
+  if (
+    message.sendee === currentUser.username &&
+    !unreadUsersList.includes(message.sender)
+  ) {
+    unreadUsersList.push(message.sender);
+
+    const unreadUser = document.getElementById(`${message.sender}-unread`);
+    localStorage.setItem("unreadUsers", JSON.stringify(unreadUsersList));
+    unreadUser!.style.display = "block";
+  }
+};
+
+socket.on("private message", updateUnreadUsers);

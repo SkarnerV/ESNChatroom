@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { DataSource } from "typeorm";
 import { ESNUser } from "../user/user.entity";
-import { PublicMessage } from "../message/publicMessage.entity";
+import { Message } from "../message/message.entity";
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ export default class ESNDatabase {
     username: "team-sb1",
     password: "sb1",
     database: "sb1",
-    entities: [ESNUser, PublicMessage],
+    entities: [ESNUser, Message],
     dropSchema: true,
     logging: true,
     synchronize: true,
@@ -25,9 +25,9 @@ export default class ESNDatabase {
   private static testDataSource = new DataSource({
     type: "sqlite",
     database: ":memory:",
-    entities: [ESNUser, PublicMessage],
+    entities: [ESNUser, Message],
     dropSchema: true,
-    logging: true,
+    logging: false,
     synchronize: true,
   });
 

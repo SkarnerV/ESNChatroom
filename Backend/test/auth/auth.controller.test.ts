@@ -1,17 +1,19 @@
 import AuthController from "../../src/auth/auth.controller";
 import ESNDatabase from "../../src/database/ESNDatabase";
-import { LoginCredentials } from "../../src/types/types";
+import { CreateUserInput, LoginCredentials } from "../../src/types/types";
 import { ESNUser } from "../../src/user/user.entity";
+import jwt from "jsonwebtoken";
 
 const databaseInstance = ESNDatabase.getDatabaseInstance();
 let authController: AuthController;
 const defaultESNUser = {
   id: null,
-  username: "",
-  password: "",
+  username: "aaa",
+  password: "aaaa",
   lastStatus: "GREEN",
   isOnline: false,
   lastTimeUpdateStatus: new Date(),
+  lastOnlineTime: new Date().getTime().toString(),
 };
 
 beforeEach(async () => {
@@ -26,11 +28,9 @@ afterEach(async () => {
 
 describe("createUser", () => {
   it("Should create a new user if provided username does not exist in database.", async () => {
-    const testESNUser: ESNUser = {
-      ...defaultESNUser,
-      id: 0,
-      username: "test_username",
-      password: "test_password",
+    const testESNUser: CreateUserInput = {
+      username: "aaa",
+      password: "aaaa",
     };
 
     const loginCredential: LoginCredentials =
@@ -38,6 +38,136 @@ describe("createUser", () => {
 
     expect(loginCredential).not.toBeNull();
     expect(loginCredential.status).toEqual(201);
+  });
+
+  it("Should not create a user with banned usernames.", async () => {
+    const testESNUser: CreateUserInput = {
+      username: "test",
+      password: "test_password",
+    };
+
+    const createdMessage: LoginCredentials =
+      await authController.createUser(testESNUser);
+
+    expect(createdMessage.status).toEqual(400);
+  });
+
+  it("Should create a user with unbanned usernames.", async () => {
+    const testESNUser: CreateUserInput = {
+      username: "aaa",
+      password: "test_password",
+    };
+
+    const createdMessage: LoginCredentials =
+      await authController.createUser(testESNUser);
+
+    expect(createdMessage.status).toEqual(201);
+  });
+
+  it("Should create a user with legal username length.", async () => {
+    const testESNUser: CreateUserInput = {
+      username: "aaaaa",
+      password: "test_password",
+    };
+
+    const createdMessage: LoginCredentials =
+      await authController.createUser(testESNUser);
+
+    expect(createdMessage.status).toEqual(201);
+  });
+
+  it("Should not create a user with illegal username length.", async () => {
+    const testESNUser: CreateUserInput = {
+      username: "1",
+      password: "test_password",
+    };
+
+    const createdMessage: LoginCredentials =
+      await authController.createUser(testESNUser);
+
+    expect(createdMessage.status).toEqual(400);
+  });
+
+  it("Should not create a user with illegal password length.", async () => {
+    const testESNUser: CreateUserInput = {
+      username: "aaa",
+      password: "pa",
+    };
+
+    const createdMessage: LoginCredentials =
+      await authController.createUser(testESNUser);
+
+    expect(createdMessage.status).toEqual(400);
+  });
+
+  it("Should create a user with legal password length.", async () => {
+    const testESNUser: CreateUserInput = {
+      username: "aaa",
+      password: "password",
+    };
+
+    const createdMessage: LoginCredentials =
+      await authController.createUser(testESNUser);
+
+    expect(createdMessage.status).toEqual(201);
+  });
+
+  it("Should create case-insensitive username.", async () => {
+    const testESNUser: CreateUserInput = {
+      username: "Aaa",
+      password: "test_password",
+    };
+
+    const createdMessage: LoginCredentials =
+      await authController.createUser(testESNUser);
+    const createdUser = jwt.decode(
+      createdMessage.token as string
+    ) as jwt.JwtPayload;
+
+    expect(createdUser.username).toEqual("aaa");
+  });
+
+  it("Should create case-insensitive username.", async () => {
+    const testESNUser: CreateUserInput = {
+      username: "AAA",
+      password: "test_password",
+    };
+
+    const createdMessage: LoginCredentials =
+      await authController.createUser(testESNUser);
+    const createdUser = jwt.decode(
+      createdMessage.token as string
+    ) as jwt.JwtPayload;
+
+    expect(createdUser.username).toEqual("aaa");
+  });
+
+  it("Should login with the correct password.", async () => {
+    const testESNUser: CreateUserInput = {
+      username: "AAA",
+      password: "PASSWORD",
+    };
+
+    await authController.createUser(testESNUser);
+    const loginMessage: LoginCredentials =
+      await authController.loginUser(testESNUser);
+
+    expect(loginMessage.status).toEqual(200);
+  });
+
+  it("Should not allow case insensitive password.", async () => {
+    const testESNUser: CreateUserInput = {
+      username: "AAA",
+      password: "PASSWORD",
+    };
+
+    await authController.createUser(testESNUser);
+    const loginMessage: LoginCredentials = await authController.loginUser({
+      username: "AAA",
+      password: "password",
+    });
+
+    expect(loginMessage.status).toEqual(401);
   });
 
   it("Should return error message if username is not valid", async () => {
@@ -67,6 +197,7 @@ describe("createUser", () => {
       lastStatus: "",
       isOnline: false,
       lastTimeUpdateStatus: new Date(),
+      lastOnlineTime: new Date().getTime().toString(),
     };
 
     const loginCredential1: LoginCredentials =
@@ -78,13 +209,10 @@ describe("createUser", () => {
     const loginCredential4: LoginCredentials =
       await authController.createUser(noStatusUser);
 
-    expect(loginCredential1).not.toBeNull();
-    expect(loginCredential2).not.toBeNull();
-    expect(loginCredential3).not.toBeNull();
-    expect(loginCredential4).not.toBeNull();
     expect(loginCredential1.status).toEqual(400);
     expect(loginCredential2.status).toEqual(400);
     expect(loginCredential3.status).toEqual(400);
+    expect(loginCredential4.status).toEqual(400);
   });
 });
 
@@ -96,6 +224,7 @@ describe("loginUser", () => {
       password: "test_password",
       lastStatus: "GREEN",
       isOnline: false,
+      lastOnlineTime: new Date().getTime().toString(),
       lastTimeUpdateStatus: new Date(),
     };
 
@@ -113,6 +242,7 @@ describe("loginUser", () => {
       password: "test_password",
       lastStatus: "GREEN",
       isOnline: false,
+      lastOnlineTime: new Date().getTime().toString(),
       lastTimeUpdateStatus: new Date(),
     };
 
@@ -132,6 +262,7 @@ describe("loginUser", () => {
       password: "wrong_password",
       lastStatus: "GREEN",
       isOnline: false,
+      lastOnlineTime: new Date().getTime().toString(),
       lastTimeUpdateStatus: new Date(),
     };
 

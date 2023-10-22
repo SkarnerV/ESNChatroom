@@ -83,6 +83,29 @@
         "required": ["lastStatus"],
         "type": "object",
         "additionalProperties": false
+      },
+      "Message": {
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "content": {
+            "type": "string"
+          },
+
+          "time": {
+            "type": "string"
+          },
+          "sender": {
+            "type": "string"
+          },
+          "sendee": {
+            "type": "string"
+          }
+        },
+        "required": ["content", "time", "sender", "sendee"],
+        "type": "object",
+        "additionalProperties": false
       }
     },
     "securitySchemes": {}
@@ -234,27 +257,6 @@
         "operationId": "getUserStatus",
         "responses": {
           "200": {
-            "description": "All user status",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/UserStatus"
-                  },
-                  "type": "array"
-                }
-              }
-            }
-          }
-        },
-        "description": "get all user status",
-        "security": [],
-        "parameters": []
-      },
-      "put": {
-        "operationId": "updateLastStatus",
-        "responses": {
-          "200": {
             "description": "user status",
             "content": {
               "application/json": {
@@ -272,77 +274,23 @@
         "security": [],
         "parameters": []
       }
-      
     },
-    "/messages/public": {
-      "get": {
-        "operationId": "GetPublicMessages",
-        "responses": {
-          "200": {
-            "description": "public messages",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/PublicMessage"
-                  },
-                  "type": "array"
-                }
-              }
-            }
-          }
-        },
-        "description": "get all public messages",
-        "security": [],
-        "parameters": []
-      }
-    },
-    "/messages/public_post": {
+    "/messages": {
       "post": {
-        "operationId": "PublicPost",
-        "responses": {
-          "200": {
-            "description": "PublicPost",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PublicMessage"
-                }
-              }
-            }
-          }
-        },
-        "description": "post a public message",
-        "security": [],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PublicMessage"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/messages/:room/post": {
-      "post": {
-        "operationId": "post message to room",
+        "operationId": "post message",
         "responses": {
           "200": {
             "description": "PostMessage",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PublicMessage"
+                  "$ref": "#/components/schemas/Message"
                 }
               }
             }
           }
         },
-        "description": "post a public message",
+        "description": "post a message",
         "security": [],
         "parameters": [],
         "requestBody": {
@@ -350,62 +298,22 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PublicMessage"
+                "$ref": "#/components/schemas/Message"
               }
             }
           }
         }
       }
     },
-    "/messages/:room/all": {
-      "post": {
-        "operationId": "get all messages from the room",
-        "responses": {
-          "200": {
-            "description": "GetMessages",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PublicMessage"
-                }
-              }
-            }
-          }
-        },
-        "description": "get all messages from the room number",
-        "security": [],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PublicMessage"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users/:username/status": {
+    "/messages/:sender/:sendee": {
       "get": {
-        "operationId": "getUserStatusByUsername",
+        "operationId": "get all messages from the sender and sendee",
         "responses": {
           "200": {
-            "description": "user status",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/lastStatus"
-                  },
-                  "lastStatus": { "type": "string" }
-                }
-              }
-            }
+            "description": "GetMessages"
           }
         },
-        "description": "get the selected user's status with their username as api",
+        "description": "get all messages from the sender and sendee",
         "security": [],
         "parameters": [
           {
@@ -413,7 +321,47 @@
             "schema": {
               "type": "string"
             },
-            "name": "username",
+            "name": "sender",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "name": "sendee",
+            "in": "path"
+          }
+        ]
+      }
+    },
+    "/messages/:sendee": {
+      "get": {
+        "operationId": "get all unread messages for sendee",
+        "responses": {
+          "200": {
+            "description": "GetMessages"
+          },
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/Message"
+                },
+                "type": "array"
+              }
+            }
+          }
+        },
+        "description": "get all unread messages for sendee",
+        "security": [],
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "name": "sendee",
             "in": "path"
           }
         ]

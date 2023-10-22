@@ -57,11 +57,27 @@ export default class UserDAO {
     if (userToUpdate) {
       // Update user properties
       userToUpdate.isOnline = isOnline;
+      userToUpdate.lastOnlineTime = new Date().getTime().toString();
       // Save the updated user
       await this.ESNUserDatabase.save(userToUpdate);
 
       return userToUpdate;
     }
     return null;
+  }
+
+  async getUsersByUsernames(usernames: string[]): Promise<ESNUser[]> {
+    const users: ESNUser[] = [];
+
+    for (const username of usernames) {
+      const user: ESNUser | null = await this.ESNUserDatabase.findOneBy({
+        username: username,
+      });
+      if (user) {
+        users.push(user);
+      }
+    }
+
+    return users;
   }
 }

@@ -17,26 +17,27 @@ const defaultESNUser = {
   lastStatus: "GREEN",
   isOnline: false,
   lastTimeUpdateStatus: new Date(),
+  lastOnlineTime: new Date().getTime().toString(),
 };
 
 const testUser1: ESNUser = {
   ...defaultESNUser,
   id: 1,
-  username: "test1",
+  username: "aaa1",
   password: "1234",
 };
 
 const testUser2: ESNUser = {
   ...defaultESNUser,
   id: 2,
-  username: "test2",
+  username: "aaa2",
   password: "1234",
 };
 
 const testUser3: ESNUser = {
   ...defaultESNUser,
   id: 3,
-  username: "test3",
+  username: "aaa3",
   password: "1234",
 };
 
@@ -69,9 +70,9 @@ describe("getAllUserStatus", () => {
 
     const returnedAllUserStatus = await userController.getAllUserStatus();
     expect(returnedAllUserStatus).toEqual([
-      { lastStatus: "1", username: "test1", isOnline: false },
-      { lastStatus: "2", username: "test2", isOnline: false },
-      { lastStatus: "3", username: "test3", isOnline: false },
+      { lastStatus: "1", username: "aaa1", isOnline: false },
+      { lastStatus: "2", username: "aaa2", isOnline: false },
+      { lastStatus: "3", username: "aaa3", isOnline: false },
     ]);
   });
 });

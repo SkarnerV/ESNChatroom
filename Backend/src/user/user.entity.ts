@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class ESNUser {
@@ -19,4 +19,7 @@ export class ESNUser {
 
   @Column()
   lastTimeUpdateStatus!: Date;
+
+  @Column()
+  lastOnlineTime!: string;
 }

@@ -3,6 +3,8 @@ import reservedUsernames from "../../constants/reserved-names";
 import { registerFormTemplate } from "../../templates/register/register-form-template";
 import CryptoJS from "crypto-js";
 import { IllegalUserActionHandler } from "../../util/illegalUserHandler";
+import { getUnreadMessages } from "../../api/message";
+import { ESNMessage } from "../../types";
 
 class RegisterForm extends HTMLElement {
   constructor() {
@@ -22,6 +24,7 @@ const modal = document.getElementById("welcome-modal");
 const joinButton = document.getElementById("join-button");
 
 joinButton!.onclick = async () => {
+  console.log("login");
   showError("");
   const username =
     (document.getElementById("username") as HTMLInputElement).value || "";
@@ -33,10 +36,13 @@ joinButton!.onclick = async () => {
 
   const hashedPassword = CryptoJS.MD5(password).toString();
 
-  await userLogin(username.toLowerCase(), hashedPassword).then((response) => {
-    handleLoginRequest(response);
-    (document.getElementById("password") as HTMLInputElement).value = password;
-  });
+  await userLogin(username.toLowerCase(), hashedPassword).then(
+    async (response) => {
+      handleLoginRequest(response, username.toLowerCase());
+      (document.getElementById("password") as HTMLInputElement).value =
+        password;
+    }
+  );
 };
 
 function showError(errorMessage: string) {
@@ -74,11 +80,25 @@ function isPasswordValid(password: string) {
   return true;
 }
 
-function handleLoginRequest(response) {
+async function handleLoginRequest(response, username: string) {
   // if the user is already a community member, the system displays the ESN Directory
   if (response.status === 200) {
-    window.location.href = "/home.html";
     localStorage.setItem("token", response.token);
+    let unreadUsers: Set<string> = new Set();
+
+    await getUnreadMessages(username.toLowerCase()).then(
+      (data: ESNMessage[]) => {
+        for (const message of data) {
+          unreadUsers.add(message.sender);
+        }
+      }
+    );
+
+    localStorage.setItem(
+      "unreadUsers",
+      JSON.stringify(Array.from(unreadUsers))
+    );
+    window.location.href = "/home.html";
     return;
   }
   // if the username already exists but the password is incorrect (does not match the existing username),

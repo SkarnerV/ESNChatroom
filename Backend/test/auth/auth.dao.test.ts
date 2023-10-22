@@ -13,6 +13,7 @@ const defaultESNUser = {
   lastStatus: "GREEN",
   isOnline: false,
   lastTimeUpdateStatus: new Date(),
+  lastOnlineTime: new Date().getTime().toString(),
 };
 
 beforeEach(async () => {

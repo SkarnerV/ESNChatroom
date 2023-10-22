@@ -1,12 +1,23 @@
-export const chatAreaTemplate = `  <div
-class="w-full container mx-auto px-2 py-8 flex flex-col h-screen justify-between"
->
-<div id="message-area" class="w-full h-[90%] mx-auto overflow-y-auto">
+export const chatAreaTemplate = `  
+ 
+<div class="w-full container mx-auto  flex flex-col h-screen justify-between">
+
+<!-- Chat Banner -->
+<div class="bg-black text-white py-4 px-6 flex justify-between items-center">
+<div class="w-6 flex">
+<button id="chat-back-button" class="text-lg text-white bg-transparent border-none cursor-pointer"><</button>
+</div>
+<div id="contact-name" class="text-lg font-semibold">Contact Name</div><!-- Contact Name -->
+<div class="w-6"> </div>
+</div>
+
+
+<div id="message-area" class="w-full px-2 h-[80%] mx-auto overflow-y-auto">
     <!-- Chat messages -->
 </div>
 
 <!-- Chat input -->
-<div class="flex">
+<div class="flex bg-black p-4">
     <input
         id="message-input"
         type="text"
@@ -15,7 +26,7 @@ class="w-full container mx-auto px-2 py-8 flex flex-col h-screen justify-between
     />
     <button 
     id="post-button"
-    class="bg-red-600 text-white px-4 rounded-r-lg">
+    class="bg-red-600 text-white px-4 rounded-md">
         Send
     </button>
 </div>

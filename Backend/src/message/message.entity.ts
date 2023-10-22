@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class PublicMessage {
+export class Message {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -13,6 +13,9 @@ export class PublicMessage {
 
   @Column()
   sender!: string;
+
+  @Column()
+  sendee!: string;
 
   @Column()
   senderStatus!: string;

@@ -1,9 +1,9 @@
 import express, { Request, Response, Router } from "express";
-import { LoginCredentials } from "../types/types";
+import { CreateUserInput, LoginCredentials } from "../types/types";
 import AuthController from "./auth.controller";
 import { ESNUser } from "../user/user.entity";
 
-export default class UserRouter {
+export default class AuthRouter {
   private router: Router;
   private controller: AuthController;
 
@@ -17,19 +17,19 @@ export default class UserRouter {
     this.router.post(
       "/register",
       async (request: Request, response: Response) => {
-        const user: ESNUser = request.body;
+        const userInput: CreateUserInput = request.body;
         const message: LoginCredentials =
-          await this.controller.createUser(user);
+          await this.controller.createUser(userInput);
         response.send(message);
       }
     );
     this.router.post("/login", async (request: Request, response: Response) => {
-      const user: ESNUser = request.body;
-      const message: LoginCredentials = await this.controller.loginUser(user);
+      const userInput: CreateUserInput = request.body;
+      const message: LoginCredentials =
+        await this.controller.loginUser(userInput);
       response.send(message);
     });
   }
-
 
   getRouter(): Router {
     return this.router;

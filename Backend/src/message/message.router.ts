@@ -1,6 +1,6 @@
 import express, { Request, Response, Router } from "express";
 import MessageController from "./message.controller";
-import { PublicMessage } from "./publicMessage.entity";
+import { Message } from "./message.entity";
 
 export default class MessageRouter {
   private router: Router;
@@ -12,30 +12,42 @@ export default class MessageRouter {
     this.init();
   }
   private init(): void {
-    this.router.get("/public", async (_: Request, response: Response) => {
-      const messages = await this.messageController.getAllPublicMessage();
-      response.send(messages);
-    });
-    this.router.post(
-      "/public_post",
+    this.router.get(
+      "/:sender/:sendee",
       async (request: Request, response: Response) => {
-        const {
-          id: id,
-          content: content,
-          sender: sender,
-          time: time,
-          senderStatus: status,
-        }: PublicMessage = request.body;
-        const returnedMessage = await this.messageController.postPublicMessage({
-          id: id,
-          content: content,
-          sender: sender,
-          time: time,
-          senderStatus: status,
-        });
-        response.send(returnedMessage);
+        // const token = request.headers["token"] as string;
+        const messages = await this.messageController.getAllMessages(
+          request.params.sender,
+          request.params.sendee
+        );
+        response.send(messages);
       }
     );
+    this.router.get(
+      "/:sendee",
+      async (request: Request, response: Response) => {
+        // const token = request.headers["token"] as string;
+        const messages = await this.messageController.getUnreadMessages(
+          request.params.sendee
+        );
+        response.send(messages);
+      }
+    );
+    this.router.post("/", async (request: Request, response: Response) => {
+      const {
+        content: content,
+        sender: sender,
+        sendee: sendee,
+        senderStatus: status,
+      } = request.body;
+      const returnedMessage = await this.messageController.postMessage({
+        content: content,
+        sender: sender,
+        sendee: sendee,
+        senderStatus: status,
+      });
+      response.send(returnedMessage);
+    });
   }
 
   getRouter(): Router {

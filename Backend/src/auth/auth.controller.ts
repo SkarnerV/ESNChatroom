@@ -1,14 +1,19 @@
 import jwt from "jsonwebtoken";
-import { LoginCredentials, LoginAuthentication } from "../types/types";
-import AuthCollection from "./auth.dao";
+import {
+  LoginCredentials,
+  LoginAuthentication,
+  CreateUserInput,
+} from "../types/types";
+import AuthDAO from "./auth.dao";
 import ResponseGenerator from "../util/responseGenerator";
 import { ESNUser } from "../user/user.entity";
+import reservedUsernames from "../constant/reservedUsernames";
 
 export default class AuthController {
-  private authCollection: AuthCollection;
+  private authDao: AuthDAO;
 
   constructor() {
-    this.authCollection = new AuthCollection();
+    this.authDao = new AuthDAO();
   }
 
   /**
@@ -20,25 +25,29 @@ export default class AuthController {
   private static createUserToken(
     id: string,
     username: string,
+    lastOnlineTime?: string
   ): string {
     return jwt.sign(
-      { id: id, username: username},
+      { id: id, username: username, lastOnlineTime: lastOnlineTime },
       "esn",
       { expiresIn: "1h" }
     );
   }
 
   /**
-   * Validates the user information
+   * Validates the userInput information
    *
-   * @param user The validated user information
-   * @return False if the user provided is illegal
-   *         True if the user provided is legal
+   * @param userInput The validated userInput information
+   * @return False if the userInput is illegal
+   *         True if the userInput is legal
    */
-  private static isValidCredential(user: ESNUser): boolean {
-    const { username, password } = user;
+  private static isValidCredential(userInput: CreateUserInput): boolean {
+    const { username, password } = userInput;
     const notNullUser = username != null && password != null;
-    const isUsernameValid: boolean = username !== "";
+    const isUsernameValid: boolean =
+      username !== "" &&
+      username.length >= 3 &&
+      !reservedUsernames.includes(username);
     const isPasswordValid: boolean = password !== "" && password.length >= 4;
 
     return notNullUser && isUsernameValid && isPasswordValid;
@@ -50,13 +59,13 @@ export default class AuthController {
    * @param user The user that will be created
    * @return a LoginCrednetials message that shows the current request status
    */
-  async createUser(user: ESNUser): Promise<LoginCredentials> {
-    if (AuthController.isValidCredential(user)) {
-      const createdUserID: string = await this.authCollection.createUser(user);
+  async createUser(userInput: CreateUserInput): Promise<LoginCredentials> {
+    if (AuthController.isValidCredential(userInput)) {
+      const createdUserID: string = await this.authDao.createUser(userInput);
 
       const token: string = AuthController.createUserToken(
         createdUserID,
-        user.username,
+        userInput.username.toLowerCase()
       );
 
       return ResponseGenerator.getLoginResponse(
@@ -74,21 +83,22 @@ export default class AuthController {
   /**
    * Check if the user is authenticated to login
    *
-   * @param user The user that is trying to login
+   * @param userInput The user that is trying to login
    * @returns a LoginCrednetials message that shows the current request status
    */
-  async loginUser(user: ESNUser): Promise<LoginCredentials> {
+  async loginUser(userInput: CreateUserInput): Promise<LoginCredentials> {
     const isExistingUser: LoginAuthentication =
-      await this.authCollection.checkUserLogin(user.username, user.password);
+      await this.authDao.checkUserLogin(userInput.username, userInput.password);
 
     // If both conditions are true, it generates a token and returns a successful login response.
     if (isExistingUser.userExists && isExistingUser.passwordMatch) {
-      const userId = await this.authCollection.getUserId(user.username);
+      const esnUser = await this.authDao.getUser(userInput.username);
 
-      if (userId !== "") {
+      if (esnUser) {
         const token: string = AuthController.createUserToken(
-          userId,
-          user.username
+          esnUser.id.toString(),
+          esnUser.username,
+          esnUser.lastOnlineTime
         );
         return ResponseGenerator.getLoginResponse(200, "User Logined", token);
       }

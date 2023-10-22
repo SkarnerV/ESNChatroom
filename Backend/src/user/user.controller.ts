@@ -1,6 +1,7 @@
 import { notFoundException } from "../util/exceptionHandler";
 import UserDAO from "./user.dao";
 import { ESNUser } from "./user.entity";
+import { SocketServer } from "../server/socketServer";
 
 export default class UserController {
   private userDao: UserDAO;
@@ -23,13 +24,16 @@ export default class UserController {
     lastStatus: string
   ): Promise<ESNUser> {
     let user: ESNUser | null = new ESNUser();
+    const socketUserLastStatus: string[] = [username, lastStatus];
     await this.userDao
       .updateESNUserStatus(username, lastStatus)
       .then((response) => (user = response));
     if (!user) {
       throw new notFoundException("User not exists!");
     }
-
+    await SocketServer.getInstance().broadcastChangedStatus(
+      socketUserLastStatus
+    );
     return user;
   }
 
