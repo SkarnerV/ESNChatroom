@@ -6,7 +6,7 @@ import MessageController from "../message/message.controller";
 export default class SpeedTestController {
   private testDao: SpeedTestDAO;
   private messageController: MessageController | null;
-  private static isTestMode: boolean = true;
+  private static isTestMode: boolean = false;
 
   constructor() {
     this.testDao = new SpeedTestDAO();
