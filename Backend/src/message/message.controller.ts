@@ -1,5 +1,6 @@
 import AuthDAO from "../auth/auth.dao";
 import { SocketServer } from "../server/socketServer";
+import SpeedTestController from "../speedtest/speedtest.controller";
 import { PostMessageInput } from "../types/types";
 import { ESNUser } from "../user/user.entity";
 import { BadRequestException } from "../util/exceptionHandler";
@@ -30,7 +31,10 @@ export default class MessageController {
       messageTime
     );
 
-    if (message.sendee === "Lobby") {
+    if (
+      message.sendee === "Lobby" &&
+      SpeedTestController.getTestMode() !== true
+    ) {
       SocketServer.getInstance().broadcastPublicMessage(createdMessage);
     } else {
       SocketServer.getInstance().broadcastPrivateMessage(createdMessage);
