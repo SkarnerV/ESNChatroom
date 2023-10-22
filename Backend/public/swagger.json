@@ -122,7 +122,7 @@
   },
   "openapi": "3.0.0",
   "paths": {
-    "/users/register": {
+    "/api/users/register": {
       "post": {
         "operationId": "Register",
         "responses": {
@@ -152,7 +152,7 @@
         }
       }
     },
-    "/users/login": {
+    "/api/users/login": {
       "post": {
         "operationId": "LoginUser",
         "responses": {
@@ -182,7 +182,7 @@
         }
       }
     },
-    "/users/onlinestatus": {
+    "/api/users/onlinestatus": {
       "put": {
         "operationId": "UpdateOnlineStatus",
         "responses": {
@@ -220,7 +220,7 @@
         }
       }
     },
-    "/users/:username/status": {
+    "/api/users/:username/status": {
       "get": {
         "operationId": "getUserStatusByUsername",
         "responses": {
@@ -252,7 +252,7 @@
         ]
       }
     },
-    "/users/status": {
+    "/api/users/status": {
       "get": {
         "operationId": "getUserStatus",
         "responses": {
@@ -275,7 +275,7 @@
         "parameters": []
       }
     },
-    "/messages": {
+    "/api/messages": {
       "post": {
         "operationId": "post message",
         "responses": {
@@ -305,7 +305,7 @@
         }
       }
     },
-    "/messages/:sender/:sendee": {
+    "/api/messages/:sender/:sendee": {
       "get": {
         "operationId": "get all messages from the sender and sendee",
         "responses": {
@@ -335,7 +335,7 @@
         ]
       }
     },
-    "/messages/:sendee": {
+    "/api/messages/:sendee": {
       "get": {
         "operationId": "get all unread messages for sendee",
         "responses": {

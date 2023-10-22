@@ -38,12 +38,12 @@ class App {
 
   private registerRoutes(): void {
     const authRouter: Router = new AuthRouter().getRouter();
-    this.app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc));
+    this.app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc));
     const userRouter: Router = new UserRouter().getRouter();
     const messageRouter: Router = new MessageRouter().getRouter();
-    this.app.use("/users", authRouter);
-    this.app.use("/users", userRouter);
-    this.app.use("/messages", messageRouter);
+    this.app.use("/api/users", authRouter);
+    this.app.use("/api/users", userRouter);
+    this.app.use("/api/messages", messageRouter);
   }
 
   private async registerDatabase(): Promise<void> {
