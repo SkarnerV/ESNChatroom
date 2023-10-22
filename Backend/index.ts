@@ -42,7 +42,7 @@ class App {
   private registerTestMode(): void {
     this.app.use((req, res, next) => {
       if (SpeedTestController.getTestMode()) {
-        if (req.path.startsWith("/speedtests")) {
+        if (req.path.startsWith("/api/speedtests")) {
           next(); // allow requests to '/tests' in test mode
         } else {
           console.log("currenlty in testing mode");
