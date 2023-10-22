@@ -6,7 +6,7 @@ COPY . /app
 
 RUN yarn
 
-ARG SERVICEENDPOINT=https://f23esnb1.eastus.cloudapp.azure.com:3000/api
+ARG SERVICEENDPOINT=https://f23esnb1.eastus.cloudapp.azure.com/api
 
 RUN yarn build
 
