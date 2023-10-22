@@ -35,6 +35,10 @@ let unreadUsersList: string[] = JSON.parse(unreadUsers) as string[];
 let onlineUsers: string[] = [];
 
 const userStatusList = document.getElementById("user-status-list");
+const speedTestButton = document.getElementById("speedtest-directory");
+speedTestButton!.onclick = () => {
+  window.location.href = "/ESNSpeedTest";
+};
 
 const getUserStatusData = async () => {
   getAllUserStatus().then((response) => {
