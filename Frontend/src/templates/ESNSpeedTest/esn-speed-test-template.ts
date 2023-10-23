@@ -29,7 +29,7 @@ export const ESNSpeedTestTemplate = `
         Initiate Performance Test
     </button>
 
-    <button id="stop-test" class="mt-4 bg-red-500 text-white p-2 rounded hover:bg-red-600 focus:outline-none focus:bg-red-700">
+    <button id="stop-test" class="hidden bg-red-500 text-white p-2 rounded hover:bg-red-600 focus:outline-none focus:bg-red-700">
         Stop Test
     </button>
 </div>

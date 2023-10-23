@@ -1,6 +1,5 @@
 import express, { Request, Response, Router } from "express";
 import SpeedTestController from "./speedtest.controller";
-import { Message } from "../message/message.entity";
 
 export default class SpeedTestRouter {
   private router: Router;
@@ -17,7 +16,7 @@ export default class SpeedTestRouter {
       "/speed_test_start",
       async (_: Request, response: Response) => {
         const messages = await this.testController.enterTestMode();
-        response.send(messages);
+        response.send({ messages });
       }
     );
 
@@ -38,13 +37,12 @@ export default class SpeedTestRouter {
         const {
           content: content,
           sender: sender,
-          sendee: sendee,
           senderStatus: status,
         } = request.body;
         const returnedMessage = await this.testController.postPublicMessage({
           content: content,
           sender: sender,
-          sendee: 'test',
+          sendee: "test",
           senderStatus: status,
         });
         response.send(returnedMessage);
@@ -55,7 +53,7 @@ export default class SpeedTestRouter {
       "/speed_test_end",
       async (_: Request, response: Response) => {
         const messages = await this.testController.endTestMode();
-        response.send(messages);
+        response.send({ messages });
       }
     );
   }
