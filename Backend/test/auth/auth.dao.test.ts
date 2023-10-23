@@ -11,7 +11,6 @@ const defaultESNUser = {
   username: "",
   password: "",
   lastStatus: "GREEN",
-  isOnline: false,
   lastTimeUpdateStatus: new Date(),
   lastOnlineTime: new Date().getTime().toString(),
 };

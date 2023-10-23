@@ -11,7 +11,6 @@ const defaultESNUser = {
   username: "aaa",
   password: "aaaa",
   lastStatus: "GREEN",
-  isOnline: false,
   lastTimeUpdateStatus: new Date(),
   lastOnlineTime: new Date().getTime().toString(),
 };
@@ -68,8 +67,8 @@ describe("getAllESNUserStatus", () => {
     const allUsers = await userDao.getAllESNUserStatus();
     expect(allUsers).not.toBeNull();
     expect(allUsers).toEqual([
-      { lastStatus: "1", username: "aaa1", isOnline: false },
-      { lastStatus: "2", username: "aaa2", isOnline: false },
+      { lastStatus: "1", username: "aaa1" },
+      { lastStatus: "2", username: "aaa2" },
     ]);
   });
 });

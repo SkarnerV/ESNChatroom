@@ -1,6 +1,6 @@
 export const chatAreaTemplate = `  
  
-<div class="w-full container mx-auto  flex flex-col h-screen justify-between">
+<div class="w-full container mx-auto flex flex-col justify-between" style="height: 100dvh">
 
 <!-- Chat Banner -->
 <div class="bg-black text-white py-4 px-6 flex justify-between items-center">

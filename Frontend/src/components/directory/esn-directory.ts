@@ -1,10 +1,6 @@
 import { esnDirectoryContainer } from "../../templates/directory/esn-directory-template";
 import { navBarContainer } from "../../templates/navbar/foot-navbar-template";
-import {
-  getAllUserStatus,
-  updateOnlineStatus,
-  updateLastStatus,
-} from "../../api/user";
+import { getAllUserStatus, updateLastStatus } from "../../api/user";
 import { UserStatus, UserStatusIcon } from "../../constants/user-status";
 import { ESNMessage, ESNUserStatus } from "../../types";
 import StatusClassifier from "../../util/statusClassifier";
@@ -37,7 +33,7 @@ let onlineUsers: string[] = [];
 const userStatusList = document.getElementById("user-status-list");
 const speedTestButton = document.getElementById("speedtest-directory");
 speedTestButton!.onclick = () => {
-  window.location.href = "/ESNSpeedTest";
+  window.location.href = "/ESNSpeedTest.html";
 };
 
 const getUserStatusData = async () => {
@@ -203,7 +199,6 @@ radios.forEach((radio) => {
 });
 
 quitButton!.onclick = async () => {
-  await updateOnlineStatus(currentUser.username, "false");
   localStorage.removeItem("token");
   window.location.href = "/";
 };
@@ -284,7 +279,6 @@ const updateUserStatus = () => {
   const userItems = document.querySelectorAll("li");
 
   // check if new user exists
-  let hasNewUser = false;
   onlineUsers.forEach((username) => {
     let isNewUser = true;
     userItems.forEach((userItem) => {
@@ -294,7 +288,6 @@ const updateUserStatus = () => {
       }
     });
     if (isNewUser) {
-      hasNewUser = true;
       getUserStatusData();
     }
   });

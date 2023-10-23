@@ -26,6 +26,7 @@ confirmButton!.onclick = async () => {
     (document.getElementById("password") as HTMLInputElement).value || "";
   const hashedPassword = CryptoJS.MD5(password).toString();
 
+  confirmButton!.setAttribute("disabled", "true");
   await userRegister(username.toLowerCase(), hashedPassword)
     .then((data) => {
       if (data.status === 201) {

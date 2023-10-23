@@ -24,7 +24,6 @@ const modal = document.getElementById("welcome-modal");
 const joinButton = document.getElementById("join-button");
 
 joinButton!.onclick = async () => {
-  console.log("login");
   showError("");
   const username =
     (document.getElementById("username") as HTMLInputElement).value || "";

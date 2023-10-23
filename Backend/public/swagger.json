@@ -182,44 +182,6 @@
         }
       }
     },
-    "/api/users/onlinestatus": {
-      "put": {
-        "operationId": "UpdateOnlineStatus",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "id": { "type": "number" },
-                    "username": { "type": "string" },
-                    "lastStatus": { "type": "string" },
-                    "isOnline": { "type": "boolean" }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "description": "logout a user with provided username and password",
-        "security": [],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "username": { "type": "string" },
-                  "status": { "type": "boolean" }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/users/:username/status": {
       "get": {
         "operationId": "getUserStatusByUsername",

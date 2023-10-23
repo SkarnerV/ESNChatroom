@@ -41,19 +41,6 @@ export default class UserRouter {
       );
       response.send(user);
     });
-
-    this.router.put(
-      "/onlinestatus",
-      async (request: Request, response: Response) => {
-        const username: string = request.body.username;
-        const isOnline: string = request.body.isOnline;
-        const user: ESNUser = await this.userController.updateUserOnlineStatus(
-          username,
-          isOnline
-        );
-        response.send(user);
-      }
-    );
   }
 
   getRouter(): Router {

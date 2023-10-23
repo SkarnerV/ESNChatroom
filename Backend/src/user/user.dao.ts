@@ -32,7 +32,7 @@ export default class UserDAO {
 
   async getAllESNUserStatus(): Promise<ESNUser[]> {
     const allUsers = await this.ESNUserDatabase.find({
-      select: ["username", "lastStatus", "isOnline"],
+      select: ["username", "lastStatus"],
     });
     return allUsers;
   }
@@ -43,25 +43,6 @@ export default class UserDAO {
     });
     if (user) {
       return user.lastStatus;
-    }
-    return null;
-  }
-
-  async updateUserOnlineStatus(
-    username: string,
-    isOnline: boolean
-  ): Promise<ESNUser | null> {
-    const userToUpdate = await this.ESNUserDatabase.findOneBy({
-      username,
-    });
-    if (userToUpdate) {
-      // Update user properties
-      userToUpdate.isOnline = isOnline;
-      userToUpdate.lastOnlineTime = new Date().getTime().toString();
-      // Save the updated user
-      await this.ESNUserDatabase.save(userToUpdate);
-
-      return userToUpdate;
     }
     return null;
   }

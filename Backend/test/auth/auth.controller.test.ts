@@ -11,7 +11,6 @@ const defaultESNUser = {
   username: "aaa",
   password: "aaaa",
   lastStatus: "GREEN",
-  isOnline: false,
   lastTimeUpdateStatus: new Date(),
   lastOnlineTime: new Date().getTime().toString(),
 };
@@ -195,7 +194,6 @@ describe("createUser", () => {
       username: "user",
       password: "test_password",
       lastStatus: "",
-      isOnline: false,
       lastTimeUpdateStatus: new Date(),
       lastOnlineTime: new Date().getTime().toString(),
     };
@@ -223,7 +221,6 @@ describe("loginUser", () => {
       username: "test_username",
       password: "test_password",
       lastStatus: "GREEN",
-      isOnline: false,
       lastOnlineTime: new Date().getTime().toString(),
       lastTimeUpdateStatus: new Date(),
     };
@@ -241,7 +238,6 @@ describe("loginUser", () => {
       username: "test_username",
       password: "test_password",
       lastStatus: "GREEN",
-      isOnline: false,
       lastOnlineTime: new Date().getTime().toString(),
       lastTimeUpdateStatus: new Date(),
     };
@@ -261,7 +257,6 @@ describe("loginUser", () => {
       username: "test_username",
       password: "wrong_password",
       lastStatus: "GREEN",
-      isOnline: false,
       lastOnlineTime: new Date().getTime().toString(),
       lastTimeUpdateStatus: new Date(),
     };

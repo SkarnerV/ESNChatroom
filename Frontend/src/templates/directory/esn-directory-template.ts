@@ -7,7 +7,7 @@ import {
 } from "../../constants/svg-icon";
 
 export const esnDirectoryContainer = `
-<div class="modal-container flex flex-col w-96 mx-auto rounded shadow-2xl z-50 divide-y-2 divide-rose-500 w-screen bg-rose-500 h-screen">
+<div class="modal-container flex flex-col w-96 mx-auto rounded shadow-2xl z-50 divide-y-2 divide-rose-500 w-screen bg-rose-500" style="height: 100dvh">
   <div class="flex justify-between items-center py-2 px-4 bg-black text-white">
       <p id="home-page-header" class="font-semibold">Directory</p>
       <div class="flex space-x-2 justify-between items-center">

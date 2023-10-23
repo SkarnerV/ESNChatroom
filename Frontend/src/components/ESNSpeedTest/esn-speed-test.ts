@@ -35,7 +35,7 @@ const closeTestButton = document.getElementById(
   "close-button"
 ) as HTMLInputElement;
 closeTestButton.onclick = () => {
-  window.location.href = "/home";
+  window.location.href = "/home.html";
 };
 
 const speedTest = new SpeedTest(displayTestResults, showError);

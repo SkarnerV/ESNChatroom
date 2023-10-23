@@ -3,7 +3,6 @@ import {
   AllUserApi,
   registerApi,
   getAllUserStatusApi,
-  putUserOnlineStatusApi,
 } from "./routes";
 import { fetchRequest } from "./util";
 
@@ -32,24 +31,6 @@ export const getUserStatusByUsername = async (username: string) => {
       }
     }
   );
-};
-
-export const updateOnlineStatus = async (
-  username: string,
-  isOnline: string
-) => {
-  return await fetchRequest(putUserOnlineStatusApi, "PUT", {
-    username,
-    isOnline,
-  }).then((response) => {
-    if (response.ok) {
-      // Successful response (status code 200-299)
-      return response.json();
-    } else {
-      // Handle error response
-      throw new Error("HTTP error: " + response.status);
-    }
-  });
 };
 
 export const updateLastStatus = async (

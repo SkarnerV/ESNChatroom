@@ -6,7 +6,7 @@ export class IllegalUserActionHandler {
   }
   static redirectToHome(): void {
     if (localStorage.getItem("token") !== null) {
-      window.location.href = "/home";
+      window.location.href = "/home.html";
     }
   }
 }

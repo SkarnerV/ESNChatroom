@@ -15,7 +15,6 @@ const defaultESNUser = {
   username: "",
   password: "",
   lastStatus: "GREEN",
-  isOnline: false,
   lastTimeUpdateStatus: new Date(),
   lastOnlineTime: new Date().getTime().toString(),
 };
@@ -70,36 +69,10 @@ describe("getAllUserStatus", () => {
 
     const returnedAllUserStatus = await userController.getAllUserStatus();
     expect(returnedAllUserStatus).toEqual([
-      { lastStatus: "1", username: "aaa1", isOnline: false },
-      { lastStatus: "2", username: "aaa2", isOnline: false },
-      { lastStatus: "3", username: "aaa3", isOnline: false },
+      { lastStatus: "1", username: "aaa1" },
+      { lastStatus: "2", username: "aaa2" },
+      { lastStatus: "3", username: "aaa3" },
     ]);
-  });
-});
-
-describe("updateUserOnlineStatus", () => {
-  it("Should return null user if user does not exist", async () => {
-    try {
-      await userController.updateUserOnlineStatus(testUser1.username, "true");
-    } catch (error) {
-      expect(error).toBeInstanceOf(notFoundException);
-    }
-  });
-
-  it("Should change the status of user if user exists", async () => {
-    await authController.createUser(testUser1);
-    const updatedUser = await userController.updateUserOnlineStatus(
-      testUser1.username,
-      "true"
-    );
-    expect(updatedUser).not.toBeNull();
-    expect(updatedUser.username).toEqual(testUser1.username);
-    expect(updatedUser.isOnline).toEqual(true);
-    const updatedUser2 = await userController.updateUserOnlineStatus(
-      testUser1.username,
-      "false"
-    );
-    expect(updatedUser2.isOnline).toEqual(false);
   });
 });
 
