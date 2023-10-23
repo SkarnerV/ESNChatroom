@@ -1,6 +1,10 @@
 import { esnDirectoryContainer } from "../../templates/directory/esn-directory-template";
 import { navBarContainer } from "../../templates/navbar/foot-navbar-template";
-import { getAllUserStatus, updateLastStatus } from "../../api/user";
+import {
+  getAllUserStatus,
+  updateLastStatus,
+  updateOnlineStatus,
+} from "../../api/user";
 import { UserStatus, UserStatusIcon } from "../../constants/user-status";
 import { ESNMessage, ESNUserStatus } from "../../types";
 import StatusClassifier from "../../util/statusClassifier";
@@ -199,6 +203,7 @@ radios.forEach((radio) => {
 });
 
 quitButton!.onclick = async () => {
+  await updateOnlineStatus(currentUser.username);
   localStorage.removeItem("token");
   window.location.href = "/";
 };

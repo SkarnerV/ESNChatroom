@@ -56,6 +56,7 @@ export class SocketServer {
     this.io.emit("online users", onlineUsers);
 
     socket.on("disconnect", () => {
+      this.userController.updateUserOnlineStatus(currentUser);
       console.log(currentUser, "disconnected");
       const updatedOnlineUsers = Array.from(this.io.sockets.sockets).map(
         ([, socket]) => socket.handshake.query.username

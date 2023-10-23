@@ -43,7 +43,7 @@ export const esnDirectoryContainer = `
                   </li>
               </ul>
           </div>
-          <button id="quit-directory" class="w-16 items-center flex-row text-sm font-semibold bg-rose-500 text-white p-1 rounded hover:bg-rose-700">Quit</button>
+          <button id="quit-directory" class="w-16 items-center flex-row text-sm font-semibold bg-rose-500 text-white p-1 rounded hover:bg-rose-700">Logout</button>
       </div>
   </div>
   <ul id="user-status-list" role="list" class="flex-grow flex flex-col overflow-y-auto divide-y divide-rose-500 pb-14"></ul>

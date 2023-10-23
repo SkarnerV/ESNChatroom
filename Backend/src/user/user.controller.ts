@@ -48,4 +48,18 @@ export default class UserController {
     }
     return status;
   }
+
+  async updateUserOnlineStatus(username: string): Promise<ESNUser> {
+    let user: ESNUser | null = new ESNUser();
+
+    await this.userDao
+      .updateUserOnlineStatus(username)
+      .then((response) => (user = response));
+
+    if (!user) {
+      throw new notFoundException("User not exists!");
+    }
+
+    return user;
+  }
 }

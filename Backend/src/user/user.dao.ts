@@ -47,6 +47,21 @@ export default class UserDAO {
     return null;
   }
 
+  async updateUserOnlineStatus(username: string): Promise<ESNUser | null> {
+    const userToUpdate = await this.ESNUserDatabase.findOneBy({
+      username,
+    });
+    if (userToUpdate) {
+      // Update user properties
+      userToUpdate.lastOnlineTime = new Date().getTime().toString();
+      // Save the updated user
+      await this.ESNUserDatabase.save(userToUpdate);
+
+      return userToUpdate;
+    }
+    return null;
+  }
+
   async getUsersByUsernames(usernames: string[]): Promise<ESNUser[]> {
     const users: ESNUser[] = [];
 
