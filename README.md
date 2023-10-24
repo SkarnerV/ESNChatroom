@@ -25,4 +25,4 @@
 
 ### API
 
-- https://localhost:3000/docs
+- https://localhost:3000/api/docs
