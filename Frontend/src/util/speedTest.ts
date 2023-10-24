@@ -18,6 +18,7 @@ export default class SpeedTest {
   private duration: number;
   private interval: number;
   private isTestRunning: boolean = false;
+  private postGetRatio: number = 0.5;
   private showResult: (postPerformance: number, getPerformance: number) => void;
   private showError: (errorMsg: string) => void;
 
@@ -38,13 +39,14 @@ export default class SpeedTest {
   */
 
   startTest = async (duration: number, interval: number) => {
-    await speedTestStart();
+    await speedTestStart(currentUser.username);
     this.startTime = performance.now();
     this.duration = duration;
     this.interval = interval;
     this.postNum = 0;
     this.getNum = 0;
     this.isTestRunning = true;
+    setTimeout(this.stopTest, duration * 1000);
     await this.test();
   };
 
@@ -54,9 +56,23 @@ export default class SpeedTest {
     GET Performance: Number of GET requests completed per second
    */
   stopTest = () => {
-    speedTestEnd();
+    if (!this.isTestRunning) {
+      return;
+    }
+    speedTestEnd(currentUser.username);
     this.isTestRunning = false;
-    this.showResult(this.postNum / this.duration, this.getNum / this.duration);
+    // end test early
+    if (this.getNum === 0) {
+      this.showResult(
+        (this.postNum / (performance.now() - this.startTime)) * 1000,
+        0
+      );
+    } else {
+      this.showResult(
+        this.postNum / (this.duration * this.postGetRatio),
+        this.getNum / (this.duration * (1 - this.postGetRatio))
+      );
+    }
   };
 
   /*
@@ -79,8 +95,11 @@ export default class SpeedTest {
     If the duration of the test is too long, the memory can become full or dangerously low.
   */
   test = async () => {
+    if (!this.isTestRunning) {
+      return;
+    }
     const testDuration = performance.now() - this.startTime;
-    if (testDuration > this.duration * 1000 * 2) {
+    if (testDuration > this.duration * 1000) {
       this.stopTest();
       return;
     }
@@ -91,7 +110,8 @@ export default class SpeedTest {
     }
     try {
       const isHalfDuration =
-        this.duration * 1000 < performance.now() - this.startTime;
+        this.duration * 1000 * this.postGetRatio <
+        performance.now() - this.startTime;
       if (isHalfDuration) {
         await this.testGet();
         this.getNum++;
@@ -103,8 +123,10 @@ export default class SpeedTest {
         setTimeout(this.test, this.interval);
       }
     } catch (err) {
-      this.showError("Error occurred during test: " + err);
-      this.stopTest();
+      if (this.isTestRunning) {
+        this.showError("Error occurred during test: " + err);
+        this.stopTest();
+      }
     }
   };
 

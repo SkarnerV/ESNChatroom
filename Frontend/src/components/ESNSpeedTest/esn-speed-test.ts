@@ -53,22 +53,21 @@ initiateTestButton!.onclick = async () => {
   const duration = parseInt(testDurationInput.value, 10);
   const interval = parseInt(requestIntervalInput.value, 10);
 
-  if (
-    isNaN(duration) ||
-    isNaN(interval) ||
-    duration <= 0 ||
-    interval <= 0 ||
-    duration > 5
-  ) {
+  if (isNaN(duration) || isNaN(interval) || duration <= 0 || interval <= 0) {
     showError(
       "Please enter valid positive numbers for both duration and interval."
     );
     return false;
   } else {
-    testingStatus.classList.remove("hidden");
-    stopTestButton.classList.remove("hidden");
-    initiateTestButton.classList.add("hidden");
-    speedTest.startTest(duration, interval);
+    try {
+      speedTest.startTest(duration, interval).then(() => {
+        testingStatus.classList.remove("hidden");
+        stopTestButton.classList.remove("hidden");
+        initiateTestButton.classList.add("hidden");
+      });
+    } catch (error) {
+      showError(error.message);
+    }
   }
 };
 

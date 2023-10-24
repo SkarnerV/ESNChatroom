@@ -86,3 +86,21 @@ describe("getUserStatusByUsername", () => {
     expect(status2).toEqual("RED");
   });
 });
+
+describe("getUsersByUsernames", () => {
+  it("Should return empty users if no users exist", async () => {
+    const users = await userDao.getUsersByUsernames([]);
+    expect(users).toEqual([]);
+  });
+
+  it("Should return all users' info", async () => {
+    await authController.createUser(testUser1);
+    await authController.createUser(testUser2);
+    const users = await userDao.getUsersByUsernames([
+      testUser1.username,
+      testUser2.username,
+    ]);
+    expect(users).not.toBeNull();
+    expect([...users.map((u) => u.id)]).toEqual([testUser1.id, testUser2.id]);
+  });
+});

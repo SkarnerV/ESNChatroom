@@ -76,6 +76,30 @@ describe("getAllUserStatus", () => {
   });
 });
 
+describe("updateUserOnlineStatus", () => {
+  it("Should return null user if user does not exist", async () => {
+    try {
+      await userController.updateUserOnlineStatus(testUser1.username);
+    } catch (error) {
+      expect(error).toBeInstanceOf(notFoundException);
+    }
+  });
+
+  it("Should change the status of user if user exists", async () => {
+    await authController.createUser(testUser1);
+    const lastOnlineTime = testUser1.lastOnlineTime;
+    const updatedUser = await userController.updateUserOnlineStatus(
+      testUser1.username
+    );
+    expect(updatedUser).not.toBeNull();
+    expect(updatedUser.username).toEqual(testUser1.username);
+    const updatedUser2 = await userController.updateUserOnlineStatus(
+      testUser1.username
+    );
+    expect(updatedUser2.lastOnlineTime).not.toEqual(lastOnlineTime);
+  });
+});
+
 describe("updateUserStatus", () => {
   it("Should return null user if user does not exist", async () => {
     try {
