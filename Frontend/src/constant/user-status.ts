@@ -7,12 +7,12 @@ export enum UserStatus {
   UNDEFINE = "UNDEFINE",
 }
 
-export enum UserStatusIcon {
-  GREEN = iconGREEN,
-  YELLOW = iconYELLOW,
-  RED = iconRED,
-  UNDEFINE = iconUNDEFINE,
-}
+export const UserStatusIcon = {
+  GREEN: iconGREEN,
+  YELLOW: iconYELLOW,
+  RED: iconRED,
+  UNDEFINE: iconUNDEFINE,
+};
 
 export enum UserStatusCircle {
   GREEN = "bg-emerald-500",

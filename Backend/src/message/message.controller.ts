@@ -2,7 +2,7 @@ import AuthDAO from "../auth/auth.dao";
 import { SocketServer } from "../server/socketServer";
 import { PostMessageInput } from "../types/types";
 import { ESNUser } from "../user/user.entity";
-import { BadRequestException } from "../util/exceptionHandler";
+import { BadRequestException, ErrorMessage } from "../util/exception";
 import MessageDAO from "./message.dao";
 import { Message } from "./message.entity";
 
@@ -16,11 +16,11 @@ export default class MessageController {
 
   async postMessage(message: PostMessageInput): Promise<Message> {
     if (!message.sender) {
-      throw new BadRequestException("Sender Unknown");
+      throw new BadRequestException(ErrorMessage.SENDER_UNKNOWN_MESSAGE);
     }
 
     if (!message.senderStatus) {
-      throw new BadRequestException("Sender's Status Unkonwn");
+      throw new BadRequestException(ErrorMessage.SENDER_STATUS_UNKNOWN_MESSAGE);
     }
 
     const messageTime = new Date().getTime().toString();

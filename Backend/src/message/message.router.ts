@@ -1,6 +1,5 @@
 import express, { Request, Response, Router } from "express";
 import MessageController from "./message.controller";
-import { Message } from "./message.entity";
 
 export default class MessageRouter {
   private router: Router;
@@ -12,6 +11,12 @@ export default class MessageRouter {
     this.init();
   }
   private init(): void {
+    this.registerGetMessageRoute();
+    this.registerGetUnreadMessageRoute();
+    this.registerPostMessageRoute();
+  }
+
+  private registerGetMessageRoute() {
     this.router.get(
       "/:sender/:sendee",
       async (request: Request, response: Response) => {
@@ -23,6 +28,9 @@ export default class MessageRouter {
         response.send(messages);
       }
     );
+  }
+
+  private registerGetUnreadMessageRoute() {
     this.router.get(
       "/:sendee",
       async (request: Request, response: Response) => {
@@ -33,19 +41,13 @@ export default class MessageRouter {
         response.send(messages);
       }
     );
+  }
+
+  private registerPostMessageRoute() {
     this.router.post("/", async (request: Request, response: Response) => {
-      const {
-        content: content,
-        sender: sender,
-        sendee: sendee,
-        senderStatus: status,
-      } = request.body;
-      const returnedMessage = await this.messageController.postMessage({
-        content: content,
-        sender: sender,
-        sendee: sendee,
-        senderStatus: status,
-      });
+      const returnedMessage = await this.messageController.postMessage(
+        request.body
+      );
       response.send(returnedMessage);
     });
   }

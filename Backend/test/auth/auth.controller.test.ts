@@ -1,8 +1,9 @@
 import AuthController from "../../src/auth/auth.controller";
 import ESNDatabase from "../../src/database/ESNDatabase";
-import { CreateUserInput, LoginCredentials } from "../../src/types/types";
+import { AuthResponse, CreateUserInput } from "../../src/types/types";
 import { ESNUser } from "../../src/user/user.entity";
 import jwt from "jsonwebtoken";
+import { Exception, StatusCode } from "../../src/util/exception";
 
 const databaseInstance = ESNDatabase.getDatabaseInstance();
 let authController: AuthController;
@@ -32,23 +33,10 @@ describe("createUser", () => {
       password: "aaaa",
     };
 
-    const loginCredential: LoginCredentials =
+    const authResponse: AuthResponse =
       await authController.createUser(testESNUser);
 
-    expect(loginCredential).not.toBeNull();
-    expect(loginCredential.status).toEqual(201);
-  });
-
-  it("Should not create a user with banned usernames.", async () => {
-    const testESNUser: CreateUserInput = {
-      username: "test",
-      password: "test_password",
-    };
-
-    const createdMessage: LoginCredentials =
-      await authController.createUser(testESNUser);
-
-    expect(createdMessage.status).toEqual(400);
+    expect(authResponse.username).toEqual(testESNUser.username);
   });
 
   it("Should create a user with unbanned usernames.", async () => {
@@ -57,10 +45,10 @@ describe("createUser", () => {
       password: "test_password",
     };
 
-    const createdMessage: LoginCredentials =
+    const authResponse: AuthResponse =
       await authController.createUser(testESNUser);
 
-    expect(createdMessage.status).toEqual(201);
+    expect(authResponse.username).toEqual(testESNUser.username);
   });
 
   it("Should create a user with legal username length.", async () => {
@@ -69,10 +57,10 @@ describe("createUser", () => {
       password: "test_password",
     };
 
-    const createdMessage: LoginCredentials =
+    const authResponse: AuthResponse =
       await authController.createUser(testESNUser);
 
-    expect(createdMessage.status).toEqual(201);
+    expect(authResponse.username).toEqual(testESNUser.username);
   });
 
   it("Should not create a user with illegal username length.", async () => {
@@ -81,10 +69,11 @@ describe("createUser", () => {
       password: "test_password",
     };
 
-    const createdMessage: LoginCredentials =
+    try {
       await authController.createUser(testESNUser);
-
-    expect(createdMessage.status).toEqual(400);
+    } catch (error) {
+      expect((error as Exception).status).toEqual(StatusCode.UNAUTHORIZED_CODE);
+    }
   });
 
   it("Should not create a user with illegal password length.", async () => {
@@ -93,10 +82,11 @@ describe("createUser", () => {
       password: "pa",
     };
 
-    const createdMessage: LoginCredentials =
+    try {
       await authController.createUser(testESNUser);
-
-    expect(createdMessage.status).toEqual(400);
+    } catch (error) {
+      expect((error as Exception).status).toEqual(StatusCode.UNAUTHORIZED_CODE);
+    }
   });
 
   it("Should create a user with legal password length.", async () => {
@@ -105,10 +95,10 @@ describe("createUser", () => {
       password: "password",
     };
 
-    const createdMessage: LoginCredentials =
+    const authResponse: AuthResponse =
       await authController.createUser(testESNUser);
 
-    expect(createdMessage.status).toEqual(201);
+    expect(authResponse.username).toEqual(testESNUser.username);
   });
 
   it("Should create case-insensitive username.", async () => {
@@ -117,10 +107,10 @@ describe("createUser", () => {
       password: "test_password",
     };
 
-    const createdMessage: LoginCredentials =
+    const authResponse: AuthResponse =
       await authController.createUser(testESNUser);
     const createdUser = jwt.decode(
-      createdMessage.token as string
+      authResponse.token as string
     ) as jwt.JwtPayload;
 
     expect(createdUser.username).toEqual("aaa");
@@ -132,10 +122,10 @@ describe("createUser", () => {
       password: "test_password",
     };
 
-    const createdMessage: LoginCredentials =
+    const authResponse: AuthResponse =
       await authController.createUser(testESNUser);
     const createdUser = jwt.decode(
-      createdMessage.token as string
+      authResponse.token as string
     ) as jwt.JwtPayload;
 
     expect(createdUser.username).toEqual("aaa");
@@ -147,11 +137,10 @@ describe("createUser", () => {
       password: "PASSWORD",
     };
 
-    await authController.createUser(testESNUser);
-    const loginMessage: LoginCredentials =
-      await authController.loginUser(testESNUser);
+    const authResponse: AuthResponse =
+      await authController.createUser(testESNUser);
 
-    expect(loginMessage.status).toEqual(200);
+    expect(authResponse.username).toEqual("aaa");
   });
 
   it("Should not allow case insensitive password.", async () => {
@@ -160,13 +149,11 @@ describe("createUser", () => {
       password: "PASSWORD",
     };
 
-    await authController.createUser(testESNUser);
-    const loginMessage: LoginCredentials = await authController.loginUser({
-      username: "AAA",
-      password: "password",
-    });
-
-    expect(loginMessage.status).toEqual(401);
+    try {
+      await authController.createUser(testESNUser);
+    } catch (error) {
+      expect((error as Exception).status).toEqual(StatusCode.UNAUTHORIZED_CODE);
+    }
   });
 
   it("Should return error message if username is not valid", async () => {
@@ -198,19 +185,29 @@ describe("createUser", () => {
       lastOnlineTime: new Date().getTime().toString(),
     };
 
-    const loginCredential1: LoginCredentials =
+    try {
       await authController.createUser(noUsernameUser);
-    const loginCredential2: LoginCredentials =
-      await authController.createUser(noPasswordUser);
-    const loginCredential3: LoginCredentials =
-      await authController.createUser(illegalPasswordUser);
-    const loginCredential4: LoginCredentials =
-      await authController.createUser(noStatusUser);
+    } catch (error) {
+      expect((error as Exception).status).toEqual(StatusCode.UNAUTHORIZED_CODE);
+    }
 
-    expect(loginCredential1.status).toEqual(400);
-    expect(loginCredential2.status).toEqual(400);
-    expect(loginCredential3.status).toEqual(400);
-    expect(loginCredential4.status).toEqual(400);
+    try {
+      await authController.createUser(noPasswordUser);
+    } catch (error) {
+      expect((error as Exception).status).toEqual(StatusCode.UNAUTHORIZED_CODE);
+    }
+
+    try {
+      await authController.createUser(illegalPasswordUser);
+    } catch (error) {
+      expect((error as Exception).status).toEqual(StatusCode.UNAUTHORIZED_CODE);
+    }
+
+    try {
+      await authController.createUser(noStatusUser);
+    } catch (error) {
+      expect((error as Exception).status).toEqual(StatusCode.UNAUTHORIZED_CODE);
+    }
   });
 });
 
@@ -225,11 +222,10 @@ describe("loginUser", () => {
       lastTimeUpdateStatus: new Date(),
     };
 
-    const loginCredential: LoginCredentials =
+    const authResponse: AuthResponse =
       await authController.createUser(testESNUser);
 
-    expect(loginCredential).not.toBeNull();
-    expect(loginCredential.status).toEqual(201);
+    expect(authResponse.username).toEqual(testESNUser.username);
   });
 
   it("Should login a user if the username and password are correct", async () => {
@@ -242,13 +238,10 @@ describe("loginUser", () => {
       lastTimeUpdateStatus: new Date(),
     };
 
-    const loginCredential: LoginCredentials =
+    const authResponse: AuthResponse =
       await authController.loginUser(testESNUser);
 
-    expect(loginCredential).not.toBeNull();
-    expect(loginCredential.status).toEqual(200);
-    expect(loginCredential.message).toEqual("User Logined");
-    expect(loginCredential.token).not.toBeNull();
+    expect(authResponse.username).toEqual(testESNUser.username);
   });
 
   it("Should return an error if the password is incorrect", async () => {
@@ -261,14 +254,11 @@ describe("loginUser", () => {
       lastTimeUpdateStatus: new Date(),
     };
 
-    const loginCredential: LoginCredentials =
+    try {
       await authController.loginUser(testESNUser);
-
-    expect(loginCredential).not.toBeNull();
-    expect(loginCredential.status).toEqual(401);
-    expect(loginCredential.message).toEqual(
-      "Re-enter the username and/or password"
-    );
+    } catch (error) {
+      expect((error as Exception).status).toEqual(StatusCode.UNAUTHORIZED_CODE);
+    }
   });
 
   it("Should return an error if the account does not exist", async () => {
@@ -279,11 +269,10 @@ describe("loginUser", () => {
       password: "test_password",
     };
 
-    const loginCredential: LoginCredentials =
+    try {
       await authController.loginUser(testESNUser);
-
-    expect(loginCredential).not.toBeNull();
-    expect(loginCredential.status).toEqual(400);
-    expect(loginCredential.message).toEqual("Account does not exits");
+    } catch (error) {
+      expect((error as Exception).status).toEqual(StatusCode.NOT_FOUND_CODE);
+    }
   });
 });

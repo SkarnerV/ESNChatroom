@@ -1,7 +1,12 @@
-import { notFoundException } from "../util/exceptionHandler";
+import {
+  BadRequestException,
+  ErrorMessage,
+  NotFoundException,
+} from "../util/exception";
 import UserDAO from "./user.dao";
 import { ESNUser } from "./user.entity";
 import { SocketServer } from "../server/socketServer";
+import { UserStatus } from "./userStatus";
 
 export default class UserController {
   private userDao: UserDAO;
@@ -21,45 +26,47 @@ export default class UserController {
 
   async updateUserStatus(
     username: string,
-    lastStatus: string
-  ): Promise<ESNUser> {
-    let user: ESNUser | null = new ESNUser();
-    const socketUserLastStatus: string[] = [username, lastStatus];
+    lastStatus?: UserStatus
+  ): Promise<ESNUser | null> {
+    // if (lastStatus && Object.values<string>(UserStatus).includes(lastStatus)) {
+    //   throw new BadRequestException(ErrorMessage.UNKNOWN_USER_STATUS);
+    // }
+    let user = null;
+
     await this.userDao
-      .updateESNUserStatus(username, lastStatus)
-      .then((response) => (user = response));
-    if (!user) {
-      throw new notFoundException("User not exists!");
-    }
-    await SocketServer.getInstance().broadcastChangedStatus(
-      socketUserLastStatus
-    );
+      .updateUserStatus(username, lastStatus)
+      .then((response: ESNUser | null) => {
+        if (!response) {
+          throw new NotFoundException(ErrorMessage.ACCOUNT_NOT_EXIST_MESSAGE);
+        }
+        user = response;
+      });
+    this.sendUserStatusChangeEvent(username, lastStatus);
     return user;
+  }
+
+  private async sendUserStatusChangeEvent(
+    username: string,
+    lastStatus?: UserStatus
+  ) {
+    if (lastStatus) {
+      const socketUserLastStatus: string[] = [username, lastStatus];
+      await SocketServer.getInstance().broadcastChangedStatus(
+        socketUserLastStatus
+      );
+    }
   }
 
   async getUserStatusByUsername(username: string): Promise<string> {
-    let status: string | null = "";
-
+    let lastStatus: string = "";
     await this.userDao
-      .getUserStatus(username)
-      .then((response) => (status = response));
-    if (!status) {
-      throw new notFoundException("User not exists!");
-    }
-    return status;
-  }
-
-  async updateUserOnlineStatus(username: string): Promise<ESNUser> {
-    let user: ESNUser | null = new ESNUser();
-
-    await this.userDao
-      .updateUserOnlineStatus(username)
-      .then((response) => (user = response));
-
-    if (!user) {
-      throw new notFoundException("User not exists!");
-    }
-
-    return user;
+      .getUserByUsername(username)
+      .then((response: ESNUser | null) => {
+        if (!response) {
+          throw new NotFoundException(ErrorMessage.ACCOUNT_NOT_EXIST_MESSAGE);
+        }
+        lastStatus = response.lastStatus;
+      });
+    return lastStatus;
   }
 }

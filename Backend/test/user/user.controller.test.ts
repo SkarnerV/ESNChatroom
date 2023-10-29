@@ -3,7 +3,12 @@ import UserController from "../../src/user/user.controller";
 import UserDAO from "../../src/user/user.dao";
 import { ESNUser } from "../../src/user/user.entity";
 import AuthController from "../../src/auth/auth.controller";
-import { notFoundException } from "../../src/util/exceptionHandler";
+import {
+  Exception,
+  NotFoundException,
+  StatusCode,
+} from "../../src/util/exception";
+import { UserStatus } from "../../src/user/userStatus";
 
 const databaseInstance = ESNDatabase.getDatabaseInstance();
 let userController: UserController;
@@ -14,7 +19,7 @@ const defaultESNUser = {
   id: null,
   username: "",
   password: "",
-  lastStatus: "GREEN",
+  lastStatus: UserStatus.GREEN,
   lastTimeUpdateStatus: new Date(),
   lastOnlineTime: new Date().getTime().toString(),
 };
@@ -63,9 +68,9 @@ describe("getAllUserStatus", () => {
     await authController.createUser(testUser1);
     await authController.createUser(testUser2);
     await authController.createUser(testUser3);
-    await userDao.updateESNUserStatus(testUser1.username, "1");
-    await userDao.updateESNUserStatus(testUser2.username, "2");
-    await userDao.updateESNUserStatus(testUser3.username, "3");
+    await userDao.updateUserStatus(testUser1.username, "1");
+    await userDao.updateUserStatus(testUser2.username, "2");
+    await userDao.updateUserStatus(testUser3.username, "3");
 
     const returnedAllUserStatus = await userController.getAllUserStatus();
     expect(returnedAllUserStatus).toEqual([
@@ -76,36 +81,15 @@ describe("getAllUserStatus", () => {
   });
 });
 
-describe("updateUserOnlineStatus", () => {
-  it("Should return null user if user does not exist", async () => {
-    try {
-      await userController.updateUserOnlineStatus(testUser1.username);
-    } catch (error) {
-      expect(error).toBeInstanceOf(notFoundException);
-    }
-  });
-
-  it("Should change the status of user if user exists", async () => {
-    await authController.createUser(testUser1);
-    const lastOnlineTime = testUser1.lastOnlineTime;
-    const updatedUser = await userController.updateUserOnlineStatus(
-      testUser1.username
-    );
-    expect(updatedUser).not.toBeNull();
-    expect(updatedUser.username).toEqual(testUser1.username);
-    const updatedUser2 = await userController.updateUserOnlineStatus(
-      testUser1.username
-    );
-    expect(updatedUser2.lastOnlineTime).not.toEqual(lastOnlineTime);
-  });
-});
-
 describe("updateUserStatus", () => {
   it("Should return null user if user does not exist", async () => {
     try {
-      await userController.updateUserStatus(testUser1.username, "GREEN");
+      await userController.updateUserStatus(
+        testUser1.username,
+        UserStatus.GREEN
+      );
     } catch (error) {
-      expect(error).toBeInstanceOf(notFoundException);
+      expect(error).toBeInstanceOf(NotFoundException);
     }
   });
 
@@ -113,17 +97,35 @@ describe("updateUserStatus", () => {
     await authController.createUser(testUser1);
     const updatedUser = await userController.updateUserStatus(
       testUser1.username,
-      "GREEN"
+      UserStatus.GREEN
     );
     expect(updatedUser).not.toBeNull();
-    expect(updatedUser.username).toEqual(testUser1.username);
-    expect(updatedUser.lastStatus).toEqual("GREEN");
+    expect(updatedUser?.username).toEqual(testUser1.username);
+    expect(updatedUser?.lastStatus).toEqual(UserStatus.GREEN);
     const updatedUser2 = await userController.updateUserStatus(
       testUser1.username,
-      "RED"
+      UserStatus.RED
     );
-    expect(updatedUser2.lastStatus).toEqual("RED");
+    expect(updatedUser2?.lastStatus).toEqual(UserStatus.RED);
   });
+
+  it("Should not change the lastStatus of user if status is not provided ", async () => {
+    await authController.createUser(testUser1);
+    const updatedUser = await userController.updateUserStatus(
+      testUser1.username
+    );
+
+    expect(updatedUser?.lastStatus).toEqual(UserStatus.GREEN);
+  });
+
+  // it("Should throw BadRequestException if the Status is illegal", async () => {
+  //   try {
+  //     await authController.createUser(testUser1);
+  //     await userController.updateUserStatus(testUser1.username, "dawd");
+  //   } catch (error) {
+  //     expect((error as Exception).status).toEqual(StatusCode.BAD_REQUEST_CODE);
+  //   }
+  // });
 });
 
 describe("getUserStatusByUsername", () => {
@@ -131,7 +133,7 @@ describe("getUserStatusByUsername", () => {
     try {
       await userController.getUserStatusByUsername(testUser1.username);
     } catch (error) {
-      expect(error).toBeInstanceOf(notFoundException);
+      expect(error).toBeInstanceOf(NotFoundException);
     }
   });
 
@@ -140,14 +142,11 @@ describe("getUserStatusByUsername", () => {
     const status = await userController.getUserStatusByUsername(
       testUser1.username
     );
-    expect(status).toEqual("GREEN");
-    const updatedUser2 = await userController.updateUserStatus(
-      testUser1.username,
-      "RED"
-    );
+    expect(status).toEqual(UserStatus.GREEN);
+    await userController.updateUserStatus(testUser1.username, UserStatus.RED);
     const status2 = await userController.getUserStatusByUsername(
       testUser1.username
     );
-    expect(status2).toEqual("RED");
+    expect(status2).toEqual(UserStatus.RED);
   });
 });

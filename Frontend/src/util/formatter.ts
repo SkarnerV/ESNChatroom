@@ -16,4 +16,8 @@ export default class Formatter {
 
     return formattedDate;
   }
+
+  static formatLongUsername(username: string): string {
+    return username.length > 16 ? username.slice(0, 12) + "..." : username;
+  }
 }

@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { ESNUser } from "./user.entity";
 import ESNDatabase from "../database/ESNDatabase";
 
@@ -11,23 +11,26 @@ export default class UserDAO {
       .getRepository(ESNUser);
   }
 
-  async updateESNUserStatus(
+  async updateUserStatus(
     username: string,
-    lastStatus: string
+    lastStatus?: string
   ): Promise<ESNUser | null> {
     const userToUpdate = await this.ESNUserDatabase.findOneBy({
       username,
     });
     if (userToUpdate) {
       // Update user properties
-      userToUpdate.lastStatus = lastStatus;
-      userToUpdate.lastTimeUpdateStatus = new Date();
+      if (lastStatus) {
+        userToUpdate.lastStatus = lastStatus;
+        userToUpdate.lastTimeUpdateStatus = new Date();
+      } else {
+        userToUpdate.lastOnlineTime = new Date().getTime().toString();
+      }
+
       // Save the updated user
       await this.ESNUserDatabase.save(userToUpdate);
-
-      return userToUpdate;
     }
-    return null;
+    return userToUpdate;
   }
 
   async getAllESNUserStatus(): Promise<ESNUser[]> {
@@ -37,42 +40,18 @@ export default class UserDAO {
     return allUsers;
   }
 
-  async getUserStatus(username: string): Promise<string | null> {
-    const user = await this.ESNUserDatabase.findOneBy({
+  async getUserByUsername(username: string): Promise<ESNUser | null> {
+    return await this.ESNUserDatabase.findOneBy({
       username,
     });
-    if (user) {
-      return user.lastStatus;
-    }
-    return null;
-  }
-
-  async updateUserOnlineStatus(username: string): Promise<ESNUser | null> {
-    const userToUpdate = await this.ESNUserDatabase.findOneBy({
-      username,
-    });
-    if (userToUpdate) {
-      // Update user properties
-      userToUpdate.lastOnlineTime = new Date().getTime().toString();
-      // Save the updated user
-      await this.ESNUserDatabase.save(userToUpdate);
-
-      return userToUpdate;
-    }
-    return null;
   }
 
   async getUsersByUsernames(usernames: string[]): Promise<ESNUser[]> {
-    const users: ESNUser[] = [];
-
-    for (const username of usernames) {
-      const user: ESNUser | null = await this.ESNUserDatabase.findOneBy({
-        username: username,
-      });
-      if (user) {
-        users.push(user);
-      }
-    }
+    const users: ESNUser[] = await this.ESNUserDatabase.find({
+      where: {
+        username: In(usernames),
+      },
+    });
 
     return users;
   }

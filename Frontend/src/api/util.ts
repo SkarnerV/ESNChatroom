@@ -15,6 +15,7 @@ export const fetchRequest = (
     body: JSON.stringify(body),
   }).then((res) => {
     // If get 503 status code, show maintenance modal
+
     if (res.status === 503) {
       const body = document.getElementsByTagName("body")[0];
       const maintenanceModal = document.createElement("maintenance-modal");

@@ -4,9 +4,9 @@ import { ESNMessage } from "../../types";
 import { getAllMessages, postESNMessage } from "../../api/message";
 import { getUserStatusByUsername } from "../../api/user";
 import Formatter from "../../util/formatter";
-import StatusClassifier from "../../util/statusClassifier";
 import { socket } from "../../util/socket";
 import { IllegalUserActionHandler } from "../../util/illegalUserHandler";
+import { UserStatusIcon } from "../../constant/user-status";
 
 class ChatArea extends HTMLElement {
   constructor() {
@@ -74,14 +74,18 @@ const recordMessage = (message: ESNMessage) => {
   });
 };
 
-const renderMessage = (message: ESNMessage): void => {
-  if (
+const isCorrectReceiver = (message: ESNMessage) => {
+  return (
     (message.sender === currentUser.username &&
       message.sendee === contactName) ||
     (message.sendee === currentUser.username &&
       message.sender === contactName) ||
     contactName === "Lobby"
-  ) {
+  );
+};
+
+const renderMessage = (message: ESNMessage): void => {
+  if (isCorrectReceiver(message)) {
     const messageBody = document.createElement("div");
     const messageContent = document.createElement("p");
     const messageHeader = document.createElement("div");
@@ -109,8 +113,8 @@ const renderMessage = (message: ESNMessage): void => {
 
     messageContent.textContent = message.content;
     userNickname.textContent = currentUserMessager ? "Me" : message.sender;
-    const htmlElement = StatusClassifier.classifyStatus(message.senderStatus);
-    const userStatusIcon = htmlElement[1];
+
+    const userStatusIcon = UserStatusIcon[message.senderStatus];
 
     messageTime.textContent = message.time
       ? Formatter.formatDate(new Date(parseInt(message.time)))
@@ -130,14 +134,12 @@ const renderMessage = (message: ESNMessage): void => {
     messageBubble.appendChild(currentUserAvatarContainer);
     messageArea?.appendChild(messageHeader);
     messageArea?.appendChild(messageBubble);
-
     const scroll = messageArea || new HTMLDivElement();
     scroll.scrollTop = scroll.scrollHeight || 0;
   }
 };
 
-if (contactName === "Lobby") {
-  socket.on("public message", renderMessage);
-} else {
-  socket.on("private message", renderMessage);
-}
+socket.on(
+  contactName === "Lobby" ? "public message" : "private message",
+  renderMessage
+);

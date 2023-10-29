@@ -1,9 +1,6 @@
-import dotenv from "dotenv";
 import { DataSource } from "typeorm";
 import { ESNUser } from "../user/user.entity";
 import { Message } from "../message/message.entity";
-
-dotenv.config();
 
 export default class ESNDatabase {
   private database: DataSource;
@@ -17,7 +14,7 @@ export default class ESNDatabase {
     password: "sb1",
     database: "sb1",
     entities: [ESNUser, Message],
-    dropSchema: true,
+    dropSchema: false,
     logging: true,
     synchronize: true,
   });

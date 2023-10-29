@@ -3,7 +3,7 @@ import ESNDatabase from "../../src/database/ESNDatabase";
 import MessageController from "../../src/message/message.controller";
 import { Message } from "../../src/message/message.entity";
 import { CreateUserInput, PostMessageInput } from "../../src/types/types";
-import { Exception, statusCode } from "../../src/util/exceptionHandler";
+import { Exception, StatusCode } from "../../src/util/exception";
 
 const databaseInstance = ESNDatabase.getDatabaseInstance();
 let messageController: MessageController;
@@ -95,7 +95,7 @@ describe("postMessage", () => {
     try {
       await messageController.postMessage(testBadMessage2);
     } catch (error) {
-      expect((error as Exception).status).toEqual(statusCode.BAD_REQUEST_CODE);
+      expect((error as Exception).status).toEqual(StatusCode.BAD_REQUEST_CODE);
     }
   });
 
@@ -103,7 +103,7 @@ describe("postMessage", () => {
     try {
       await messageController.postMessage(testBadMessage3);
     } catch (error) {
-      expect((error as Exception).status).toEqual(statusCode.BAD_REQUEST_CODE);
+      expect((error as Exception).status).toEqual(StatusCode.BAD_REQUEST_CODE);
     }
   });
 });

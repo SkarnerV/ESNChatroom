@@ -4,6 +4,7 @@ import express, { Express, Router } from "express";
 import ESNDatabase from "../../src/database/ESNDatabase";
 import AuthRouter from "../../src/auth/auth.router";
 import { ESNUser } from "../../src/user/user.entity";
+import { StatusCode } from "../../src/util/exception";
 
 const databaseInstance = ESNDatabase.getDatabaseInstance();
 let authRouter: Router;
@@ -34,7 +35,7 @@ afterEach(async () => {
 
 describe("AuthRouter", () => {
   describe("POST /register", () => {
-    it("should register a user", async () => {
+    it("Should register a user", async () => {
       const testESNUser: ESNUser = {
         ...defaultESNUser,
         id: 1,
@@ -45,15 +46,14 @@ describe("AuthRouter", () => {
       const res = await request(app)
         .post("/api/users/register")
         .send(testESNUser)
-        .expect(200);
+        .expect(StatusCode.RESOURCE_CREATED_CODE);
 
-      expect(res.body.status).toBe(201);
-      expect(res.body.message).toBe("Account Created Successfully!");
+      expect(res.body.username).toBe(testESNUser.username);
     });
   });
 
   describe("POST /login", () => {
-    it("should login a user", async () => {
+    it("Should login a user", async () => {
       const testESNUser: ESNUser = {
         ...defaultESNUser,
         id: 1,
@@ -64,12 +64,12 @@ describe("AuthRouter", () => {
       const res = await request(app)
         .post("/api/users/login")
         .send(testESNUser)
-        .expect(200);
+        .expect(StatusCode.RESOURCE_CREATED_CODE);
 
-      expect(res.body.message).toBe("User Logined");
+      expect(res.body.username).toBe(testESNUser.username);
     });
 
-    it("should fail login due to incorrect password", async () => {
+    it("Should incurr 400 Error due to incorrect password", async () => {
       const testESNUser: ESNUser = {
         ...defaultESNUser,
         id: 1,
@@ -79,13 +79,24 @@ describe("AuthRouter", () => {
 
       await request(app).post("/api/users/register").send(testESNUser);
       testESNUser.password = "wrong_password";
-      const res = await request(app)
+      await request(app)
         .post("/api/users/login")
         .send(testESNUser)
-        .expect(200);
+        .expect(StatusCode.UNAUTHORIZED_CODE);
+    });
 
-      expect(res.body.status).toBe(401);
-      expect(res.body.message).toBe("Re-enter the username and/or password");
+    it("Should incurr 404 Error due to user not exit", async () => {
+      const testESNUser: ESNUser = {
+        ...defaultESNUser,
+        id: 1,
+        username: "test_login",
+        password: "test_password",
+      };
+
+      await request(app)
+        .post("/api/users/login")
+        .send(testESNUser)
+        .expect(StatusCode.NOT_FOUND_CODE);
     });
   });
 });

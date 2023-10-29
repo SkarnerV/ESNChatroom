@@ -1,5 +1,5 @@
 export class IllegalUserActionHandler {
-  static redirectToLogin(): void {
+  static async redirectToLogin(): Promise<void> {
     if (localStorage.getItem("token") === null) {
       window.location.href = "/";
     }

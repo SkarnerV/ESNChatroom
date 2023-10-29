@@ -1,16 +1,13 @@
 import { esnDirectoryContainer } from "../../templates/directory/esn-directory-template";
-import { navBarContainer } from "../../templates/navbar/foot-navbar-template";
-import {
-  getAllUserStatus,
-  updateLastStatus,
-  updateOnlineStatus,
-} from "../../api/user";
-import { UserStatus, UserStatusIcon } from "../../constants/user-status";
+
+import { getAllUserStatus } from "../../api/user";
+import { UserStatusIcon } from "../../constant/user-status";
 import { ESNMessage, ESNUserStatus } from "../../types";
-import StatusClassifier from "../../util/statusClassifier";
+
 import jwt from "jsonwebtoken";
 import { socket } from "../../util/socket";
 import { IllegalUserActionHandler } from "../../util/illegalUserHandler";
+import Formatter from "../../util/formatter";
 
 class ESNDirectory extends HTMLElement {
   constructor() {
@@ -18,7 +15,7 @@ class ESNDirectory extends HTMLElement {
   }
 
   connectedCallback() {
-    this.innerHTML = esnDirectoryContainer + navBarContainer;
+    this.innerHTML = esnDirectoryContainer;
   }
 }
 
@@ -35,10 +32,6 @@ let unreadUsersList: string[] = JSON.parse(unreadUsers) as string[];
 let onlineUsers: string[] = [];
 
 const userStatusList = document.getElementById("user-status-list");
-const speedTestButton = document.getElementById("speedtest-directory");
-speedTestButton!.onclick = () => {
-  window.location.href = "/ESNSpeedTest.html";
-};
 
 const getUserStatusData = async () => {
   getAllUserStatus().then((response) => {
@@ -51,7 +44,7 @@ const getUserStatusData = async () => {
   });
 };
 
-const sortUserStatusList = () => {
+const getSortableUserList = () => {
   const userStatusListChildren = userStatusList?.children;
   const userStatusListArray = Array.from(userStatusListChildren!).map(
     (e: Element) => {
@@ -63,6 +56,13 @@ const sortUserStatusList = () => {
       return { e, username, lastStatus, isOnline, isCurrentUser };
     }
   );
+
+  return userStatusListArray;
+};
+
+const sortUserStatusList = () => {
+  const userStatusListArray = getSortableUserList();
+
   userStatusListArray.sort((a, b) => {
     if (a.isCurrentUser) {
       return -1;
@@ -112,22 +112,9 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
   userAvatar.src =
     "https://avatars.dicebear.com/api/adventurer-neutral/mail%40ashallendesign.co.uk.svg";
 
-  const htmlElement = StatusClassifier.classifyStatus(userStatus.lastStatus);
-  userStatusInfo.classList.add(htmlElement[0]);
-  const userStatusSVGIcon = htmlElement[1];
+  userStatusInfo.classList.add("bg-emerald-500");
+  const userStatusSVGIcon = UserStatusIcon[userStatus.lastStatus];
   usernameText.textContent = userStatus.username;
-
-  if (usernameText.textContent.length > 16) {
-    usernameText.textContent = usernameText.textContent.slice(0, 12) + "...";
-  }
-
-  if (isCurrentUser) {
-    usernameText.textContent = "Me";
-    const myStatusSelection = document.getElementById(
-      `status-${userStatus.lastStatus}`
-    ) as HTMLInputElement;
-    myStatusSelection!.checked = true;
-  }
 
   userAvatarBody.appendChild(userStatusInfo);
   userAvatarBody.appendChild(userAvatar);
@@ -138,6 +125,18 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
 
   statusBody.appendChild(usernameBody);
 
+  usernameText.textContent = Formatter.formatLongUsername(
+    usernameText.textContent
+  );
+
+  if (isCurrentUser) {
+    usernameText.textContent = "Me";
+    const myStatusSelection = document.getElementById(
+      `status-${userStatus.lastStatus}`
+    ) as HTMLInputElement;
+    myStatusSelection!.checked = true;
+  }
+
   if (!unreadUsersList.includes(userStatus.username)) {
     unreadSign!.style.display = "none";
   } else {
@@ -147,7 +146,6 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
   statusBody.appendChild(userStatusInfoBody);
 
   userStatusList?.appendChild(statusBody);
-
   if (!isCurrentUser) {
     statusBody.onclick = () => {
       unreadUsersList = unreadUsersList.filter(
@@ -159,130 +157,23 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
   }
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-  const statusButton = document.getElementById("change-status");
-  const dropdownMenu = document.getElementById("status-dropdown");
-
-  statusButton?.addEventListener("click", () => {
-    if (
-      dropdownMenu?.classList.contains("hidden") &&
-      statusButton.classList.contains("rounded-b")
-    ) {
-      statusButton.classList.remove("rounded-b");
-      dropdownMenu.classList.remove("hidden");
-    } else {
-      dropdownMenu?.classList.add("hidden");
-      statusButton.classList.add("rounded-b");
-    }
-  });
-
-  // Optional: Close the dropdown when clicked outside
-  document.addEventListener("click", (event) => {
-    if (
-      event.target !== statusButton &&
-      !statusButton?.contains(event.target as Node)
-    ) {
-      dropdownMenu?.classList.add("hidden");
-      statusButton?.classList.add("rounded-b");
-    }
-  });
-});
-
-const quitButton = document.getElementById("quit-directory");
-const publicChatButton = document.getElementById("direct-chat");
-const homeButton = document.getElementById("direct-home");
-const directoryButton = document.getElementById("direct-directory");
-
-const radios = document.querySelectorAll('input[type="radio"][name="status"]');
-radios.forEach((radio) => {
-  radio.addEventListener("change", async function () {
-    if (this.checked) {
-      await updateLastStatus(currentUser.username, this.value);
-    }
-  });
-});
-
-quitButton!.onclick = async () => {
-  await updateOnlineStatus(currentUser.username);
-  localStorage.removeItem("token");
-  window.location.href = "/";
-};
-
-publicChatButton!.onclick = async () => {
-  window.location.href = "/chat.html?contact=Lobby";
-};
-
-homeButton!.onclick = () => {
-  userStatusList!.style.display = "none";
-  changeHomePageHeaderText("Home");
-};
-
-directoryButton!.onclick = () => {
-  userStatusList!.style.display = "block";
-  changeHomePageHeaderText("Directory");
-};
-
-const changeLastStatus = (
-  userItem: HTMLLIElement,
-  lastStatus: string,
-  currentStatus: string,
-  username: string
-) => {
-  const statusIcon = userItem.querySelector(`#icon-${lastStatus}`);
-  const statusInfoBody = userItem.querySelector(
-    `#${username}-status-info-container`
-  );
-
-  if (statusIcon) {
-    statusIcon.remove();
-  }
-  if (currentStatus === UserStatus.RED) {
-    statusInfoBody!.innerHTML += UserStatusIcon.RED;
-  }
-  if (currentStatus === UserStatus.YELLOW) {
-    statusInfoBody!.innerHTML += UserStatusIcon.YELLOW;
-  }
-  if (currentStatus === UserStatus.GREEN) {
-    statusInfoBody!.innerHTML += UserStatusIcon.GREEN;
-  }
-  if (currentStatus === UserStatus.UNDEFINE) {
-    statusInfoBody!.innerHTML += UserStatusIcon.UNDEFINE;
-  }
-
-  userItem.id = `user-${username}-${currentStatus}`;
-};
-
-const addOfflineTag = (
-  userItem: HTMLLIElement,
-  isOnline: boolean,
-  username: string
-) => {
-  const statusInfo = userItem.querySelector(`#${username}-last-status-info`);
-  if (statusInfo) {
-    if (!isOnline) {
-      statusInfo.classList.remove("bg-emerald-500");
-      statusInfo.classList.add("bg-gray-500");
-    } else {
-      statusInfo.classList.remove("bg-gray-500");
-      statusInfo.classList.add("bg-emerald-500");
-    }
-  }
-};
-
-const changeHomePageHeaderText = (pageName: string) => {
-  const homePageHeaderText = document.getElementById("home-page-header");
-  if (homePageHeaderText) {
-    if (pageName == "Home") {
-      homePageHeaderText.textContent = "Home";
-    } else if (pageName == "Directory") {
-      homePageHeaderText.textContent = "Directory";
-    }
-  }
-};
-
 const updateUserStatus = () => {
   const userItems = document.querySelectorAll("li");
+  updateNewUsersStatue();
+  userItems.forEach((userItem) => {
+    const username = userItem.id.split("-")[1];
+    const statusInfo = userItem.querySelector(`#${username}-last-status-info`);
 
+    if (statusInfo) {
+      const isOnline = onlineUsers.includes(username);
+      statusInfo.classList.toggle("bg-emerald-500", isOnline);
+      statusInfo.classList.toggle("bg-gray-500", !isOnline);
+    }
+  });
+};
+
+const updateNewUsersStatue = () => {
+  const userItems = document.querySelectorAll("li");
   // check if new user exists
   onlineUsers.forEach((username) => {
     let isNewUser = true;
@@ -296,27 +187,13 @@ const updateUserStatus = () => {
       getUserStatusData();
     }
   });
-
-  userItems.forEach((userItem) => {
-    const username = userItem.id.split("-")[1];
-    if (!onlineUsers.includes(username)) {
-      addOfflineTag(userItem, false, username);
-    } else {
-      addOfflineTag(userItem, true, username);
-    }
-  });
 };
 
 const updateUserLastStatus = (username: string, currentStatus: string) => {
-  const userItems = document.querySelectorAll("li");
-
-  userItems.forEach((userItem) => {
-    const usernameHTML = userItem.id.split("-")[1];
-    const lastStatus = userItem.id.split("-")[2];
-    if (userItem && username == usernameHTML) {
-      changeLastStatus(userItem, lastStatus, currentStatus, username);
-    }
-  });
+  const userItem = document.getElementById(`${username}-status-info-container`);
+  // Replace the existing SVG element with the newSVG
+  userItem!.innerHTML = ""; // Remove the existing content in the container
+  userItem!.innerHTML += UserStatusIcon[currentStatus];
 };
 
 getUserStatusData().then(() => {

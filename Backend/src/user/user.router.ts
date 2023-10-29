@@ -1,5 +1,5 @@
 import UserController from "./user.controller";
-import express, { Request, Response, Router } from "express";
+import express, { NextFunction, Request, Response, Router } from "express";
 import { ESNUser } from "./user.entity";
 import { lastStatusResponse } from "../types/types";
 
@@ -14,14 +14,29 @@ export default class UserRouter {
   }
 
   private init(): void {
-    this.router.get("/status", async (_: Request, response: Response) => {
-      const users: ESNUser[] = await this.userController.getAllUserStatus();
-      response.send(users);
-    });
+    this.registerGetStatusRoute();
+    this.registerChangeStatusRoute();
+    this.registerUserStatusRoute();
+  }
 
+  private registerGetStatusRoute() {
+    this.router.get(
+      "/status",
+      async (_: Request, response: Response, next: NextFunction) => {
+        try {
+          response.send(await this.userController.getAllUserStatus());
+        } catch (error) {
+          next(error);
+        }
+      }
+    );
+  }
+
+  private registerUserStatusRoute() {
     this.router.get(
       "/:username/status",
-      async (request: Request, response: Response) => {
+      async (request: Request, response: Response, next: NextFunction) => {
+        // try {
         const username: string = request.params.username;
         const lastStatus: string =
           await this.userController.getUserStatusByUsername(username);
@@ -29,26 +44,27 @@ export default class UserRouter {
           lastStatus: lastStatus,
         };
         response.send(status);
+        // } catch (error) {
+        //   next(error);
+        // }
       }
     );
+  }
 
-    this.router.put("/status", async (request: Request, response: Response) => {
-      const username: string = request.body.username;
-      const lastStatus: string = request.body.lastStatus;
-      const user = await this.userController.updateUserStatus(
-        username,
-        lastStatus
-      );
-      response.send(user);
-    });
-
+  private registerChangeStatusRoute() {
     this.router.put(
-      "/onlinestatus",
-      async (request: Request, response: Response) => {
-        const username: string = request.body.username;
-        const user: ESNUser =
-          await this.userController.updateUserOnlineStatus(username);
-        response.send(user);
+      "/status",
+      async (request: Request, response: Response, next: NextFunction) => {
+        // try {
+        response.send(
+          await this.userController.updateUserStatus(
+            request.body.username,
+            request.body.lastStatus
+          )
+        );
+        // } catch (error) {
+        //   next(error);
+        // }
       }
     );
   }

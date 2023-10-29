@@ -12,7 +12,7 @@ export default class AuthDAO {
   }
 
   // Create user and store in the DB
-  async createUser(userInput: CreateUserInput): Promise<string> {
+  async createUser(userInput: CreateUserInput): Promise<ESNUser> {
     const newUser = this.userDatabase.create();
     newUser.username = userInput.username;
     newUser.password = userInput.password;
@@ -23,7 +23,7 @@ export default class AuthDAO {
     newUser.lastOnlineTime = new Date().getTime().toString();
 
     const createdUser = await this.userDatabase.save(newUser);
-    return createdUser.id.toString();
+    return createdUser;
   }
 
   // Get user ID from the DB
@@ -42,21 +42,5 @@ export default class AuthDAO {
       return null;
     }
     return user;
-  }
-
-  // Check if user exists and password is correct
-  async checkUserLogin(
-    username: string,
-    password: string
-  ): Promise<LoginAuthentication> {
-    const user = await this.userDatabase.findOneBy({ username: username });
-    if (user && user.password) {
-      // User exists, check password
-      const isPasswordMatch = password === user.password;
-      return { userExists: true, passwordMatch: isPasswordMatch };
-    } else {
-      // User does not exist
-      return { userExists: false, passwordMatch: false };
-    }
   }
 }

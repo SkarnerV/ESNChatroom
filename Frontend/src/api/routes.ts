@@ -7,6 +7,4 @@ export const getAllUserStatusApi = `${endpoint}/api/users/status`;
 export const AllUserApi = `${endpoint}/api/users`;
 export const messagesApi = `${endpoint}/api/messages/`;
 
-export const putUserOnlineStatusApi = `${endpoint}/api/users/onlinestatus`;
-
 export const speedTestApi = `${endpoint}/api/speedtests`;

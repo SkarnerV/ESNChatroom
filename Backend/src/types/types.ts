@@ -1,7 +1,7 @@
-export interface LoginCredentials {
-  status: number;
-  message: string;
-  token?: string;
+export interface AuthResponse {
+  id: string;
+  username: string;
+  token: string;
 }
 
 export interface LoginAuthentication {

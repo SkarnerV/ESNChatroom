@@ -29,12 +29,12 @@ confirmButton!.onclick = async () => {
   confirmButton!.setAttribute("disabled", "true");
   await userRegister(username.toLowerCase(), hashedPassword)
     .then((data) => {
-      if (data.status === 201) {
+      if (data.token) {
         // if user successfully created, show welcome modal
         showWelcomeModal();
         localStorage.setItem("token", data.token);
-      } else if (data.status === 400) {
-        alert(data.message);
+      } else {
+        alert(data.exceptionMessage);
         return;
       }
     })

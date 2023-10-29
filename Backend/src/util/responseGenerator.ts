@@ -1,14 +1,14 @@
-import { LoginCredentials } from "../types/types";
+import { AuthResponse } from "../types/types";
 
-export default class ResponseGenerator {
-  static getLoginResponse(
-    status: number,
-    message: string,
-    token?: string
-  ): LoginCredentials {
+export default class Response {
+  static authResponse(
+    id: string,
+    username: string,
+    token: string
+  ): AuthResponse {
     return {
-      status,
-      message,
+      id,
+      username,
       token,
     };
   }

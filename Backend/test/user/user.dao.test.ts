@@ -42,7 +42,7 @@ afterEach(async () => {
 describe("updateESNUserStatus", () => {
   it("Should change the status of user if user exists", async () => {
     await authController.createUser(testUser1);
-    const updatedUser: ESNUser | null = await userDao.updateESNUserStatus(
+    const updatedUser: ESNUser | null = await userDao.updateUserStatus(
       testUser1.username,
       "2"
     );
@@ -62,8 +62,8 @@ describe("getAllESNUserStatus", () => {
   it("Should return all users' info", async () => {
     await authController.createUser(testUser1);
     await authController.createUser(testUser2);
-    await userDao.updateESNUserStatus(testUser1.username, "1");
-    await userDao.updateESNUserStatus(testUser2.username, "2");
+    await userDao.updateUserStatus(testUser1.username, "1");
+    await userDao.updateUserStatus(testUser2.username, "2");
     const allUsers = await userDao.getAllESNUserStatus();
     expect(allUsers).not.toBeNull();
     expect(allUsers).toEqual([
@@ -73,17 +73,19 @@ describe("getAllESNUserStatus", () => {
   });
 });
 
-describe("getUserStatusByUsername", () => {
-  it("Should return the lastStatus of user if user exists", async () => {
+describe("getUserByUsername", () => {
+  it("Should return empty users if no users exist", async () => {
+    const users = await userDao.getUserByUsername("aaa");
+    expect(users).toEqual(null);
+  });
+
+  it("Should return all users' info", async () => {
     await authController.createUser(testUser1);
-    const status = await userDao.getUserStatus(testUser1.username);
-    expect(status).toEqual("GREEN");
-    const updatedUser2 = await userDao.updateESNUserStatus(
-      testUser1.username,
-      "RED"
+    const user: ESNUser | null = await userDao.getUserByUsername(
+      testUser1.username
     );
-    const status2 = await userDao.getUserStatus(testUser1.username);
-    expect(status2).toEqual("RED");
+
+    expect(user?.username).toEqual(testUser1.username);
   });
 });
 

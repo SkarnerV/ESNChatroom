@@ -2,7 +2,7 @@ import {
   homeIcon,
   publicChatIcon,
   userDirectoryIcon,
-} from "../../constants/svg-icon";
+} from "../../constant/svg-icon";
 
 export const navBarContainer = `
 <div class="pb-5 pt-3 flex flex-grow fixed bottom-0 left-0 right-0 justify-around items-center bg-black py-2 px-4 text-white">
