@@ -330,6 +330,36 @@
         ]
       }
     },
+      "/api/messages/last/:sender/:sendee": {
+      "get": {
+        "operationId": "get the last message from the sender to sendee",
+        "responses": {
+          "200": {
+            "description": "GetLastMessages"
+          }
+        },
+        "description": "get the last message from the sender to sendee",
+        "security": [],
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "name": "sender",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "name": "sendee",
+            "in": "path"
+          }
+        ]
+      }
+    },
     "/api/search/:context": {
       "get": {
         "operationId": "search for informations",
