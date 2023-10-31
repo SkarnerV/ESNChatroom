@@ -329,6 +329,47 @@
           }
         ]
       }
+    },
+    "/api/search/:context": {
+      "get": {
+        "operationId": "search for informations",
+        "responses": {
+          "200": {
+            "description": "Return the search result"
+          },
+          "400": {
+            "description": "Invalid search request"
+          }
+        },
+        "description": "search for informations",
+        "security": [],
+        "parameters": [
+          {
+            "required": true,
+            "schema": { "type": "string" },
+            "name": "context",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": { "type": "string" },
+            "name": "criteria",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": { "type": "string" },
+            "name": "sender",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": { "type": "string" },
+            "name": "sendee",
+            "in": "query"
+          }
+        ]
+      }
     }
   },
   "servers": [
