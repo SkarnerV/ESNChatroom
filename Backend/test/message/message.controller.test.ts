@@ -10,7 +10,7 @@ let messageController: MessageController;
 let authController: AuthController;
 const testMessage1: Message = {
   id: 1,
-  content: "this is a test mesage1 ",
+  content: "this is a test message1 ",
   time: "12:11 PM",
   sender: "1",
   sendee: "Lobby",
@@ -19,7 +19,7 @@ const testMessage1: Message = {
 
 const testMessage2: Message = {
   id: 2,
-  content: "this is a test mesage1 ",
+  content: "this is a test message2 ",
   time: "12:11 PM",
   sender: "1",
   sendee: "Lobby",
@@ -28,7 +28,7 @@ const testMessage2: Message = {
 
 const testMessage3: Message = {
   id: 3,
-  content: "this is a test mesage1 ",
+  content: "this is a test message3 ",
   time: "12:11 PM",
   sender: "1",
   sendee: "2",
@@ -36,14 +36,14 @@ const testMessage3: Message = {
 };
 
 const testMessage4: PostMessageInput = {
-  content: "this is a test mesage4 ",
+  content: "this is a test message4 ",
   sender: "1",
   sendee: "aaa",
   senderStatus: "GREEN",
 };
 
 const testMessage5: PostMessageInput = {
-  content: "this is a test mesage5 ",
+  content: "this is a test message5 ",
   sender: "1",
   sendee: "aaa",
   senderStatus: "GREEN",
@@ -51,7 +51,7 @@ const testMessage5: PostMessageInput = {
 
 const testBadMessage2: Message = {
   id: 2,
-  content: "this is a bad mesage2 ",
+  content: "this is a bad message2 ",
   time: "12:33PM",
   sender: "",
   sendee: "1",
@@ -60,7 +60,7 @@ const testBadMessage2: Message = {
 
 const testBadMessage3: Message = {
   id: 3,
-  content: "this is a bad mesage3 ",
+  content: "this is a bad message3 ",
   time: "12:33PM",
   sender: "2",
   sendee: "Lobby",
@@ -151,5 +151,31 @@ describe("getUnreadMessages", () => {
       testMessage4.content,
       testMessage5.content,
     ]);
+  });
+});
+
+describe("getLastMessage", () => {
+  it("Should get empty messages if no message exits in database.", async () => {
+    const lastMessage: Message[] = await messageController.getLastMessage(
+      "1",
+      "Lobby"
+    );
+    expect(lastMessage).toEqual([]);
+  });
+
+  it("Should get empty messages if username does not exits in database.", async () => {
+    await messageController.postMessage(testMessage1);
+    const lastMessage1 = await messageController.getLastMessage(
+      testMessage1.sender,
+      testMessage1.sendee
+    );
+    await messageController.postMessage(testMessage2);
+    const lastMessage2 = await messageController.getLastMessage(
+      testMessage1.sender,
+      testMessage1.sendee
+    );
+
+    expect(lastMessage1[0].content).toEqual(testMessage1.content);
+    expect(lastMessage2[0].content).toEqual(testMessage2.content);
   });
 });

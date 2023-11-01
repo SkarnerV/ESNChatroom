@@ -1,27 +1,18 @@
 import { In, MoreThan, Repository } from "typeorm";
 import { Message } from "./message.entity";
 import ESNDatabase from "../database/ESNDatabase";
-import { PostMessageInput } from "../types/types";
 
 export default class MessageDAO {
   private messageDatabase: Repository<Message>;
+
   constructor() {
     this.messageDatabase = ESNDatabase.getDatabaseInstance()
       .getDataSource()
       .getRepository(Message);
   }
 
-  async createMessage(
-    message: PostMessageInput,
-    messageTime: string
-  ): Promise<Message> {
-    const newMessage = this.messageDatabase.create();
-    newMessage.content = message.content;
-    newMessage.sender = message.sender;
-    newMessage.time = messageTime;
-    newMessage.senderStatus = message.senderStatus;
-    newMessage.sendee = message.sendee;
-    const createdMessage = await this.messageDatabase.save(newMessage);
+  async createMessage(message: Message): Promise<Message> {
+    const createdMessage = await this.messageDatabase.save(message);
     return createdMessage;
   }
 
@@ -35,9 +26,21 @@ export default class MessageDAO {
     return allMessages;
   }
 
-  async getAllPublicMessages(): Promise<Message[]> {
+  async getLastPublicMessage(sendee: string): Promise<Message | null> {
+    const lastMessage = await this.messageDatabase.findOne({
+      order: {
+        id: "DESC",
+      },
+      where: {
+        sendee: sendee,
+      },
+    });
+    return lastMessage;
+  }
+
+  async getAllPublicMessages(sendee: string): Promise<Message[]> {
     const allMessages = await this.messageDatabase.findBy({
-      sendee: "Lobby",
+      sendee: sendee,
     });
     return allMessages;
   }

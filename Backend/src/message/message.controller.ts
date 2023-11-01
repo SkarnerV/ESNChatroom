@@ -5,13 +5,24 @@ import { ESNUser } from "../user/user.entity";
 import { BadRequestException, ErrorMessage } from "../util/exception";
 import MessageDAO from "./message.dao";
 import { Message } from "./message.entity";
+import {
+  AnnouncementFacotry,
+  PrivateFacotry,
+  PublicFacotry,
+} from "./messageFactory";
 
 export default class MessageController {
   private messageDao: MessageDAO;
   private authDao: AuthDAO;
+  private publicFactory: PublicFacotry;
+  private privateFactory: PrivateFacotry;
+  private announcementFactory: AnnouncementFacotry;
   constructor() {
     this.messageDao = new MessageDAO();
     this.authDao = new AuthDAO();
+    this.publicFactory = new PublicFacotry();
+    this.privateFactory = new PrivateFacotry();
+    this.announcementFactory = new AnnouncementFacotry();
   }
 
   async postMessage(message: PostMessageInput): Promise<Message> {
@@ -22,19 +33,21 @@ export default class MessageController {
     if (!message.senderStatus) {
       throw new BadRequestException(ErrorMessage.SENDER_STATUS_UNKNOWN_MESSAGE);
     }
-
-    const messageTime = new Date().getTime().toString();
-
-    const createdMessage = await this.messageDao.createMessage(
-      message,
-      messageTime
-    );
-
+    let newMessage: Message;
     if (message.sendee === "Lobby") {
-      SocketServer.getInstance().broadcastPublicMessage(createdMessage);
+      newMessage = this.publicFactory.createMessage(message);
+    } else if (message.sendee === "Announcement") {
+      newMessage = this.announcementFactory.createMessage(message);
     } else {
-      SocketServer.getInstance().broadcastPrivateMessage(createdMessage);
+      newMessage = this.privateFactory.createMessage(message);
     }
+
+    const createdMessage = await this.messageDao.createMessage(newMessage);
+
+    SocketServer.getInstance().broadcastMessage(
+      createdMessage.sendee,
+      createdMessage
+    );
 
     return createdMessage;
   }
@@ -42,9 +55,9 @@ export default class MessageController {
   async getAllMessages(sender: string, sendee: string): Promise<Message[]> {
     let allMessages: Message[] = [];
     // const decodeToekn = jwt.decode(senderToken) as Token;
-    if (sendee === "Lobby") {
+    if (sendee === "Lobby" || sendee === "Announcement") {
       await this.messageDao
-        .getAllPublicMessages()
+        .getAllPublicMessages(sendee)
         .then((response) => (allMessages = response));
     } else {
       await this.messageDao
@@ -65,5 +78,21 @@ export default class MessageController {
       );
     }
     return unreadMessages;
+  }
+
+  async getLastMessage(_: string, sendee: string): Promise<Message[]> {
+    let lastMessage: Message[] = [];
+    // const decodeToekn = jwt.decode(senderToken) as Token;
+    if (sendee === "Lobby" || sendee === "Announcement") {
+      await this.messageDao
+        .getLastPublicMessage(sendee)
+        .then((response) =>
+          response ? (lastMessage = [response]) : (lastMessage = [])
+        );
+    } else {
+      lastMessage = []; // not implemented yet
+    }
+
+    return lastMessage;
   }
 }

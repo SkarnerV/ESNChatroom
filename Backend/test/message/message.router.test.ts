@@ -132,4 +132,20 @@ describe("MessageRouter", () => {
       ]);
     });
   });
+
+  describe("GET /last/:sender/:sendee", () => {
+    it("Should get last from sender to sendee", async () => {
+      await messageController.postMessage(testMessage1);
+      await messageController.postMessage(testMessage2);
+      let user1 = "1";
+      let user2 = "Lobby";
+      const res = await request(app)
+        .get(`/api/messages/last/${user1}/${user2}`)
+        .expect(200);
+
+      expect(res.body.map((message: Message) => message.content)).toEqual([
+        testMessage2.content,
+      ]);
+    });
+  });
 });

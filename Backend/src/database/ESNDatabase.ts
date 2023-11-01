@@ -14,7 +14,7 @@ export default class ESNDatabase {
     password: "sb1",
     database: "sb1",
     entities: [ESNUser, Message],
-    dropSchema: false,
+    dropSchema: process.env ? false : true,
     logging: true,
     synchronize: true,
   });

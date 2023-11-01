@@ -20,16 +20,9 @@ export default class UserRouter {
   }
 
   private registerGetStatusRoute() {
-    this.router.get(
-      "/status",
-      async (_: Request, response: Response, next: NextFunction) => {
-        try {
-          response.send(await this.userController.getAllUserStatus());
-        } catch (error) {
-          next(error);
-        }
-      }
-    );
+    this.router.get("/status", async (_: Request, response: Response) => {
+      response.send(await this.userController.getAllUserStatus());
+    });
   }
 
   private registerUserStatusRoute() {

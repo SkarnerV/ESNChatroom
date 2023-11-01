@@ -14,6 +14,7 @@ export default class MessageRouter {
     this.registerGetMessageRoute();
     this.registerGetUnreadMessageRoute();
     this.registerPostMessageRoute();
+    this.registerLastMessageRoute();
   }
 
   private registerGetMessageRoute() {
@@ -50,6 +51,19 @@ export default class MessageRouter {
       );
       response.send(returnedMessage);
     });
+  }
+
+  private registerLastMessageRoute() {
+    this.router.get(
+      "/last/:sender/:sendee",
+      async (request: Request, response: Response) => {
+        const returnedMessage = await this.messageController.getLastMessage(
+          request.params.sender,
+          request.params.sendee
+        );
+        response.send(returnedMessage);
+      }
+    );
   }
 
   getRouter(): Router {

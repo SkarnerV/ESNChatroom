@@ -298,6 +298,36 @@
         ]
       }
     },
+    "/api/messages/last/:sender/:sendee": {
+      "get": {
+        "operationId": "get last message from the sender and sendee",
+        "responses": {
+          "200": {
+            "description": "GetLastMessages"
+          }
+        },
+        "description": "get last message from the sender and sendee",
+        "security": [],
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "name": "sender",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "name": "sendee",
+            "in": "path"
+          }
+        ]
+      }
+    },
     "/api/messages/:sendee": {
       "get": {
         "operationId": "get all unread messages for sendee",

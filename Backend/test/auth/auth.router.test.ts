@@ -50,6 +50,20 @@ describe("AuthRouter", () => {
 
       expect(res.body.username).toBe(testESNUser.username);
     });
+
+    it("Should incurr 401 Error due to illegal userinput", async () => {
+      const testESNUser: ESNUser = {
+        ...defaultESNUser,
+        id: 1,
+        username: "te",
+        password: "test_password",
+      };
+
+      const res = await request(app)
+        .post("/api/users/register")
+        .send(testESNUser)
+        .expect(StatusCode.UNAUTHORIZED_CODE);
+    });
   });
 
   describe("POST /login", () => {

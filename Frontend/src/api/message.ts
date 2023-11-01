@@ -38,3 +38,16 @@ export const getUnreadMessages = async (sendee: string) => {
     }
   });
 };
+
+export const getLastMessage = async (sender: string, sendee: string) => {
+  return await fetchRequest(
+    `${messagesApi}last/${sender}/${sendee}`,
+    "GET"
+  ).then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error("HTTP error: " + response.status);
+    }
+  });
+};

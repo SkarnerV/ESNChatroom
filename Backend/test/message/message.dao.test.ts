@@ -5,31 +5,39 @@ import { PostMessageInput } from "../../src/types/types";
 
 const databaseInstance = ESNDatabase.getDatabaseInstance();
 let messageDao: MessageDAO;
-const testMessage1: PostMessageInput = {
-  content: "this is a test mesage1 ",
+const testMessage1: Message = {
+  id: 1,
+  content: "this is a test message1 ",
   sender: "1",
   sendee: "2",
+  time: "1",
   senderStatus: "GREEN",
 };
 
-const testMessage2: PostMessageInput = {
-  content: "this is a test mesage2 ",
+const testMessage2: Message = {
+  id: 2,
+  content: "this is a test message2 ",
   sender: "1",
   sendee: "2",
+  time: "3",
   senderStatus: "GREEN",
 };
 
-const testMessage3: PostMessageInput = {
-  content: "message from 1 to Lobby",
+const testMessage3: Message = {
+  id: 3,
+  content: "message from 1 to Lobby1",
   sender: "1",
   sendee: "Lobby",
+  time: "1",
   senderStatus: "GREEN",
 };
 
-const testMessage4: PostMessageInput = {
-  content: "message from 1 to Lobby",
+const testMessage4: Message = {
+  id: 4,
+  content: "message from 1 to Lobby2",
   sender: "1",
   sendee: "Lobby",
+  time: "1",
   senderStatus: "GREEN",
 };
 
@@ -45,8 +53,8 @@ afterEach(async () => {
 
 describe("createMessage", () => {
   it("Should create a new message into the database", async () => {
-    const createdMessage1 = await messageDao.createMessage(testMessage1, "1");
-    const createdMessage2 = await messageDao.createMessage(testMessage2, "1");
+    const createdMessage1 = await messageDao.createMessage(testMessage1);
+    const createdMessage2 = await messageDao.createMessage(testMessage2);
 
     expect(createdMessage1.content).toEqual(testMessage1.content);
 
@@ -56,8 +64,8 @@ describe("createMessage", () => {
 
 describe("getAllMessage", () => {
   it("Should return all the messages in the chat database", async () => {
-    await messageDao.createMessage(testMessage1, "1");
-    await messageDao.createMessage(testMessage2, "1");
+    await messageDao.createMessage(testMessage1);
+    await messageDao.createMessage(testMessage2);
 
     const allMessages = await messageDao.getAllMessages("1", "2");
 
@@ -70,10 +78,10 @@ describe("getAllMessage", () => {
 
 describe("getAllPublicMessages", () => {
   it("Should get all messages that send to Lobby", async () => {
-    await messageDao.createMessage(testMessage3, "1");
-    await messageDao.createMessage(testMessage4, "1");
+    await messageDao.createMessage(testMessage3);
+    await messageDao.createMessage(testMessage4);
 
-    const allMessages = await messageDao.getAllPublicMessages();
+    const allMessages = await messageDao.getAllPublicMessages("Lobby");
 
     expect(allMessages.map((message) => message.content)).toEqual([
       testMessage3.content,
@@ -84,29 +92,44 @@ describe("getAllPublicMessages", () => {
 
 describe("getUnreadMessages", () => {
   it("Should get no message if no message was sent after the last online time", async () => {
-    await messageDao.createMessage(testMessage1, "123");
-    await messageDao.createMessage(testMessage2, "125");
-    const lastOnlineTime = "126";
+    await messageDao.createMessage(testMessage1);
+    await messageDao.createMessage(testMessage2);
+    const lastOnlineTime = "4";
     const allMessages = await messageDao.getUnreadMessages("2", lastOnlineTime);
 
     expect(allMessages.map((message) => message.content)).toEqual([]);
   });
 
   it("Should get no message if such user does not exist", async () => {
-    const lastOnlineTime = "124";
+    const lastOnlineTime = new Date().getTime().toString();
     const allMessages = await messageDao.getUnreadMessages("9", lastOnlineTime);
 
     expect(allMessages.map((message) => message.content)).toEqual([]);
   });
 
   it("Should get all messages that send after the last online time", async () => {
-    await messageDao.createMessage(testMessage1, "123");
-    await messageDao.createMessage(testMessage2, "125");
-    const lastOnlineTime = "124";
+    await messageDao.createMessage(testMessage1);
+    const lastOnlineTime = "2";
+    await messageDao.createMessage(testMessage2);
     const allMessages = await messageDao.getUnreadMessages("2", lastOnlineTime);
 
     expect(allMessages.map((message) => message.content)).toEqual([
       testMessage2.content,
     ]);
+  });
+});
+
+describe("getLastPublicMessage", () => {
+  it("Should get no message if no message was sent", async () => {
+    const allMessages = await messageDao.getLastPublicMessage("2");
+    expect(allMessages).toBe(null);
+  });
+
+  it("Should get last message from Lobby", async () => {
+    await messageDao.createMessage(testMessage3);
+    await messageDao.createMessage(testMessage4);
+
+    const allMessages = await messageDao.getLastPublicMessage("Lobby");
+    expect(allMessages).toEqual(testMessage4);
   });
 });

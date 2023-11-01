@@ -65,12 +65,11 @@ export class SocketServer {
     });
   }
 
-  async broadcastPublicMessage(message: Message): Promise<void> {
-    this.io.emit("public message", message);
-  }
-
-  async broadcastPrivateMessage(message: Message): Promise<void> {
-    this.io.emit("private message", message);
+  async broadcastMessage(sendee: string, message: Message): Promise<void> {
+    if (sendee !== "Lobby" && sendee !== "Announcement") {
+      this.io.emit("private message", message);
+    }
+    this.io.emit(sendee, message);
   }
 
   async broadcastChangedStatus(lastStatus: string[]): Promise<void> {

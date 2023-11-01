@@ -139,7 +139,4 @@ const renderMessage = (message: ESNMessage): void => {
   }
 };
 
-socket.on(
-  contactName === "Lobby" ? "public message" : "private message",
-  renderMessage
-);
+socket.on(contactName === "Lobby" ? "Lobby" : "private message", renderMessage);
