@@ -2,7 +2,16 @@ export const announcementTemplate = `
 <div class="w-full " >
 
 <div id="announcement-area" class="w-full">
+<div class="flex items-center py-2 px-4 bg-gray-500 text-white justify-between w-full">
+  <div id="contact-name" class="text-lg font-semibold flex-1">Announcement</div>
+  <img
+      id="search-icon"
+      src="https://cdn-icons-png.flaticon.com/512/54/54481.png" 
+      class="w-6 h-6 ml-auto cursor-pointer filter invert"/>
+  
+</div>
 <div class="flex w-full">
+
 <div class="bg-black items-center p-4 shadow-md  w-full">
  
   <div class="flex justify-between items-center mb-2">

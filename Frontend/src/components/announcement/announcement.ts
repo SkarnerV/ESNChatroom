@@ -30,9 +30,15 @@ getLastMessage(currentUser.username, "Announcement").then((response) => {
     replaceAnnouncement(response[0]);
   }
 });
-
+const searchButton = document.getElementById("search-icon");
 const announcementButton = document.getElementById("announcement-button");
 const announcementInput = document.getElementById("announcement-input");
+searchButton!.onclick = () => {
+  const searchModal = document.getElementById("search-modal");
+  searchModal!.classList.remove("hidden");
+  searchModal!.style.display = "block";
+};
+
 announcementButton!.onclick = () => {
   const message: ESNMessage = {
     sender: currentUser.username,

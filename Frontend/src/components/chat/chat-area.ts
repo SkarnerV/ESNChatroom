@@ -7,6 +7,7 @@ import Formatter from "../../util/formatter";
 import { socket } from "../../util/socket";
 import { IllegalUserActionHandler } from "../../util/illegalUserHandler";
 import { UserStatusIcon } from "../../constant/user-status";
+import { generateMessage } from "../../util/render";
 
 class ChatArea extends HTMLElement {
   constructor() {
@@ -29,6 +30,13 @@ const messageInput = document.getElementById("message-input");
 const backButton = document.getElementById("chat-back-button");
 const displayedContact = document.getElementById("contact-name");
 const contactName = url.searchParams.get("contact");
+const searchButton = document.getElementById("search-icon");
+
+searchButton!.onclick = () => {
+  const searchModal = document.getElementById("search-modal");
+  searchModal!.classList.remove("hidden");
+  searchModal!.style.display = "block";
+};
 
 displayedContact!.textContent = contactName;
 
@@ -86,52 +94,14 @@ const isCorrectReceiver = (message: ESNMessage) => {
 
 const renderMessage = (message: ESNMessage): void => {
   if (isCorrectReceiver(message)) {
-    const messageBody = document.createElement("div");
-    const messageContent = document.createElement("p");
-    const messageHeader = document.createElement("div");
-    const userInfoBody = document.createElement("div");
-    const userAvatar = document.createElement("div");
-    const userAvatarContainer = document.createElement("div");
-    const currentUserAvatarContainer = document.createElement("div");
-    const currentUserAvatar = document.createElement("div");
-    const userNickname = document.createElement("span");
-    const messageBubble = document.createElement("div");
-    const messageTime = document.createElement("span");
-    const currentUserMessager = currentUser.username === message.sender;
-    messageBubble.className = "flex w-full";
-    messageBody.className =
-      "bg-black items-center rounded-lg p-4 shadow-md ml-2 mr-2 mb-4 w-full";
-    messageContent.className = "ml-2 mt-2 text-white  break-normal break-all";
-    messageHeader.className = "flex justify-between items-center mb-2";
-    userInfoBody.className = "flex space-x-2 justify-between items-center";
-    userAvatarContainer.className = "min-w-1/10 w-1/10";
-    userAvatar.className = "rounded-full h-10 w-10 bg-gray-500";
-    currentUserAvatarContainer.className = "min-w-1/10 w-1/10 items-center";
-    currentUserAvatar.className = "rounded-full h-10 w-10 bg-gray-500";
-    userNickname.className = "text-white ml-2 font-semibold";
-    messageTime.className = "text-white mr-3";
-
-    messageContent.textContent = message.content;
-    userNickname.textContent = currentUserMessager ? "Me" : message.sender;
-
-    const userStatusIcon = UserStatusIcon[message.senderStatus];
-
-    messageTime.textContent = message.time
-      ? Formatter.formatDate(new Date(parseInt(message.time)))
-      : "";
-    userInfoBody.appendChild(userNickname);
-    userInfoBody.innerHTML += userStatusIcon;
-    messageHeader.appendChild(userInfoBody);
     // TODO : user Avatar
     // currentUserMessager
     //   ? currentUserAvatarContainer.appendChild(currentUserAvatar)
     //   : userAvatarContainer.appendChild(userAvatar);
-    messageHeader.appendChild(messageTime);
-    messageBody.appendChild(messageContent);
 
-    messageBubble.appendChild(userAvatarContainer);
-    messageBubble.appendChild(messageBody);
-    messageBubble.appendChild(currentUserAvatarContainer);
+    const renderedElements = generateMessage(message);
+    const messageHeader = renderedElements[0];
+    const messageBubble = renderedElements[1];
     messageArea?.appendChild(messageHeader);
     messageArea?.appendChild(messageBubble);
     const scroll = messageArea || new HTMLDivElement();

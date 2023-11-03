@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 import { socket } from "../../util/socket";
 import { IllegalUserActionHandler } from "../../util/illegalUserHandler";
 import Formatter from "../../util/formatter";
+import { generateUser } from "../../util/render";
 
 class ESNDirectory extends HTMLElement {
   constructor() {
@@ -22,7 +23,7 @@ class ESNDirectory extends HTMLElement {
 customElements.define("esn-directory", ESNDirectory);
 
 IllegalUserActionHandler.redirectToLogin();
-
+const searchButton = document.getElementById("search-icon");
 const currentUser = jwt.decode(localStorage.getItem("token"), "esn");
 const unreadUsers: string =
   localStorage.getItem("unreadUsers") || JSON.stringify([]);
@@ -32,6 +33,12 @@ let unreadUsersList: string[] = JSON.parse(unreadUsers) as string[];
 let onlineUsers: string[] = [];
 
 const userStatusList = document.getElementById("user-status-list");
+
+searchButton!.onclick = () => {
+  const searchModal = document.getElementById("search-modal");
+  searchModal!.classList.remove("hidden");
+  searchModal!.style.display = "block";
+};
 
 const getUserStatusData = async () => {
   getAllUserStatus().then((response) => {
@@ -81,53 +88,17 @@ const sortUserStatusList = () => {
 };
 
 const renderStatus = (userStatus: ESNUserStatus): void => {
-  const statusBody = document.createElement("li");
-  const usernameBody = document.createElement("div");
-  const userAvatarBody = document.createElement("div");
-  const userAvatar = document.createElement("img");
-  const usernameText = document.createElement("span");
-  const userStatusInfoBody = document.createElement("div");
-  const userStatusInfo = document.createElement("div");
   const unreadSign = document.createElement("div");
   const isCurrentUser = currentUser.username === userStatus.username;
 
-  // statusBody.id = `user-${userStatus.username}-${userStatus.lastStatus}`;
-  statusBody.id = `user-${userStatus.username}-${userStatus.lastStatus}`;
-  statusBody.className = "flex bg-black justify-between py-5 px-4";
-  usernameBody.className = "flex items-center gap-x-2";
-  userAvatarBody.className = "relative";
-  userAvatar.className = "h-8 w-8 flex-none rounded-full bg-gray-50";
-  usernameText.className =
-    "w-40 text-white text-sm font-semibold text-gray-900";
-
-  usernameText.id = "user-directory-display-name";
-  userStatusInfoBody.className =
-    "shrink-0 sm:flex mt-1 flex items-center gap-x-1.5";
   unreadSign.className = "text-red-500";
   unreadSign.id = `${userStatus.username}-unread`;
-  userStatusInfoBody.id = `${userStatus.username}-status-info-container`;
-  userStatusInfo.className = "absolute top-0 right-0 w-3 h-3 rounded-full";
-  userStatusInfo.id = `${userStatus.username}-last-status-info`;
-  //Need Change for later
-  userAvatar.src =
-    "https://avatars.dicebear.com/api/adventurer-neutral/mail%40ashallendesign.co.uk.svg";
-
-  userStatusInfo.classList.add("bg-emerald-500");
-  const userStatusSVGIcon = UserStatusIcon[userStatus.lastStatus];
-  usernameText.textContent = userStatus.username;
-
-  userAvatarBody.appendChild(userStatusInfo);
-  userAvatarBody.appendChild(userAvatar);
-  userStatusInfoBody.innerHTML += userStatusSVGIcon;
   unreadSign.textContent = "New Message!";
-  usernameBody.appendChild(userAvatarBody);
-  usernameBody.appendChild(usernameText);
 
-  statusBody.appendChild(usernameBody);
-
-  usernameText.textContent = Formatter.formatLongUsername(
-    usernameText.textContent
-  );
+  const renderedElements = generateUser(userStatus);
+  const statusBody = renderedElements[0];
+  const userStatusInfoBody = renderedElements[1];
+  const usernameText = renderedElements[2];
 
   if (isCurrentUser) {
     usernameText.textContent = "Me";

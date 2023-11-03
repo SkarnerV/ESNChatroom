@@ -7,8 +7,14 @@ export const chatAreaTemplate = `
 <div class="w-6 flex">
 <button id="chat-back-button" class="text-lg text-white bg-transparent border-none cursor-pointer"><</button>
 </div>
-<div id="contact-name" class="text-lg font-semibold">Contact Name</div><!-- Contact Name -->
-<div class="w-6"> </div>
+<div class="flex items-center justify-between w-full">
+        <div id="contact-name" class="text-lg font-semibold flex-1 text-center">Contact Name</div><!-- Contact Name -->
+        <img
+            id="search-icon"
+            src="https://cdn-icons-png.flaticon.com/512/54/54481.png" 
+            class="w-6 h-6 ml-auto cursor-pointer filter invert"/>
+        
+    </div>
 </div>
 
 
