@@ -4,6 +4,7 @@ import UserDAO from "../user/user.dao";
 import { UserStatus } from "../user/userStatus";
 import { Message } from "../message/message.entity";
 import MessageDAO from "../message/message.dao";
+import { stopwords } from "./stopwords";
 
 export default class SearchController {
   private userDao: UserDAO = new UserDAO();
@@ -59,6 +60,9 @@ export default class SearchController {
     sender: string,
     sendee: string
   ): Promise<Message[]> {
+    if (stopwords.includes(words.toLowerCase())) {
+      return [];
+    }
     let messages: Message[] = [];
     if(words === "status") {
       messages = await this.messageDao.getStatusChangeHistory(
@@ -76,6 +80,9 @@ export default class SearchController {
   }
 
   async searchAnnouncement(words: string) {
+    if (stopwords.includes(words.toLowerCase())) {
+      return [];
+    }
     return await this.messageDao.getAnnouncementsByContent(words);;
   }
 }
