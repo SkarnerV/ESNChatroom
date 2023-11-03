@@ -1,4 +1,4 @@
-import { In, Repository } from "typeorm";
+import { In, Like, Repository } from "typeorm";
 import { ESNUser } from "./user.entity";
 import ESNDatabase from "../database/ESNDatabase";
 
@@ -53,6 +53,22 @@ export default class UserDAO {
       },
     });
 
+    return users;
+  }
+
+  async getUsersByPartialUsername(username: string): Promise<ESNUser[]> {
+    const users: ESNUser[] = await this.ESNUserDatabase.find({
+      where: { username: Like(`%${username}%`) },
+      select: ["username", "lastStatus"],
+    });
+    return users;
+  }
+
+  async getUsersByStatus(status: string): Promise<ESNUser[]> {
+    const users: ESNUser[] = await this.ESNUserDatabase.find({
+      where: { lastStatus: status },
+      select: ["username", "lastStatus"],
+    });
     return users;
   }
 }

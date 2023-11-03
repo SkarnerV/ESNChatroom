@@ -11,8 +11,10 @@ export const enum ErrorMessage {
   WRONG_CREDENTIAL_MESSAGE = "Re-enter the username and/or password.",
   ACCOUNT_NOT_EXIST_MESSAGE = "Account does not exits.",
   SENDER_UNKNOWN_MESSAGE = "Message sender Unknown.",
+  SENDEE_UNKNOWN_MESSAGE = "Message sendee Unknown.",
   SENDER_STATUS_UNKNOWN_MESSAGE = "Sender's Status Unkonwn.",
   UNKNOWN_USER_STATUS = "Unknow Status.",
+  SEARCH_CONTEXT_UNKNOWN_MESSAGE = "Search context Unknown.",
 }
 
 export abstract class Exception extends Error {

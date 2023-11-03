@@ -119,6 +119,40 @@ describe("getUnreadMessages", () => {
   });
 });
 
+describe("getMessageByContent", () => {
+  it("Should return empty array if no message contains the given keyword", async () => {
+    await messageDao.createMessage(testMessage1);
+    await messageDao.createMessage(testMessage2);
+
+    const messages = await messageDao.getMessageByContent("hello", "1", "2");
+
+    expect(messages.map((message) => message.content)).toEqual([]);
+  });
+
+  it("Should return public messages that contain the given keyword", async () => {
+    await messageDao.createMessage(testMessage3);
+    await messageDao.createMessage(testMessage4);
+
+    const messages = await messageDao.getMessageByContent("Lobby", "1", "Lobby");
+
+    expect(messages.map((message) => message.content)).toEqual([
+      testMessage4.content,
+      testMessage3.content,
+    ]);
+  });
+
+  it("Should return private messages that contain the given keyword", async () => {
+    await messageDao.createMessage(testMessage1);
+    await messageDao.createMessage(testMessage2);
+    await messageDao.createMessage(testMessage3);
+    await messageDao.createMessage(testMessage4);
+
+    const messages = await messageDao.getMessageByContent("Lobby", "1", "2");
+
+    expect(messages.map((message) => message.content)).toEqual([]);
+  });
+});
+
 describe("getLastPublicMessage", () => {
   it("Should get no message if no message was sent", async () => {
     const allMessages = await messageDao.getLastPublicMessage("2");

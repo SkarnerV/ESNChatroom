@@ -2,6 +2,7 @@ import ESNDatabase from "../../src/database/ESNDatabase";
 import UserDAO from "../../src/user/user.dao";
 import { ESNUser } from "../../src/user/user.entity";
 import AuthController from "../../src/auth/auth.controller";
+import { UserStatus } from "../../src/user/userStatus";
 
 const databaseInstance = ESNDatabase.getDatabaseInstance();
 let userDao: UserDAO;
@@ -104,5 +105,39 @@ describe("getUsersByUsernames", () => {
     ]);
     expect(users).not.toBeNull();
     expect([...users.map((u) => u.id)]).toEqual([testUser1.id, testUser2.id]);
+  });
+});
+
+describe("getUsersByPartialUsername", () => {
+  it("Should return empty users if no users exist", async () => {
+    const users = await userDao.getUsersByPartialUsername("aaa");
+    expect(users).toEqual([]);
+  });
+
+  it("Should return users whose username contain searching the words", async () => {
+    await authController.createUser(testUser1);
+    await authController.createUser(testUser2);
+    const users = await userDao.getUsersByPartialUsername("aaa");
+    expect(users).not.toBeNull();
+    expect([...users.map((u) => u.username)])
+      .toEqual([testUser1.username, testUser2.username]);
+  });
+});
+
+describe("getUsersByStatus", () => {
+  it("Should return empty users if no users exist", async () => {
+    const users = await userDao.getUsersByStatus(UserStatus.RED);
+    expect(users).toEqual([]);
+  });
+
+  it("Should return users whose status is the searching status", async () => {
+    await authController.createUser(testUser1);
+    await authController.createUser(testUser2);
+    await userDao.updateUserStatus(testUser1.username, UserStatus.RED);
+    await userDao.updateUserStatus(testUser2.username, UserStatus.RED);
+    const users = await userDao.getUsersByStatus(UserStatus.RED);
+    expect(users).not.toBeNull();
+    expect([...users.map((u) => u.username)])
+      .toEqual([testUser1.username, testUser2.username]);
   });
 });

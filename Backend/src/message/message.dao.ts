@@ -1,4 +1,4 @@
-import { In, MoreThan, Repository } from "typeorm";
+import { In, Like, MoreThan, Repository } from "typeorm";
 import { Message } from "./message.entity";
 import ESNDatabase from "../database/ESNDatabase";
 
@@ -56,5 +56,34 @@ export default class MessageDAO {
       },
     });
     return allMessages;
+  }
+
+  async getMessageByContent(content: string, sender: string, sendee: string): Promise<Message[]> {
+    const messages = await this.messageDatabase.find({
+      where: [
+        { content: Like(`%${content}%`), sender, sendee },
+        { content: Like(`%${content}%`), sender: sendee, sendee: sender },
+      ],
+      order: { id: "DESC" }
+    });
+    return messages;
+  }
+
+  async getAnnouncementsByContent(content: string): Promise<Message[]> {
+    const messages = await this.messageDatabase.find({
+      where: { content: Like(`%${content}%`), sendee: "Announcement" },
+      order: { id: "DESC" }
+    });
+    return messages;
+  }
+
+  async getStatusChangeHistory(sender: string, sendee: string): Promise<Message[]> {
+    const messages = await this.messageDatabase.find({
+      where: { sender, sendee }
+    });
+    return messages.filter((message: Message, idx: number) => {
+      if(idx === 0) return true;
+      return message.senderStatus !== messages[idx - 1].senderStatus;
+    });
   }
 }
