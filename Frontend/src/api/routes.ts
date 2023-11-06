@@ -8,3 +8,4 @@ export const AllUserApi = `${endpoint}/api/users`;
 export const messagesApi = `${endpoint}/api/messages/`;
 
 export const speedTestApi = `${endpoint}/api/speedtests`;
+export const searchApi = `${endpoint}/api/search`;

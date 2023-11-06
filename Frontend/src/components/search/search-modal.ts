@@ -1,11 +1,7 @@
 import jwt from "jsonwebtoken";
-import stopWords from "../../constant/stop-words";
-import { UserStatusIcon } from "../../constant/user-status";
 import { SearchModalTemplate } from "../../templates/search/search-modal-template";
-import { ESNMessage, ESNUserStatus } from "../../types";
-import Formatter from "../../util/formatter";
-import { IllegalUserActionHandler } from "../../util/illegalUserHandler";
-import { generateUser, generateMessage } from "../../util/render";
+import { displayMessageResult, displayUserResult } from "../../util/search";
+import { searchInContext } from "../../api/search";
 
 class SearchModal extends HTMLElement {
   constructor() {
@@ -16,131 +12,101 @@ class SearchModal extends HTMLElement {
   }
 }
 customElements.define("search-modal", SearchModal);
-IllegalUserActionHandler.redirectToLogin();
-const currentUser = jwt.decode(localStorage.getItem("token"), "esn");
+
 const closeButton = document.getElementById("close-button");
 const searchInput = document.getElementById("search-input");
 const searchButton = document.getElementById("search-button");
 const resultList = document.getElementById("search-result-area");
+const searchModal = document.getElementById("search-modal");
 
 closeButton!.onclick = () => {
-  const modal = document.getElementById("search-modal");
-  if (modal) {
+  if (searchModal) {
     resultList!.innerHTML = "";
     (searchInput as HTMLInputElement).value = "";
-    modal!.style.display = "none";
+    searchModal!.style.display = "none";
   }
 };
-searchButton!.onclick = () => {
+
+searchButton!.onclick = async () => {
   resultList!.innerHTML = "";
+
   const searchText = (searchInput as HTMLInputElement).value;
   if (searchText === "") {
-    const noSearchInputsMessage = document.createElement("p");
-    noSearchInputsMessage.textContent =
-      "Please provide a search category the search keywords";
-    noSearchInputsMessage.className = "text-red-700 text-center my-4";
-    resultList?.appendChild(noSearchInputsMessage);
+    displayNoInputMessage();
   } else {
-    const searchWords = filterStopWords();
+    await performSearch(searchText);
+  }
+};
 
-    // Only stop words contain in search input
-    if (searchWords! === "") {
-      const noSearchTermsMessage = document.createElement("p");
-      noSearchTermsMessage.textContent = "No match keywords found";
-      noSearchTermsMessage.className = "text-gray-700 text-center my-4";
-      resultList?.appendChild(noSearchTermsMessage);
-    } else {
-      //Perform Search [To be implemented] for searchWords and display result
-      displayUserResult();
-      displayMessageResult();
-      resultList!.scrollTop = 0;
+const performSearch = async (criteria) => {
+  const context = searchModal!.getAttribute("data-context");
+  const statusMap = { OK: "GREEN", Help: "YELLOW", Emergency: "RED" };
+
+  try {
+    const response = await executeSearch(context, criteria, statusMap);
+    processResponse(response, context);
+  } catch (error) {
+    console.error("Search failed:", error);
+    displayErrorMessage(error);
+  }
+};
+
+const executeSearch = async (context, criteria, statusMap) => {
+  switch (context) {
+    case "messages":
+      return handleMessagesContext(criteria);
+    case "citizens":
+      return searchInContext(context, statusMap[criteria] || criteria);
+    case "announcements":
+      return searchInContext(context, criteria);
+    default:
+      throw new Error("Invalid search context");
+  }
+};
+
+const handleMessagesContext = async (criteria) => {
+  const sender = searchModal!.getAttribute("data-sender");
+  const sendee = searchModal!.getAttribute("data-sendee");
+  if (sendee === "Lobby") {
+    return searchInContext("messages", criteria, "", sendee);
+  } else if (sender && sendee) {
+    return searchInContext("messages", criteria, sender, sendee);
+  }
+  throw new Error("Sender or Sendee is not specified");
+};
+
+const processResponse = (response, context) => {
+  if (response && response.length === 0) {
+    displayStopWordsMessage();
+  } else if (response) {
+    if (context === "messages" || context === "announcements") {
+      displayMessageResult(resultList, response);
+    } else if (context === "citizens") {
+      displayUserResult(resultList, response);
     }
   }
 };
 
-const filterStopWords = (): string => {
-  const searchText = (searchInput as HTMLInputElement).value;
-  const words = searchText.split(/\s+/);
-  const filteredWords = words.filter(
-    (word) => !stopWords.includes(word.toLowerCase())
-  );
-  return filteredWords.join(" ");
+// Assuming displayMessage is defined elsewhere, no changes needed if it's already an arrow function
+
+const displayNoInputMessage = () => {
+  const message = document.createElement("p");
+  message.textContent = "Please enter some keywords to search.";
+  message.className = "text-red-700 text-center my-4";
+  resultList?.appendChild(message);
 };
 
-// Sample Data for userList
-const userList = [
-  { lastStatus: "GREEN", username: "aaa1" },
-  { lastStatus: "YELLOW", username: "aaa2" },
-  { lastStatus: "GREEN", username: "aaa3" },
-];
-// Sample Data for messageList
-const messageList = [
-  {
-    id: 1,
-    content: "this is a test mesage1",
-    time: "12:11 PM",
-    sender: "asdf",
-    sendee: "Lobby",
-    senderStatus: "GREEN",
-  },
-  {
-    id: 2,
-    content: "this is a test mesage2",
-    time: "12:11 PM",
-    sender: "asd",
-    sendee: "Lobby",
-    senderStatus: "GREEN",
-  },
-];
-
-const displayUserResult = async () => {
-  for (const userInfo of userList) {
-    renderUser(userInfo);
-  }
-};
-const displayMessageResult = () => {
-  const maxDisplay = 10;
-  for (let i = 0; i < maxDisplay && messageList.length > 0; i++) {
-    const messageInfo = messageList.shift(); // Remove and get the first item from messageList
-    renderMessage(messageInfo!);
-
-    // Reach end of search result
-    if (messageList.length === 0) {
-      const endOfSearchMessage = document.createElement("p");
-      endOfSearchMessage.textContent = "End of search result";
-      endOfSearchMessage.className = "text-black text-center my-4";
-      resultList?.appendChild(endOfSearchMessage);
-    }
-  }
-
-  // Add "Show More" button if there are more items to display in messageList
-  if (messageList.length > 0) {
-    const showMoreButton = document.createElement("button");
-    showMoreButton.textContent = "Show More";
-    showMoreButton.className =
-      "bg-blue-500 text-white px-4 py-2 rounded-md mt-2 mb-2 mx-auto block";
-    showMoreButton!.onclick = () => {
-      displayMessageResult();
-      showMoreButton.remove();
-    };
-    resultList?.appendChild(showMoreButton);
-  }
+const displayStopWordsMessage = () => {
+  const message = document.createElement("p");
+  message.textContent =
+    "Your search query did not return any results. Please try different keywords.";
+  message.className = "text-gray-700 text-center my-4";
+  resultList?.appendChild(message);
 };
 
-const renderUser = (userStatus: ESNUserStatus): void => {
-  const renderedElements = generateUser(userStatus);
-  const statusBody = renderedElements[0];
-  const userStatusInfoBody = renderedElements[1];
-  statusBody.appendChild(userStatusInfoBody);
-  resultList?.appendChild(statusBody);
-};
-
-const renderMessage = (message: ESNMessage): void => {
-  const renderedElements = generateMessage(message);
-  const messageHeader = renderedElements[0];
-  const messageBubble = renderedElements[1];
-  resultList?.appendChild(messageHeader);
-  resultList?.appendChild(messageBubble);
-  const scroll = resultList || new HTMLDivElement();
-  scroll.scrollTop = scroll.scrollHeight || 0;
+const displayErrorMessage = (error) => {
+  const message = document.createElement("p");
+  message.textContent = `An error occurred: ${error.message}`;
+  message.className = "text-red-700 text-center my-4";
+  resultList?.appendChild(message);
 };

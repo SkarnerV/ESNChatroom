@@ -34,10 +34,16 @@ let onlineUsers: string[] = [];
 
 const userStatusList = document.getElementById("user-status-list");
 
-searchButton!.onclick = () => {
+searchButton!.onclick = async () => {
   const searchModal = document.getElementById("search-modal");
-  searchModal!.classList.remove("hidden");
+  // Set a data attribute 'context' to 'citizens' on the modal
+  searchModal!.setAttribute("data-context", "citizens");
   searchModal!.style.display = "block";
+
+  // Display all users
+  const resultList = document.getElementById("search-result-area");
+  const clonedMessageContent = userStatusList!.cloneNode(true);
+  resultList!.appendChild(clonedMessageContent);
 };
 
 const getUserStatusData = async () => {
@@ -51,7 +57,7 @@ const getUserStatusData = async () => {
   });
 };
 
-const getSortableUserList = () => {
+export const getSortableUserList = () => {
   const userStatusListChildren = userStatusList?.children;
   const userStatusListArray = Array.from(userStatusListChildren!).map(
     (e: Element) => {
@@ -128,7 +134,7 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
   }
 };
 
-const updateUserStatus = () => {
+export const updateUserStatus = () => {
   const userItems = document.querySelectorAll("li");
   updateNewUsersStatue();
   userItems.forEach((userItem) => {

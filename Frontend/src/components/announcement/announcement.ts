@@ -6,6 +6,8 @@ import { socket } from "../../util/socket";
 import Formatter from "../../util/formatter";
 import { getLastMessage, postESNMessage } from "../../api/message";
 import { getUserStatusByUsername } from "../../api/user";
+import { searchInContext } from "../../api/search";
+import { displayMessageResult } from "../../util/search";
 class Announcement extends HTMLElement {
   constructor() {
     super();
@@ -33,10 +35,16 @@ getLastMessage(currentUser.username, "Announcement").then((response) => {
 const searchButton = document.getElementById("search-icon");
 const announcementButton = document.getElementById("announcement-button");
 const announcementInput = document.getElementById("announcement-input");
-searchButton!.onclick = () => {
+searchButton!.onclick = async () => {
   const searchModal = document.getElementById("search-modal");
-  searchModal!.classList.remove("hidden");
+  // Set a data attribute 'context' to 'announcement' on the modal
+  searchModal!.setAttribute("data-context", "announcements");
   searchModal!.style.display = "block";
+
+  // Display all announcements
+  const resultList = document.getElementById("search-result-area");
+  const response = await searchInContext("announcements", "", "", "");
+  displayMessageResult(resultList, response);
 };
 
 announcementButton!.onclick = () => {

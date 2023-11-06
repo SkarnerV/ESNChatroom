@@ -6,7 +6,6 @@ import { getUserStatusByUsername } from "../../api/user";
 import Formatter from "../../util/formatter";
 import { socket } from "../../util/socket";
 import { IllegalUserActionHandler } from "../../util/illegalUserHandler";
-import { UserStatusIcon } from "../../constant/user-status";
 import { generateMessage } from "../../util/render";
 
 class ChatArea extends HTMLElement {
@@ -32,10 +31,19 @@ const displayedContact = document.getElementById("contact-name");
 const contactName = url.searchParams.get("contact");
 const searchButton = document.getElementById("search-icon");
 
-searchButton!.onclick = () => {
+searchButton!.onclick = async () => {
   const searchModal = document.getElementById("search-modal");
-  searchModal!.classList.remove("hidden");
+  // Set a data attribute 'context' to 'messages' on the modal
+  const searchContext = "messages";
+  searchModal!.setAttribute("data-context", searchContext);
+  searchModal!.setAttribute("data-sender", currentUser.username);
+  if (contactName) searchModal!.setAttribute("data-sendee", contactName);
   searchModal!.style.display = "block";
+
+  // Display all messages
+  const resultList = document.getElementById("search-result-area");
+  const clonedMessageContent = messageArea!.cloneNode(true);
+  resultList!.appendChild(clonedMessageContent);
 };
 
 displayedContact!.textContent = contactName;

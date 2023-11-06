@@ -58,13 +58,17 @@ export default class MessageDAO {
     return allMessages;
   }
 
-  async getMessageByContent(content: string, sender: string, sendee: string): Promise<Message[]> {
+  async getMessageByContent(
+    content: string,
+    sender: string,
+    sendee: string
+  ): Promise<Message[]> {
     const messages = await this.messageDatabase.find({
       where: [
         { content: Like(`%${content}%`), sender, sendee },
         { content: Like(`%${content}%`), sender: sendee, sendee: sender },
       ],
-      order: { id: "DESC" }
+      order: { id: "DESC" },
     });
     return messages;
   }
@@ -72,17 +76,21 @@ export default class MessageDAO {
   async getAnnouncementsByContent(content: string): Promise<Message[]> {
     const messages = await this.messageDatabase.find({
       where: { content: Like(`%${content}%`), sendee: "Announcement" },
-      order: { id: "DESC" }
+      order: { id: "DESC" },
     });
     return messages;
   }
 
-  async getStatusChangeHistory(sender: string, sendee: string): Promise<Message[]> {
+  async getStatusChangeHistory(
+    sender: string,
+    sendee: string
+  ): Promise<Message[]> {
     const messages = await this.messageDatabase.find({
-      where: { sender, sendee }
+      where: { sender, sendee },
+      order: { id: "DESC" },
     });
     return messages.filter((message: Message, idx: number) => {
-      if(idx === 0) return true;
+      if (idx === 0) return true;
       return message.senderStatus !== messages[idx - 1].senderStatus;
     });
   }
