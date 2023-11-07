@@ -69,12 +69,9 @@ const recordMessage = (message: ESNMessage) => {
 const replaceAnnouncement = (message: ESNMessage) => {
   const announcementContent = document.getElementById("announcement-content");
   const announcementSender = document.getElementById("announcement-sender");
-  const announcementStatus = document.getElementById("announcement-status");
   const announcementTime = document.getElementById("announcement-time");
-  const userStatusIcon = UserStatusIcon[message.senderStatus];
   announcementContent!.textContent = message.content;
   announcementSender!.textContent = message.sender;
-  announcementStatus!.innerHTML = userStatusIcon;
   announcementTime!.textContent = message.time
     ? Formatter.formatDate(new Date(parseInt(message.time)))
     : "";

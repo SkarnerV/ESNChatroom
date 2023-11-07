@@ -19,9 +19,7 @@ export const announcementTemplate = `
       <span id="announcement-sender" class="text-white font-semibold">
       <!--Announcement Sender-->
       </span>
-      <div id="announcement-status">
-      <!--Announcement Status--> 
-      </div>
+   
     </div>
     <span id="announcement-time" class="text-white"> 
      <!--Announcement Time-->
