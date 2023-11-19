@@ -15,7 +15,7 @@ const defaultESNUser = {
   id: null,
   username: "",
   password: "",
-  lastStatus: "GREEN",
+  lastStatus: "UNDEFINE",
   isOnline: false,
   lastTimeUpdateStatus: new Date(),
   lastOnlineTime: new Date().getTime().toString(),
@@ -60,8 +60,8 @@ describe("UserRouter", () => {
         .expect(200);
 
       expect(res.body).toEqual([
-        { lastStatus: "GREEN", username: "test_username1" },
-        { lastStatus: "GREEN", username: "test_username2" },
+        { lastStatus: "UNDEFINE", username: "test_username1" },
+        { lastStatus: "UNDEFINE", username: "test_username2" },
       ]);
     });
   });
@@ -73,7 +73,7 @@ describe("UserRouter", () => {
         .get(`/api/users/${username}/status`)
         .expect(200);
 
-      expect(res.body).toEqual({ lastStatus: "GREEN" });
+      expect(res.body).toEqual({ lastStatus: "UNDEFINE" });
     });
   });
   describe("PUT /status", () => {

@@ -19,7 +19,7 @@ const defaultESNUser = {
   id: null,
   username: "",
   password: "",
-  lastStatus: UserStatus.GREEN,
+  lastStatus: UserStatus.UNDEFINE,
   lastTimeUpdateStatus: new Date(),
   lastOnlineTime: new Date().getTime().toString(),
 };
@@ -115,7 +115,7 @@ describe("updateUserStatus", () => {
       testUser1.username
     );
 
-    expect(updatedUser?.lastStatus).toEqual(UserStatus.GREEN);
+    expect(updatedUser?.lastStatus).toEqual(UserStatus.UNDEFINE);
   });
 
   // it("Should throw BadRequestException if the Status is illegal", async () => {
@@ -142,7 +142,7 @@ describe("getUserStatusByUsername", () => {
     const status = await userController.getUserStatusByUsername(
       testUser1.username
     );
-    expect(status).toEqual(UserStatus.GREEN);
+    expect(status).toEqual(UserStatus.UNDEFINE);
     await userController.updateUserStatus(testUser1.username, UserStatus.RED);
     const status2 = await userController.getUserStatusByUsername(
       testUser1.username

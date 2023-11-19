@@ -18,7 +18,7 @@ const defaultESNUser = {
   id: null,
   username: "",
   password: "",
-  lastStatus: UserStatus.GREEN,
+  lastStatus: UserStatus.UNDEFINE,
   lastTimeUpdateStatus: new Date(),
   lastOnlineTime: new Date().getTime().toString(),
 };
@@ -207,7 +207,7 @@ describe("searchMessage", () => {
 
 describe("searchCitizen", () => {
   it("should search for users by status", async () => {
-    const result = await searchController.searchCitizen("GREEN");
+    const result = await searchController.searchCitizen("UNDEFINE");
     expect(result).toBeInstanceOf(Array);
     expect(result).not.toHaveLength(1);
     expect(result[0]).toBeInstanceOf(ESNUser);

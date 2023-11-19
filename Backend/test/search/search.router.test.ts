@@ -21,7 +21,7 @@ const defaultESNUser = {
   id: null,
   username: "",
   password: "",
-  lastStatus: UserStatus.GREEN,
+  lastStatus: UserStatus.UNDEFINE,
   lastTimeUpdateStatus: new Date(),
   lastOnlineTime: new Date().getTime().toString(),
 };
@@ -96,7 +96,7 @@ describe("SearchRouter", () => {
         .get("/api/search/citizens?criteria=aaa1")
         .send()
         .expect(200);
-      expect(res.body).toEqual([{ username: "aaa1", lastStatus: "GREEN" }]);
+      expect(res.body).toEqual([{ username: "aaa1", lastStatus: "UNDEFINE" }]);
     });
 
     it("should get all messages", async () => {

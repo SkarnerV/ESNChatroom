@@ -17,8 +17,8 @@ export default class AuthDAO {
     newUser.username = userInput.username;
     newUser.password = userInput.password;
 
-    //In RestApi spreadsheet, the user should have a default status as GREEN
-    newUser.lastStatus = "GREEN";
+    //In RestApi spreadsheet, the user should have a default status as UNDEFINE
+    newUser.lastStatus = "UNDEFINE";
     newUser.lastTimeUpdateStatus = new Date();
     newUser.lastOnlineTime = new Date().getTime().toString();
 
