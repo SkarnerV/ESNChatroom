@@ -427,134 +427,246 @@
         ]
       }
     },
-    "/api/schedules/:scheduler/:schedulee": {
-      "get": {
-        "operationId": "get all schedules between scheduler and schedulee",
-        "responses": {
-          "200": {
-            "description": "GetSchedule"
-          }
-        },
-        "description": "get all schedules between scheduler and schedulee",
-        "security": [],
-        "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "name": "scheduler",
-            "in": "path"
-          },
-          {
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "name": "schedulee",
-            "in": "path"
-          }
-        ]
-      }
-    },
-    "/api/schedules": {
+    "/groups": {
       "post": {
-        "operationId": "post schedule between scheduler and schedulee",
+        "operationId": "CreateGroupChat",
         "responses": {
-          "200": {
-            "description": "PostSchedule",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Schedule"
-                }
-              }
-            }
-          }
-        },
-        "description": "post schedule between scheduler and schedulee",
-        "security": [],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Schedule"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/schedules/:scheduleid": {
-      "put": {
-        "operationId": "schedule update",
-        "responses": {
-          "200": {
-            "description": "UpdateSuccessful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Schedule"
-                }
-              }
-            }
+          "201": {
+            "description": "Group created successfully"
           },
-          "404": {
-            "description": "ScheduleNotFound"
+          "400": {
+            "description": "Invalid input"
+          },
+          "409": {
+            "description": "Group name already exists"
           }
         },
-        "description": "Update an existing schedule",
+        "description": "Create a new group chat",
         "security": [],
         "parameters": [
           {
-            "name": "scheduleid",
-            "in": "path",
             "required": true,
-            "description": "Unique identifier of the schedule to be updated",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "object" },
+            "name": "groupDetails",
+            "in": "body",
+            "description": "Details of the group to be created, including `name` and `description`."
           }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Schedule"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/schedules/deletion/:scheduleid": {
-      "delete": {
-        "operationId": "delete schedule",
+        ]
+      },
+      "get": {
+        "operationId": "ReadGroupChats",
         "responses": {
           "200": {
-            "description": "DeleteSuccessful"
+            "description": "List of groups retrieved successfully"
           },
-          "404": {
-            "description": "ScheduleNotFound"
+          "204": {
+            "description": "No groups available"
           }
         },
-        "description": "Delete an existing schedule",
+        "description": "Read list of all group chats",
         "security": [],
         "parameters": [
           {
-            "name": "scheduleid",
-            "in": "path",
-            "required": true,
-            "description": "Unique identifier of the schedule to be deleted",
-            "schema": {
-              "type": "string"
-            }
+            "required": false,
+            "schema": { "type": "boolean" },
+            "name": "open",
+            "in": "query",
+            "description": "Filter for open groups"
+          },
+          {
+            "required": false,
+            "schema": { "type": "boolean" },
+            "name": "joined",
+            "in": "query",
+            "description": "Filter for groups joined by the user"
           }
         ]
       }
+    },
+    "/groups/{groupName}": {
+      "put": {
+        "operationId": "UpdateGroupChat",
+        "responses": {
+          "200": {
+            "description": "Group updated successfully"
+          },
+          "404": {
+            "description": "Group not found"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        },
+        "description": "Update group chat information",
+        "security": [],
+        "parameters": [
+          {
+            "required": true,
+            "schema": { "type": "string" },
+            "name": "groupName",
+            "in": "path",
+            "description": "Name of the group to be updated"
+          },
+          {
+            "required": true,
+            "schema": { "type": "object" },
+            "name": "newGroupDetails",
+            "in": "body",
+            "description": "New details of the group, including `newName` and `newDescription`."
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteGroupChat",
+        "responses": {
+          "200": {
+            "description": "Group deleted successfully"
+          },
+          "404": {
+            "description": "Group not found"
+          }
+        },
+        "description": "Delete a group chat",
+        "security": [],
+        "parameters": [
+          {
+            "required": true,
+            "schema": { "type": "string" },
+            "name": "groupName",
+            "in": "path",
+            "description": "Name of the group to be deleted"
+          }
+        ]
+      }
+    }
+  },
+  "/api/schedules/:scheduler/:schedulee": {
+    "get": {
+      "operationId": "get all schedules between scheduler and schedulee",
+      "responses": {
+        "200": {
+          "description": "GetSchedule"
+        }
+      },
+      "description": "get all schedules between scheduler and schedulee",
+      "security": [],
+      "parameters": [
+        {
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "name": "scheduler",
+          "in": "path"
+        },
+        {
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "name": "schedulee",
+          "in": "path"
+        }
+      ]
+    }
+  },
+  "/api/schedules": {
+    "post": {
+      "operationId": "post schedule between scheduler and schedulee",
+      "responses": {
+        "200": {
+          "description": "PostSchedule",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Schedule"
+              }
+            }
+          }
+        }
+      },
+      "description": "post schedule between scheduler and schedulee",
+      "security": [],
+      "parameters": [],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Schedule"
+            }
+          }
+        }
+      }
+    }
+  },
+  "/api/schedules/:scheduleid": {
+    "put": {
+      "operationId": "schedule update",
+      "responses": {
+        "200": {
+          "description": "UpdateSuccessful",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Schedule"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "ScheduleNotFound"
+        }
+      },
+      "description": "Update an existing schedule",
+      "security": [],
+      "parameters": [
+        {
+          "name": "scheduleid",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier of the schedule to be updated",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Schedule"
+            }
+          }
+        }
+      }
+    }
+  },
+  "/api/schedules/deletion/:scheduleid": {
+    "delete": {
+      "operationId": "delete schedule",
+      "responses": {
+        "200": {
+          "description": "DeleteSuccessful"
+        },
+        "404": {
+          "description": "ScheduleNotFound"
+        }
+      },
+      "description": "Delete an existing schedule",
+      "security": [],
+      "parameters": [
+        {
+          "name": "scheduleid",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier of the schedule to be deleted",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
     }
   },
   "servers": [

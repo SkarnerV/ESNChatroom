@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "parcel src/pages/*.html",
+    "dev": "parcel --no-cache src/pages/*.html",
     "build": "parcel build src/pages/*.html"
   },
   "author": "Skarner",

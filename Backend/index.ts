@@ -8,6 +8,7 @@ import ESNDatabase from "./src/database/ESNDatabase";
 import MessageRouter from "./src/message/message.router";
 import SpeedTestRouter from "./src/speedtest/speedtest.router";
 import SearchRouter from "./src/search/search.router";
+import GroupRouter from "./src/group/group.router";
 import ScheduleRouter from "./src/schedule/schedule.router";
 import swaggerUI from "swagger-ui-express";
 import * as swaggerDoc from "./public/swagger.json";
@@ -80,6 +81,8 @@ class App {
     const testRouter: Router = new SpeedTestRouter().getRouter();
     const searchRouter: Router = new SearchRouter().getRouter();
     const scheduleRouter: Router = new ScheduleRouter().getRouter();
+    const groupRouter: Router = new GroupRouter().getRouter();
+    this.app.use("/api/groups", groupRouter);
     this.app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc));
     this.app.use("/api/users", authRouter);
     this.app.use("/api/users", userRouter);

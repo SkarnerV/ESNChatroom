@@ -24,6 +24,7 @@ export default class MessageController {
   private authDao: AuthDAO;
   private publicFactory: PublicFacotry;
   private privateFactory: PrivateFacotry;
+  private groupFactory: PublicFacotry;
   private announcementFactory: AnnouncementFacotry;
   private postFactory: PostFacotry;
   constructor() {
@@ -31,6 +32,7 @@ export default class MessageController {
     this.authDao = new AuthDAO();
     this.likesDao = new LikesDAO();
     this.publicFactory = new PublicFacotry();
+    this.groupFactory = new PublicFacotry();
     this.privateFactory = new PrivateFacotry();
     this.announcementFactory = new AnnouncementFacotry();
     this.postFactory = new PostFacotry();
@@ -45,24 +47,16 @@ export default class MessageController {
       throw new BadRequestException(ErrorMessage.SENDER_STATUS_UNKNOWN_MESSAGE);
     }
     let newMessage: Message;
-
-    switch (message.sendee) {
-      case "Lobby": {
-        newMessage = this.publicFactory.createMessage(message);
-        break;
-      }
-      case "Announcement": {
-        newMessage = this.announcementFactory.createMessage(message);
-        break;
-      }
-      case "Post": {
-        newMessage = this.postFactory.createMessage(message);
-        break;
-      }
-      default: {
-        newMessage = this.privateFactory.createMessage(message);
-        break;
-      }
+    if (message.sendee === "Lobby") {
+      newMessage = this.publicFactory.createMessage(message);
+    } else if (message.sendee === "Announcement") {
+      newMessage = this.announcementFactory.createMessage(message);
+    } else if (message.sendee.startsWith("Group")) {
+      newMessage = this.groupFactory.createMessage(message);
+    } else if (message.sendee === "Post") {
+      newMessage = this.postFactory.createMessage(message);
+    } else {
+      newMessage = this.privateFactory.createMessage(message);
     }
 
     const createdMessage = await this.messageDao.createMessage(newMessage);
@@ -77,7 +71,12 @@ export default class MessageController {
   async getAllMessages(sender: string, sendee: string): Promise<Message[]> {
     let allMessages: Message[] = [];
     // const decodeToekn = jwt.decode(senderToken) as Token;
-    if (sendee === "Lobby" || sendee === "Announcement" || sendee == "Post") {
+    if (
+      sendee === "Lobby" ||
+      sendee === "Announcement" ||
+      sendee == "Post" ||
+      sendee.startsWith("Group")
+    ) {
       await this.messageDao
         .getAllPublicMessages(sendee)
         .then((response) => (allMessages = response));
@@ -105,7 +104,12 @@ export default class MessageController {
   async getLastMessage(_: string, sendee: string): Promise<Message[]> {
     let lastMessage: Message[] = [];
     // const decodeToekn = jwt.decode(senderToken) as Token;
-    if (sendee === "Lobby" || sendee === "Announcement" || sendee === "Post") {
+    if (
+      sendee === "Lobby" ||
+      sendee === "Announcement" ||
+      sendee === "Post" ||
+      sendee.startsWith("Group")
+    ) {
       await this.messageDao
         .getLastPublicMessage(sendee)
         .then((response) =>

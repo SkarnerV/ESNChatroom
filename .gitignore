@@ -5,3 +5,4 @@ node_modules
 coverage/
 docker-compose.yaml
 .vscode
+Backend/dist/

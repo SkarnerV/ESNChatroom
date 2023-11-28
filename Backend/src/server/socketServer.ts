@@ -58,7 +58,7 @@ export class SocketServer {
   }
 
   async broadcastMessage(sendee: string, message: Message): Promise<void> {
-    if (sendee !== "Lobby" && sendee !== "Announcement" && sendee !== "Post") {
+    if (sendee !== "Lobby" && sendee !== "Announcement" && !sendee.startsWith("Group") && sendee !== "Post") {
       this.io.emit("private message", message);
     }
     this.io.emit(sendee, message);

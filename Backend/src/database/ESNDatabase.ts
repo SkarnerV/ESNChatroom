@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 import { ESNUser } from "../user/user.entity";
 import { Message } from "../message/message.entity";
+import { Group } from "../group/group.entity";
 import { Likes } from "../likes/likes.entity";
 import { FoodSharingSchedule } from "../schedule/schedule.entity";
 
@@ -16,7 +17,7 @@ export default class ESNDatabase {
     username: "team-sb1",
     password: "sb1",
     database: "sb1",
-    entities: [ESNUser, Message, Likes, FoodSharingSchedule],
+    entities: [ESNUser, Message, Likes, FoodSharingSchedule, Group],
     dropSchema: false,
     logging: true,
     synchronize: true,
@@ -25,7 +26,7 @@ export default class ESNDatabase {
   private static testDataSource = new DataSource({
     type: "sqlite",
     database: ":memory:",
-    entities: [ESNUser, Message, Likes, FoodSharingSchedule],
+    entities: [ESNUser, Message, Likes, FoodSharingSchedule, Group],
     dropSchema: true,
     logging: false,
     synchronize: true,
