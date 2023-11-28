@@ -5,7 +5,7 @@ import {
 } from "../../constant/svg-icon";
 
 export const navBarContainer = `
-<div class="pb-5 pt-3 flex flex-grow fixed bottom-0 left-0 right-0 justify-around items-center bg-black py-2 px-4 text-white">
+<div class="pb-5 flex flex-grow fixed bottom-0 left-0 right-0 justify-around items-center bg-black text-white">
     <button id="direct-home" class="w-16 font-semibold text-sm flex flex-col flex-row -translate-x-1/3 items-center bg-black text-white p-1 rounded-full transition-colors">
         ${homeIcon}
     </button>

@@ -1,9 +1,16 @@
 export interface ESNMessage {
+  id?: number;
   content: string;
   sender: string;
   sendee: string;
   time?: string;
+  likes?: Likes[];
   senderStatus: string;
+}
+
+export interface Likes {
+  id: number;
+  username: string;
 }
 
 export interface ESNUserStatus {

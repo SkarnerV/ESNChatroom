@@ -81,7 +81,7 @@ describe("MessageRouter", () => {
       const res = await request(app)
         .post("/api/messages")
         .send(testMessage1)
-        .expect(200);
+        .expect(201);
 
       expect(res.body.sender).toEqual(testMessage1.sender);
       expect(res.body.sendee).toEqual(testMessage1.sendee);
@@ -146,6 +146,86 @@ describe("MessageRouter", () => {
       expect(res.body.map((message: Message) => message.content)).toEqual([
         testMessage2.content,
       ]);
+    });
+  });
+
+  describe("PUT /likes", () => {
+    it("Should update the like for the message for the frist request.", async () => {
+      const createdMessage1 = await messageController.postMessage(testMessage1);
+
+      const res = await request(app)
+        .put(`/api/messages/likes`)
+        .send({ postId: createdMessage1.id, username: "a" })
+        .expect(200);
+
+      expect(res.body.likes[0].username).toEqual("a");
+    });
+
+    it("Should undo the like for the message for another request.", async () => {
+      const createdMessage1 = await messageController.postMessage(testMessage1);
+
+      await request(app)
+        .put(`/api/messages/likes`)
+        .send({ postId: createdMessage1.id, username: "a" })
+        .expect(200);
+
+      const res = await request(app)
+        .put(`/api/messages/likes`)
+        .send({ postId: createdMessage1.id, username: "a" })
+        .expect(200);
+
+      expect(res.body.likes).toEqual([]);
+    });
+
+    it("Should redo the like for the message if requested thrid times.", async () => {
+      const createdMessage1 = await messageController.postMessage(testMessage1);
+
+      await request(app)
+        .put(`/api/messages/likes`)
+        .send({ postId: createdMessage1.id, username: "a" })
+        .expect(200);
+
+      await request(app)
+        .put(`/api/messages/likes`)
+        .send({ postId: createdMessage1.id, username: "a" })
+        .expect(200);
+
+      const res = await request(app)
+        .put(`/api/messages/likes`)
+        .send({ postId: createdMessage1.id, username: "a" })
+        .expect(200);
+
+      expect(res.body.likes[0].username).toEqual("a");
+    });
+
+    it("Should throw a 404 error if the message not found.", async () => {
+      await request(app)
+        .put(`/api/messages/likes`)
+        .send({ postId: 1, username: "a" })
+        .expect(404);
+    });
+  });
+
+  describe("Delete /:id", () => {
+    it("Should delete the message.", async () => {
+      await messageController.postMessage(testMessage1);
+      const originalMessages = await request(app)
+        .get(`/api/messages/${testMessage1.sender}/${testMessage1.sendee}`)
+        .expect(200);
+      expect(originalMessages.body.length).toEqual(1);
+      const res = await request(app)
+        .delete(`/api/messages/${testMessage1.id}`)
+        .expect(200);
+      const allMessages = await request(app)
+        .get(`/api/messages/${testMessage1.sender}/${testMessage1.sendee}`)
+        .expect(200);
+
+      expect(allMessages.body).toEqual([]);
+      expect(res.body.id).toEqual(testMessage1.id);
+    });
+
+    it("Should throw an 404 error if the message does not exist.", async () => {
+      await request(app).delete(`/api/messages/${testMessage1.id}`).expect(404);
     });
   });
 });

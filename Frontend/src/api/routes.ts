@@ -9,4 +9,9 @@ export const messagesApi = `${endpoint}/api/messages/`;
 
 export const speedTestApi = `${endpoint}/api/speedtests`;
 export const searchApi = `${endpoint}/api/search`;
+
+
+export const likesApi = `${endpoint}/api/messages/likes`;
+
 export const scheduleApi = `${endpoint}/api/schedules/`;
+

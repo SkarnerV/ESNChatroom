@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Likes } from "../likes/likes.entity";
 
 @Entity()
 export class Message {
@@ -19,4 +26,9 @@ export class Message {
 
   @Column()
   senderStatus!: string;
+
+  @OneToMany(() => Likes, (likes) => likes.message, {
+    eager: true,
+  })
+  likes?: Likes[];
 }

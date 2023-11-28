@@ -49,6 +49,27 @@ const testMessage5: PostMessageInput = {
   senderStatus: "GREEN",
 };
 
+const testPostMessage6: PostMessageInput = {
+  content: "this is a post 6 ",
+  sender: "1",
+  sendee: "Post",
+  senderStatus: "GREEN",
+};
+
+const testPostMessage7: PostMessageInput = {
+  content: "this is a post 7 ",
+  sender: "2",
+  sendee: "Post",
+  senderStatus: "GREEN",
+};
+
+const testPostMessage8: PostMessageInput = {
+  content: "this is a post 8",
+  sender: "3",
+  sendee: "Post",
+  senderStatus: "GREEN",
+};
+
 const testBadMessage2: Message = {
   id: 2,
   content: "this is a bad message2 ",
@@ -177,5 +198,82 @@ describe("getLastMessage", () => {
 
     expect(lastMessage1[0].content).toEqual(testMessage1.content);
     expect(lastMessage2[0].content).toEqual(testMessage2.content);
+  });
+});
+
+describe("likesPost", () => {
+  it("Should add the likes to the message.", async () => {
+    const createdPost: Message =
+      await messageController.postMessage(testPostMessage8);
+    const originalMessages = await messageController.getAllMessages(
+      "a",
+      "Post"
+    );
+    expect(originalMessages[0].likes?.length).toEqual(0);
+    await messageController.likesPost({
+      postId: createdPost.id,
+      username: "a",
+    });
+
+    const allMessages = await messageController.getAllMessages("a", "Post");
+    expect(allMessages[0].likes?.length).toEqual(1);
+  });
+
+  it("Should undo the likes to the message if user liked twice.", async () => {
+    const createdPost: Message =
+      await messageController.postMessage(testPostMessage8);
+    const originalMessages = await messageController.getAllMessages(
+      "a",
+      "Post"
+    );
+    expect(originalMessages[0].likes?.length).toEqual(0);
+    await messageController.likesPost({
+      postId: createdPost.id,
+      username: "a",
+    });
+    await messageController.likesPost({
+      postId: createdPost.id,
+      username: "a",
+    });
+
+    const allMessages = await messageController.getAllMessages("a", "Post");
+    expect(allMessages[0].likes?.length).toEqual(0);
+  });
+
+  it("Should throw a Not found exception if the message liked is not found.", async () => {
+    try {
+      await messageController.likesPost({
+        postId: 10,
+        username: "a",
+      });
+    } catch (error) {
+      expect((error as Exception).status).toEqual(StatusCode.NOT_FOUND_CODE);
+    }
+  });
+});
+
+describe("deletePost", () => {
+  it("Should delete the post in the database.", async () => {
+    const deletePost: Message =
+      await messageController.postMessage(testPostMessage6);
+    await messageController.postMessage(testPostMessage7);
+    await messageController.postMessage(testPostMessage8);
+    const originalMessages = await messageController.getAllMessages(
+      "a",
+      "Post"
+    );
+    expect(originalMessages.length).toEqual(3);
+    await messageController.deletePost(deletePost.id);
+
+    const allMessages = await messageController.getAllMessages("a", "Post");
+    expect(allMessages.length).toEqual(2);
+  });
+
+  it("Should throw a Not found exception if the message deleted is not found.", async () => {
+    try {
+      await messageController.deletePost(999);
+    } catch (error) {
+      expect((error as Exception).status).toEqual(StatusCode.NOT_FOUND_CODE);
+    }
   });
 });

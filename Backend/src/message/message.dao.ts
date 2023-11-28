@@ -58,6 +58,19 @@ export default class MessageDAO {
     return allMessages;
   }
 
+  async deleteMessage(id: number): Promise<Message | null> {
+    const deleteMessage = await this.messageDatabase.findOneBy({ id: id });
+
+    if (deleteMessage) {
+      return await this.messageDatabase.remove(deleteMessage);
+    }
+    return null;
+  }
+
+  async getMessageById(id: number): Promise<Message | null> {
+    return await this.messageDatabase.findOneBy({ id: id });
+  }
+
   async getMessageByContent(
     content: string,
     sender: string,

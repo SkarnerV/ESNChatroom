@@ -28,15 +28,7 @@ export class SocketServer {
   private registerEventListerner(): void {
     this.io.on("connection", (socket: Socket) => {
       this.listenDisconnection(socket);
-      this.listenChatEvent(socket);
       this.listenStatusEvent(socket);
-    });
-  }
-
-  private listenChatEvent(socket: Socket): void {
-    socket.on("chat message", (message: string) => {
-      this.io.emit("private message", message);
-      this.io.emit("public message", message);
     });
   }
 
@@ -66,10 +58,18 @@ export class SocketServer {
   }
 
   async broadcastMessage(sendee: string, message: Message): Promise<void> {
-    if (sendee !== "Lobby" && sendee !== "Announcement") {
+    if (sendee !== "Lobby" && sendee !== "Announcement" && sendee !== "Post") {
       this.io.emit("private message", message);
     }
     this.io.emit(sendee, message);
+  }
+
+  async broadcastDeleteMessage(
+    messageId: number,
+    message: Message
+  ): Promise<void> {
+    message.id = messageId;
+    this.io.emit("delete post", message);
   }
 
   async broadcastChangedStatus(lastStatus: string[]): Promise<void> {

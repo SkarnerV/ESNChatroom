@@ -133,7 +133,11 @@ describe("getMessageByContent", () => {
     await messageDao.createMessage(testMessage3);
     await messageDao.createMessage(testMessage4);
 
-    const messages = await messageDao.getMessageByContent("Lobby", "1", "Lobby");
+    const messages = await messageDao.getMessageByContent(
+      "Lobby",
+      "1",
+      "Lobby"
+    );
 
     expect(messages.map((message) => message.content)).toEqual([
       testMessage4.content,
@@ -164,6 +168,6 @@ describe("getLastPublicMessage", () => {
     await messageDao.createMessage(testMessage4);
 
     const allMessages = await messageDao.getLastPublicMessage("Lobby");
-    expect(allMessages).toEqual(testMessage4);
+    expect(allMessages!.content).toEqual(testMessage4.content);
   });
 });

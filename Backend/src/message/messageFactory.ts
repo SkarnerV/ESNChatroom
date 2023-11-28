@@ -42,3 +42,16 @@ export class AnnouncementFacotry implements MessageFacotry {
     return newMessage;
   }
 }
+
+export class PostFacotry implements MessageFacotry {
+  createMessage(message: PostMessageInput): Message {
+    const newMessage: Message = new Message();
+    newMessage.content = message.content;
+    newMessage.sender = message.sender;
+    newMessage.time = new Date().getTime().toString();
+    newMessage.senderStatus = message.senderStatus;
+    newMessage.sendee = message.sendee;
+    newMessage.likes = [];
+    return newMessage;
+  }
+}

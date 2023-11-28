@@ -7,6 +7,6 @@ export const esnDirectoryContainer = `
         class="w-6 h-6 ml-auto cursor-pointer filter invert"/>
     
   </div>
-  <ul id="user-status-list" role="list" class="flex-grow flex flex-col overflow-y-auto divide-y divide-rose-500 pb-14"></ul>
+  <ul id="user-status-list" role="list" class="flex-grow flex h-[70%] flex-col overflow-y-auto divide-y bg-red-400 divide-rose-500"></ul>
 
 `;

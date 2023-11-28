@@ -12,6 +12,7 @@ module.exports = {
   },
 
   safelist: [
+    "bg-fuchsia-950",
     "bg-white",
     "p-8",
     "rounded",

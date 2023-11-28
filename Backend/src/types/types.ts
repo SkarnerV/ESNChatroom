@@ -1,3 +1,5 @@
+import { Message } from "../message/message.entity";
+
 export interface AuthResponse {
   id: string;
   username: string;
@@ -30,10 +32,16 @@ export interface PostMessageInput {
   senderStatus: string;
 }
 
+export interface LikesMessageInput {
+  username: string;
+  postId: number;
+  
+}
 export interface FoodScheduleInput {
   scheduleid: string;
   scheduler: string;
   schedulee: string;
   time: string;
   status: string;
+
 }

@@ -15,6 +15,7 @@ export const enum ErrorMessage {
   SENDER_STATUS_UNKNOWN_MESSAGE = "Sender's Status Unkonwn.",
   UNKNOWN_USER_STATUS = "Unknow Status.",
   SEARCH_CONTEXT_UNKNOWN_MESSAGE = "Search context Unknown.",
+  MESSAGE_NOT_FOUND = "Message not found.",
 }
 
 export abstract class Exception extends Error {
