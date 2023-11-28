@@ -10,3 +10,11 @@ export interface ESNUserStatus {
   username: string;
   lastStatus: string;
 }
+
+export interface FoodSharingSchedule{
+  scheduleid: string;
+  scheduler: string;
+  schedulee: string;
+  time: string;
+  status: string;
+}

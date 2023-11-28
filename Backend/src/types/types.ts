@@ -29,3 +29,11 @@ export interface PostMessageInput {
   sendee: string;
   senderStatus: string;
 }
+
+export interface FoodScheduleInput {
+  scheduleid: string;
+  scheduler: string;
+  schedulee: string;
+  time: string;
+  status: string;
+}

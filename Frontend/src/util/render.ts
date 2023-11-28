@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import { UserStatusIcon } from "../constant/user-status";
-import { ESNMessage, ESNUserStatus } from "../types";
+import { ESNMessage, ESNUserStatus, FoodSharingSchedule } from "../types";
 import Formatter from "./formatter";
+import { deleteSchedule, updateSchedule } from "../api/schedule";
 
 const currentUser = jwt.decode(localStorage.getItem("token"), "esn");
 
@@ -97,4 +98,86 @@ export const generateMessage = (message: ESNMessage): HTMLElement[] => {
   messageBubble.appendChild(currentUserAvatarContainer);
 
   return [messageHeader, messageBubble];
+};
+
+export const generateSchedule = (
+  schedule: FoodSharingSchedule
+): HTMLElement => {
+  const date = schedule.time.split("_")[0];
+  const time = schedule.time.split("_")[1];
+  const scheduleBox = document.createElement("div");
+  const scheduleEntry = document.createElement("div");
+  scheduleEntry.className =
+    "bg-gray-200 items-center rounded-lg shadow-md py-1 px-4 mb-3 ml-1 mr-1 text-center";
+  scheduleEntry.setAttribute("id", schedule.scheduleid);
+  const schedulerRow = document.createElement("div");
+  schedulerRow.className = "text-sm font-normal mt-1";
+  schedulerRow.textContent = `Scheduler: ${schedule.scheduler}`;
+
+  const dateRow = document.createElement("div");
+  dateRow.className = "text-lg font-bold";
+  dateRow.textContent = `Date: ${date}`;
+
+  const timeRow = document.createElement("div");
+  timeRow.className = "text-lg font-bold";
+  timeRow.textContent = `Time: ${time}`;
+
+  const statusRow = document.createElement("div");
+  statusRow.style.fontStyle = "italic";
+  statusRow.textContent = `Status: ${schedule.status}`;
+
+  // for scheduler
+  const deleteButton = document.createElement("button");
+  deleteButton.className = "bg-red-500 text-white rounded px-5 py-1 mt-1 mb-1";
+  deleteButton.textContent = "Delete";
+
+  // for scheduleee
+  const acceptButton = document.createElement("button");
+  acceptButton.className =
+    "bg-green-500 text-white rounded px-2 py-1 mt-1 mr-5 mb-1";
+  acceptButton.textContent = "Accept";
+  const rejectButton = document.createElement("button");
+  rejectButton.className =
+    "bg-red-500 text-white rounded px-2 py-1 mt-1 ml-5 mb-1";
+  rejectButton.textContent = "Reject";
+
+  scheduleEntry.appendChild(schedulerRow);
+  scheduleEntry.appendChild(dateRow);
+  scheduleEntry.appendChild(timeRow);
+  scheduleEntry.appendChild(statusRow);
+  if (currentUser.username === schedule.scheduler)
+    scheduleEntry.appendChild(deleteButton);
+
+  // For schedulee, only if the schedule time is in the future and is currently in pending status
+  if (
+    currentUser.username === schedule.schedulee &&
+    schedule.status === "Pending" &&
+    new Date(schedule.time.split("_").join("T")).getTime() >=
+      new Date().getTime()
+  ) {
+    scheduleEntry.appendChild(acceptButton);
+    scheduleEntry.appendChild(rejectButton);
+  }
+
+  deleteButton.addEventListener("click", () => {
+    deleteSchedule(schedule.scheduleid);
+  });
+
+  acceptButton.addEventListener("click", () => {
+    updateSchedule(schedule.scheduleid, "Accept").then((response) => {
+      console.log(response.data);
+      statusRow.textContent = "Status: Accept";
+      scheduleEntry.removeChild(acceptButton);
+      scheduleEntry.removeChild(rejectButton);
+    });
+  });
+
+  rejectButton.addEventListener("click", () => {
+    updateSchedule(schedule.scheduleid, "Reject");
+    statusRow.textContent = "Status: Reject";
+    scheduleEntry.removeChild(acceptButton);
+    scheduleEntry.removeChild(rejectButton);
+  });
+
+  return scheduleEntry;
 };

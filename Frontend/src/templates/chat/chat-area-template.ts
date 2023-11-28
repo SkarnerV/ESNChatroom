@@ -8,13 +8,18 @@ export const chatAreaTemplate = `
 <button id="chat-back-button" class="text-lg text-white bg-transparent border-none cursor-pointer"><</button>
 </div>
 <div class="flex items-center justify-between w-full">
-        <div id="contact-name" class="text-lg font-semibold flex-1 text-center">Contact Name</div><!-- Contact Name -->
-        <img
+        <div id="contact-name" class="text-lg font-semibold flex-grow text-center">Contact Name</div><!-- Contact Name -->
+        </div>
+        <div class="flex">
+            <img
+            id="schedule-icon"
+            src="https://cdn-icons-png.flaticon.com/512/747/747310.png" 
+            class="w-6 h-6 cursor-pointer filter invert mr-5"/>
+            <img
             id="search-icon"
             src="https://cdn-icons-png.flaticon.com/512/54/54481.png" 
-            class="w-6 h-6 ml-auto cursor-pointer filter invert"/>
-        
-    </div>
+            class="w-6 h-6 cursor-pointer filter invert"/>
+        </div>
 </div>
 
 

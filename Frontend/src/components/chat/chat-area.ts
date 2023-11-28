@@ -7,6 +7,7 @@ import Formatter from "../../util/formatter";
 import { socket } from "../../util/socket";
 import { IllegalUserActionHandler } from "../../util/illegalUserHandler";
 import { generateMessage } from "../../util/render";
+import { displaySchedules, getAllSchedules } from "../../api/schedule";
 
 class ChatArea extends HTMLElement {
   constructor() {
@@ -30,6 +31,22 @@ const backButton = document.getElementById("chat-back-button");
 const displayedContact = document.getElementById("contact-name");
 const contactName = url.searchParams.get("contact");
 const searchButton = document.getElementById("search-icon");
+const scheduleButton = document.getElementById("schedule-icon");
+
+if (contactName === "Lobby") {
+  scheduleButton!.style.display = "none";
+}
+
+scheduleButton!.onclick = async () => {
+  const scheduleModal = document.getElementById("schedule-modal");
+  scheduleModal!.style.display = "block";
+  if (contactName) {
+    // Retrieve existing schedules
+    getAllSchedules(currentUser.username, contactName).then((response) => {
+      displaySchedules(response);
+    });
+  }
+};
 
 searchButton!.onclick = async () => {
   const searchModal = document.getElementById("search-modal");

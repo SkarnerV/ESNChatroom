@@ -8,6 +8,7 @@ import ESNDatabase from "./src/database/ESNDatabase";
 import MessageRouter from "./src/message/message.router";
 import SpeedTestRouter from "./src/speedtest/speedtest.router";
 import SearchRouter from "./src/search/search.router";
+import ScheduleRouter from "./src/schedule/schedule.router";
 import swaggerUI from "swagger-ui-express";
 import * as swaggerDoc from "./public/swagger.json";
 import { SocketServer } from "./src/server/socketServer";
@@ -78,12 +79,14 @@ class App {
     const messageRouter: Router = new MessageRouter().getRouter();
     const testRouter: Router = new SpeedTestRouter().getRouter();
     const searchRouter: Router = new SearchRouter().getRouter();
+    const scheduleRouter: Router = new ScheduleRouter().getRouter();
     this.app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc));
     this.app.use("/api/users", authRouter);
     this.app.use("/api/users", userRouter);
     this.app.use("/api/messages", messageRouter);
     this.app.use("/api/speedtests", testRouter);
     this.app.use("/api/search", searchRouter);
+    this.app.use("/api/schedules", scheduleRouter);
   }
 
   private async registerDatabase(): Promise<void> {

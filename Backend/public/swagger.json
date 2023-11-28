@@ -106,6 +106,28 @@
         "required": ["content", "time", "sender", "sendee"],
         "type": "object",
         "additionalProperties": false
+      },
+      "Schedule": {
+        "properties": {
+          "scheduleid": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "scheduler": {
+            "type": "string"
+          },
+          "schedulee": {
+            "type": "string"
+          }
+        },
+        "required": ["scheduleid", "time", "status", "scheduler", "schedulee"],
+        "type": "object",
+        "additionalProperties": false
       }
     },
     "securitySchemes": {}
@@ -330,7 +352,7 @@
         ]
       }
     },
-      "/api/messages/last/:sender/:sendee": {
+    "/api/messages/last/:sender/:sendee": {
       "get": {
         "operationId": "get the last message from the sender to sendee",
         "responses": {
@@ -401,6 +423,135 @@
             "name": "sendee",
             "in": "query",
             "description": "The sendee of the message, only available when `context` is `'messages'`. If `sendee` is `'Lobby'`, it would return search result for public messages."
+          }
+        ]
+      }
+    },
+    "/api/schedules/:scheduler/:schedulee": {
+      "get": {
+        "operationId": "get all schedules between scheduler and schedulee",
+        "responses": {
+          "200": {
+            "description": "GetSchedule"
+          }
+        },
+        "description": "get all schedules between scheduler and schedulee",
+        "security": [],
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "name": "scheduler",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "name": "schedulee",
+            "in": "path"
+          }
+        ]
+      }
+    },
+    "/api/schedules": {
+      "post": {
+        "operationId": "post schedule between scheduler and schedulee",
+        "responses": {
+          "200": {
+            "description": "PostSchedule",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Schedule"
+                }
+              }
+            }
+          }
+        },
+        "description": "post schedule between scheduler and schedulee",
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Schedule"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/schedules/:scheduleid": {
+      "put": {
+        "operationId": "schedule update",
+        "responses": {
+          "200": {
+            "description": "UpdateSuccessful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Schedule"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ScheduleNotFound"
+          }
+        },
+        "description": "Update an existing schedule",
+        "security": [],
+        "parameters": [
+          {
+            "name": "scheduleid",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier of the schedule to be updated",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Schedule"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/schedules/deletion/:scheduleid": {
+      "delete": {
+        "operationId": "delete schedule",
+        "responses": {
+          "200": {
+            "description": "DeleteSuccessful"
+          },
+          "404": {
+            "description": "ScheduleNotFound"
+          }
+        },
+        "description": "Delete an existing schedule",
+        "security": [],
+        "parameters": [
+          {
+            "name": "scheduleid",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier of the schedule to be deleted",
+            "schema": {
+              "type": "string"
+            }
           }
         ]
       }
