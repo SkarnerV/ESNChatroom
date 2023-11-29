@@ -1,8 +1,6 @@
 import SearchController from "../../src/search/search.controller";
-import UserController from "../../src/user/user.controller";
 import ESNDatabase from "../../src/database/ESNDatabase";
 import { Message } from "../../src/message/message.entity";
-import UserDAO from "../../src/user/user.dao";
 import MessageController from "../../src/message/message.controller";
 import AuthController from "../../src/auth/auth.controller";
 import { Exception, StatusCode } from "../../src/util/exception";

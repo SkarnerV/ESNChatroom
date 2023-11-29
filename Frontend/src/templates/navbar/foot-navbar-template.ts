@@ -1,5 +1,6 @@
 import {
   homeIcon,
+  iconWaitlist,
   publicChatIcon,
   userDirectoryIcon,
 } from "../../constant/svg-icon";

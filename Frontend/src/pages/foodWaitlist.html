@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emergency Social Network</title>
+    <script
+      type="module"
+      src="../components/waitlist/food-waitlist.ts"
+    ></script>
+
+    <script type="module" src="../components/waitlist/join-waitlist-modal.ts"></script>
+    <script type="module" src="../components/waitlist/donate-waitlist-modal.ts"></script>
+    <link href="../index.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="bg-rose-600 w-screen" style="height: 100dvh">
+      <food-waitlist></food-waitlist>
+      <join-waitlist-modal id="join-waitlist-modal" class="hidden"></join-waitlist-modal>
+      <donate-waitlist-modal id="donate-waitlist-modal" class="hidden"></donate-waitlist-modal>
+    </div>
+  </body>
+</html>

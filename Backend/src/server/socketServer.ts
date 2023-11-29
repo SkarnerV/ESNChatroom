@@ -1,6 +1,8 @@
 import { Server, Socket } from "socket.io";
 import { Server as HttpServer } from "http";
 import { Message } from "../message/message.entity";
+import { WaitlistUser } from "../waitlist/waitlist.entity";
+import { waitlistUserUpdateInput } from "../types/types";
 import UserController from "../user/user.controller";
 
 export class SocketServer {
@@ -29,12 +31,27 @@ export class SocketServer {
     this.io.on("connection", (socket: Socket) => {
       this.listenDisconnection(socket);
       this.listenStatusEvent(socket);
+      this.listenWaitlistStatusEvent(socket);
     });
   }
 
   private listenStatusEvent(socket: Socket): void {
     socket.on("last status", (lastStatus: string[]) => {
       this.io.emit("last status", lastStatus);
+    });
+  }
+
+  private listenWaitlistStatusEvent(socket: Socket): void {
+    socket.on("join waitlist", (waitlistUser: WaitlistUser) => {
+      this.io.emit("join waitlist", waitlistUser);
+    });
+
+    socket.on("drop waitlist", (username: string) => {
+      this.io.emit("drop waitlist", username);
+    });
+
+    socket.on("update waitlist", (userToUpdate: waitlistUserUpdateInput) => {
+      this.io.emit("update waitlist", userToUpdate);
     });
   }
 
@@ -55,6 +72,25 @@ export class SocketServer {
       );
       this.io.emit("online users", updatedOnlineUsers);
     });
+  }
+
+  async broadcastNewWaitlistUser(user: WaitlistUser): Promise<void> {
+    this.io.emit("join waitlist", user);
+  }
+
+  async broadcastUserDropWaitlist(username: string): Promise<void> {
+    this.io.emit("drop waitlist", username);
+  }
+
+  async broadcastUserUpdateWaitlist(
+    username: string,
+    foodDonor: string
+  ): Promise<void> {
+    const updatedUser: waitlistUserUpdateInput = {
+      username: username,
+      foodDonor: foodDonor,
+    };
+    this.io.emit("update waitlist", updatedUser);
   }
 
   async broadcastMessage(sendee: string, message: Message): Promise<void> {

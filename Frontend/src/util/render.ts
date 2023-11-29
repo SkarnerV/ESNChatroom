@@ -1,6 +1,12 @@
 import jwt from "jsonwebtoken";
 import { UserStatusIcon } from "../constant/user-status";
-import { ESNMessage, ESNUserStatus, FoodSharingSchedule } from "../types";
+import {
+  ESNMessage,
+  ESNUserStatus,
+  ESNWaitlistUser,
+  FoodSharingSchedule,
+} from "../types";
+
 import Formatter from "./formatter";
 import { deleteSchedule, updateSchedule } from "../api/schedule";
 
@@ -98,6 +104,55 @@ export const generateMessage = (message: ESNMessage): HTMLElement[] => {
   messageBubble.appendChild(currentUserAvatarContainer);
 
   return [messageHeader, messageBubble];
+};
+
+export const generateWaitlistCitizen = (
+  waitlistUser: ESNWaitlistUser
+): HTMLElement[] => {
+  const userBodyButton = document.createElement("button");
+  const userBodyContainer = document.createElement("div");
+  const userInfoContainer = document.createElement("div");
+  const userAvatarContainer = document.createElement("div");
+  const userAvatar = document.createElement("img");
+  const userInfoTextBody = document.createElement("div");
+  const usernameText = document.createElement("p");
+  const userCommentsText = document.createElement("p");
+  const userStatusInfo = document.createElement("span");
+
+  userBodyButton.id = `user-${waitlistUser.username}`;
+  userBodyButton.className = "w-full text-left";
+  userBodyContainer.className =
+    "flex items-center justify-between bg-black p-4";
+  userInfoContainer.className = "flex items-center";
+  userAvatarContainer.className = "flex items-center";
+  userAvatar.className = "w-10 h-10 bg-gray-50 rounded-full mr-3";
+  usernameText.className = "text-white font-semibold";
+  userCommentsText.className = "text-gray-400 text-sm  break-normal break-all";
+  userCommentsText.id = `${waitlistUser.username}-food-comments`;
+  usernameText.id = "user-directory-display-name";
+  userStatusInfo.className =
+    "text-xs font-semibold bg-rose-500 text-white p-1 rounded";
+  userStatusInfo.id = `${waitlistUser.username}-status-info`;
+  userAvatar.src =
+    "https://avatars.dicebear.com/api/adventurer-neutral/mail%40ashallendesign.co.uk.svg";
+
+  // const userStatusSVGIcon = UserStatusIcon[waitlistUser.lastStatus];
+  usernameText.textContent = waitlistUser.username;
+
+  userInfoTextBody.appendChild(usernameText);
+  userInfoTextBody.appendChild(userCommentsText);
+  userAvatarContainer.appendChild(userAvatar);
+  userInfoContainer.appendChild(userAvatarContainer);
+  userInfoContainer.appendChild(userInfoTextBody);
+  userBodyContainer.appendChild(userInfoContainer);
+  userBodyContainer.appendChild(userStatusInfo);
+  userBodyButton.appendChild(userBodyContainer);
+
+  usernameText.textContent = Formatter.formatLongUsername(
+    usernameText.textContent
+  );
+
+  return [userBodyButton, userStatusInfo, usernameText, userCommentsText];
 };
 
 export const generateSchedule = (
