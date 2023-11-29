@@ -18,13 +18,7 @@ export interface ESNUserStatus {
   lastStatus: string;
 }
 
-export interface ESNWaitlistUser {
-  username: string;
-  foodComments: string;
-  waitlistStatus: string;
-  foodDonor: string;
-}
-export interface FoodSharingSchedule {
+export interface FoodSharingSchedule{
   scheduleid: string;
   scheduler: string;
   schedulee: string;

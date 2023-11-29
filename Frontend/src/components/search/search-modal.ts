@@ -12,6 +12,7 @@ class SearchModal extends HTMLElement {
   }
 }
 customElements.define("search-modal", SearchModal);
+
 const closeButton = document.getElementById("close-button");
 const searchInput = document.getElementById("search-input");
 const searchButton = document.getElementById("search-button");

@@ -107,29 +107,6 @@
         "type": "object",
         "additionalProperties": false
       },
-      "waitlistUser": {
-        "properties": {
-          "username": {
-            "type": "string"
-          },
-          "foodComments": {
-            "type": "string"
-          }
-        },
-        "required": ["username","foodComments"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "updateWaitlistUserInfo": {
-        "properties": {
-          "username": {
-            "type": "string"
-          },
-          "foodDonor": {
-            "type": "string"
-          }
-        },
-        "required": ["username","foodDonor"],
       "Schedule": {
         "properties": {
           "scheduleid": {
@@ -345,41 +322,32 @@
     },
     "/api/messages/:sendee": {
       "get": {
-        "operationId": "search for informations",
+        "operationId": "get all unread messages for sendee",
         "responses": {
           "200": {
-            "description": "Return the search result"
+            "description": "GetMessages"
           },
-          "400": {
-            "description": "Invalid search request"
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/Message"
+                },
+                "type": "array"
+              }
+            }
           }
         },
-        "description": "search for informations",
+        "description": "get all unread messages for sendee",
         "security": [],
         "parameters": [
           {
             "required": true,
-            "schema": { "type": "string" },
-            "name": "context",
-            "in": "path"
-          },
-          {
-            "required": true,
-            "schema": { "type": "string" },
-            "name": "criteria",
-            "in": "query"
-          },
-          {
-            "required": false,
-            "schema": { "type": "string" },
-            "name": "sender",
-            "in": "query"
-          },
-          {
-            "required": false,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "name": "sendee",
-            "in": "query"
+            "in": "path"
           }
         ]
       }
@@ -675,119 +643,6 @@
       }
     }
   },
-  "/api/foodWaitlist/allCitizens": {
-    "get": {
-      "operationId": "get the user info on the waitlist",
-      "responses": {
-        "200": {
-          "description": "get user info from FoodWaitlist"
-        }
-      },
-      "content":{
-        "application/json": {
-          "schema": {
-            "$ref": "#/components/schemas/waitlistUser"
-          }
-        }
-      },
-      "description": "get the user info on the waitlist",
-      "security": [],
-      "parameters": [
-        {
-          "required": true,
-          "schema": {
-            "type": "string"
-          },
-          "name": "citizen",
-          "in": "path"
-        }
-      ]
-    }
-  },
-  "/api/foodWaitlist/:citizen": {
-    "post": {
-      "operationId": "join the waitlist",
-      "responses": {
-        "200": {
-          "description": "joinFoodWaitlist"
-        }
-      },
-      "content":{
-        "application/json": {
-          "schema": {
-            "$ref": "#/components/schemas/waitlistUser"
-          }
-        }
-      },
-      "description": "join the waitlist",
-      "security": [],
-      "parameters": [
-        {
-          "required": true,
-          "schema": {
-            "type": "string"
-          },
-          "name": "citizen",
-          "in": "path"
-        }
-      ]
-    },
-    "put": {
-      "operationId": "update the user's donor and status on the waitlist",
-      "responses": {
-        "200": {
-          "description": "updateStatusOnFoodWaitlist"
-        }
-      },
-      "content":{
-        "application/json": {
-          "schema": {
-            "$ref": "#/components/schemas/updateWaitlistUserInfo"
-          }
-        }
-      },
-      "description": "update the user's donor and status on the waitlist",
-      "security": [],
-      "parameters": [
-        {
-          "required": true,
-          "schema": {
-            "type": "string"
-          },
-          "name": "citizen",
-          "in": "path"
-        }
-      ]
-    },
-    "delete": {
-      "operationId": "delete individual user info on the waitlist",
-      "responses": {
-        "200": {
-          "description": "delete individual user info from FoodWaitlist"
-        }
-      },
-      "content":{
-        "application/json": {
-          "schema": {
-            "$ref": "#/components/schemas/waitlistUser"
-          }
-        }
-      },
-      "description": "delete individual user info on the waitlist",
-      "security": [],
-      "parameters": [
-        {
-          "required": true,
-          "schema": {
-            "type": "string"
-          },
-          "name": "citizen",
-          "in": "path"
-        }
-      ]
-    }
-  }
-},
   "/api/schedules/deletion/:scheduleid": {
     "delete": {
       "operationId": "delete schedule",
@@ -820,4 +675,3 @@
     }
   ]
 }
-

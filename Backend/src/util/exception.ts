@@ -15,8 +15,6 @@ export const enum ErrorMessage {
   SENDER_STATUS_UNKNOWN_MESSAGE = "Sender's Status Unkonwn.",
   UNKNOWN_USER_STATUS = "Unknow Status.",
   SEARCH_CONTEXT_UNKNOWN_MESSAGE = "Search context Unknown.",
-  MISSING_FOOD_COMMENTS_ON_WAITLIST = "Missing food comments on waitlist.",
-  MISSING_USERNAME = "Missing username.",
   MESSAGE_NOT_FOUND = "Message not found.",
 }
 
