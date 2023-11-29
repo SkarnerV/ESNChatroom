@@ -11,8 +11,8 @@ export const speedTestApi = `${endpoint}/api/speedtests`;
 export const searchApi = `${endpoint}/api/search`;
 export const groupApi = `${endpoint}/api/groups`;
 
+export const waitlistApi = `${endpoint}/api/waitlist/`;
 
 export const likesApi = `${endpoint}/api/messages/likes`;
 
 export const scheduleApi = `${endpoint}/api/schedules/`;
-

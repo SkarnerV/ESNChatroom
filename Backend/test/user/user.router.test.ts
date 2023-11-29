@@ -65,6 +65,7 @@ describe("UserRouter", () => {
       ]);
     });
   });
+
   describe("GET /:username/status", () => {
     it("should get specific user status", async () => {
       await authController.createUser(testESNUser1);
@@ -76,6 +77,7 @@ describe("UserRouter", () => {
       expect(res.body).toEqual({ lastStatus: "UNDEFINE" });
     });
   });
+
   describe("PUT /status", () => {
     it("should update specific user status", async () => {
       await authController.createUser(testESNUser1);

@@ -40,10 +40,10 @@ searchButton!.onclick = async () => {
   searchModal!.setAttribute("data-context", "citizens");
   searchModal!.style.display = "block";
 
-  // Display all users
-  const resultList = document.getElementById("search-result-area");
-  const clonedMessageContent = userStatusList!.cloneNode(true);
-  resultList!.appendChild(clonedMessageContent);
+  // // Display all users
+  // const resultList = document.getElementById("search-result-area");
+  // const clonedMessageContent = userStatusList!.cloneNode(true);
+  // resultList!.appendChild(clonedMessageContent);
 };
 
 const getUserStatusData = async () => {

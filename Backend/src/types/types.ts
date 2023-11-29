@@ -32,10 +32,18 @@ export interface PostMessageInput {
   senderStatus: string;
 }
 
+export interface waitlistUserInput {
+  username: string;
+  foodComments: string;
+}
+
+export interface waitlistUserUpdateInput {
+  username: string;
+  foodDonor: string;
+}
 export interface LikesMessageInput {
   username: string;
   postId: number;
-  
 }
 export interface FoodScheduleInput {
   scheduleid: string;
@@ -43,5 +51,4 @@ export interface FoodScheduleInput {
   schedulee: string;
   time: string;
   status: string;
-
 }
