@@ -8,6 +8,7 @@ import ESNDatabase from "./src/database/ESNDatabase";
 import MessageRouter from "./src/message/message.router";
 import SpeedTestRouter from "./src/speedtest/speedtest.router";
 import SearchRouter from "./src/search/search.router";
+import SpotRouter from "./src/spot/spot.router";
 import WaitlistRouter from "./src/waitlist/waitlist.router";
 import GroupRouter from "./src/group/group.router";
 import ScheduleRouter from "./src/schedule/schedule.router";
@@ -81,6 +82,7 @@ class App {
     const messageRouter: Router = new MessageRouter().getRouter();
     const testRouter: Router = new SpeedTestRouter().getRouter();
     const searchRouter: Router = new SearchRouter().getRouter();
+    const spotRouter: Router = new SpotRouter().getRouter();
     const waitlistRouter: Router = new WaitlistRouter().getRouter();
 
     const scheduleRouter: Router = new ScheduleRouter().getRouter();
@@ -92,6 +94,7 @@ class App {
     this.app.use("/api/messages", messageRouter);
     this.app.use("/api/speedtests", testRouter);
     this.app.use("/api/search", searchRouter);
+    this.app.use("/api/spots", spotRouter);
     this.app.use("/api/waitlist", waitlistRouter);
     this.app.use("/api/schedules", scheduleRouter);
   }

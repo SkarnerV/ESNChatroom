@@ -41,9 +41,9 @@ searchButton!.onclick = async () => {
   searchModal!.style.display = "block";
 
   // Display all users
-  const resultList = document.getElementById("search-result-area");
-  const clonedMessageContent = userStatusList!.cloneNode(true);
-  resultList!.appendChild(clonedMessageContent);
+  // const resultList = document.getElementById("search-result-area");
+  // const clonedMessageContent = userStatusList!.cloneNode(true);
+  // resultList!.appendChild(clonedMessageContent);
 };
 
 const getUserStatusData = async () => {

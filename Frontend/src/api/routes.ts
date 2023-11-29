@@ -10,6 +10,7 @@ export const messagesApi = `${endpoint}/api/messages/`;
 export const speedTestApi = `${endpoint}/api/speedtests`;
 export const searchApi = `${endpoint}/api/search`;
 
+export const spotApi = `${endpoint}/api/spots`;
 export const waitlistApi = `${endpoint}/api/waitlist/`;
 export const groupApi = `${endpoint}/api/groups`;
 

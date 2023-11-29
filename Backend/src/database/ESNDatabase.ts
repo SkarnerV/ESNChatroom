@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 import { ESNUser } from "../user/user.entity";
 import { Message } from "../message/message.entity";
+import { Spot } from "../spot/spot.entity";
 import { WaitlistUser } from "../waitlist/waitlist.entity";
 import { Group } from "../group/group.entity";
 import { Likes } from "../likes/likes.entity";
@@ -24,6 +25,7 @@ export default class ESNDatabase {
       Likes,
       FoodSharingSchedule,
       Group,
+      Spot
     ],
     dropSchema: false,
     logging: true,
@@ -40,6 +42,7 @@ export default class ESNDatabase {
       Likes,
       FoodSharingSchedule,
       Group,
+      Spot
     ],
     dropSchema: true,
     logging: false,

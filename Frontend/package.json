@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "jsonwebtoken": "^9.0.2",
+    "leaflet": "^1.9.4",
     "socket.io": "^4.7.2"
   }
 }
