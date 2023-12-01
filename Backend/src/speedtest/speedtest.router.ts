@@ -24,7 +24,9 @@ export default class SpeedTestRouter {
           return;
         }
         this.currentUser = request.params.sender;
-        const messages = await this.testController.enterTestMode();
+        const messages = await this.testController.enterTestMode(
+          this.currentUser
+        );
         response.send({ messages });
       }
     );

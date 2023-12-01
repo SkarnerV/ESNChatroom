@@ -226,7 +226,6 @@ export const generateSchedule = (
 
   acceptButton.addEventListener("click", () => {
     updateSchedule(schedule.scheduleid, "Accept").then((response) => {
-      console.log(response.data);
       statusRow.textContent = "Status: Accept";
       scheduleEntry.removeChild(acceptButton);
       scheduleEntry.removeChild(rejectButton);

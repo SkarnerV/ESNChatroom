@@ -51,10 +51,8 @@ export default class ScheduleDAO {
       where: { scheduleid: scheduleid },
     });
     if (updatedResult) {
-      console.log(newStatus);
       updatedResult.status = newStatus;
       await this.scheduleDatabase.save(updatedResult);
-      console.log(updatedResult);
       return updatedResult;
     } else {
       throw new Error("Schedule not found");

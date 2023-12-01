@@ -8,6 +8,7 @@ export const enum StatusCode {
 
 export const enum ErrorMessage {
   ILLEGAL_CREDENTIAL_MESSAGE = "Illegal User Input.",
+  UNAUTHORIZED_ACCESS_MESSAGE = "Unauthorized Access.",
   WRONG_CREDENTIAL_MESSAGE = "Re-enter the username and/or password.",
   ACCOUNT_NOT_EXIST_MESSAGE = "Account does not exits.",
   SENDER_UNKNOWN_MESSAGE = "Message sender Unknown.",
@@ -18,6 +19,9 @@ export const enum ErrorMessage {
   MISSING_FOOD_COMMENTS_ON_WAITLIST = "Missing food comments on waitlist.",
   MISSING_USERNAME = "Missing username.",
   MESSAGE_NOT_FOUND = "Message not found.",
+  MUST_HAVE_AT_LEAST_ONE_ADMIN_MESSAGE = "Must have at least one admin.",
+  USERNAME_EXIST_MESSAGE = "Username already exists.",
+  USERNAME_CANNOT_BE_RESERVED_WORDS = "Username cannot be reserved words.",
 }
 
 export abstract class Exception extends Error {

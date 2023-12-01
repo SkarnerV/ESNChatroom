@@ -22,6 +22,8 @@ const defaultESNUser = {
   lastStatus: UserStatus.UNDEFINE,
   lastTimeUpdateStatus: new Date(),
   lastOnlineTime: new Date().getTime().toString(),
+  isActivated: true,
+  role: "citizen",
 };
 
 const testUser1: ESNUser = {

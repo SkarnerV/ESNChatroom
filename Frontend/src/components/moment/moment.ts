@@ -105,7 +105,6 @@ getAllMessages(currentUser.username, "Post").then((response) => {
   for (const message of response) {
     renderMessage(message);
   }
-  console.log(allPost);
 });
 
 const postMessage = (): void => {

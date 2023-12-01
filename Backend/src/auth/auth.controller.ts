@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { AuthResponse, CreateUserInput } from "../types/types";
+import { AuthResponse, CreateUserInput, JwtPayload } from "../types/types";
 import AuthDAO from "./auth.dao";
 import ResponseGenerator from "../util/responseGenerator";
 import { ESNUser } from "../user/user.entity";
@@ -41,11 +41,16 @@ export default class AuthController {
    */
   private static generateTokenResponse(
     id: number,
-    username: string
+    username: string,
+    role: string
   ): AuthResponse {
-    const token: string = jwt.sign({ id: id, username: username }, "esn", {
-      expiresIn: "1h",
-    });
+    const token: string = jwt.sign(
+      { id: id, username: username, role: role },
+      "esn",
+      {
+        expiresIn: "1h",
+      }
+    );
 
     return ResponseGenerator.authResponse(
       id.toString(),
@@ -61,14 +66,21 @@ export default class AuthController {
    * @return a AuthResponse message that shows the current request status
    * @throws UnauthorizedException if user input is illegal
    */
-  async createUser(userInput: CreateUserInput): Promise<AuthResponse> {
+  async createUser(
+    userInput: CreateUserInput,
+    isAdmin?: boolean
+  ): Promise<AuthResponse> {
     // If the user input is legal
     if (AuthController.isValidCredential(userInput)) {
       userInput.username = userInput.username.toLowerCase();
-      const createdUser: ESNUser = await this.authDao.createUser(userInput);
+      const createdUser: ESNUser = await this.authDao.createUser(
+        userInput,
+        isAdmin
+      );
       return AuthController.generateTokenResponse(
         createdUser.id,
-        createdUser.username.toLowerCase()
+        createdUser.username.toLowerCase(),
+        createdUser.role
       );
     }
 
@@ -88,12 +100,32 @@ export default class AuthController {
     const user: ESNUser | null = await this.authDao.getUser(userInput.username);
     if (user) {
       // User exists, check password
+      if (!user.isActivated) {
+        throw new UnauthorizedException(
+          ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE
+        );
+      }
+
       if (user.password === userInput.password) {
-        return AuthController.generateTokenResponse(user.id, user.username);
+        return AuthController.generateTokenResponse(
+          user.id,
+          user.username,
+          user.role
+        );
       } else {
         throw new UnauthorizedException(ErrorMessage.WRONG_CREDENTIAL_MESSAGE);
       }
     }
     throw new NotFoundException(ErrorMessage.ACCOUNT_NOT_EXIST_MESSAGE);
+  }
+
+  async getUserRoleFromToken(token: string): Promise<string> {
+    const decodedUser = jwt.verify(token, "esn") as JwtPayload;
+    return decodedUser.role;
+  }
+
+  async getUsernameFromToken(token: string): Promise<string> {
+    const decodedUser = jwt.verify(token, "esn") as JwtPayload;
+    return decodedUser.username;
   }
 }

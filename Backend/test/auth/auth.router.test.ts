@@ -18,6 +18,8 @@ const defaultESNUser = {
   isOnline: false,
   lastTimeUpdateStatus: new Date(),
   lastOnlineTime: new Date().getTime().toString(),
+  isActivated: true,
+  role: "citizen",
 };
 
 beforeEach(async () => {

@@ -4,6 +4,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import AuthRouter from "./src/auth/auth.router";
 import UserRouter from "./src/user/user.router";
+import AuthDAO from "./src/auth/auth.dao";
 import ESNDatabase from "./src/database/ESNDatabase";
 import MessageRouter from "./src/message/message.router";
 import SpeedTestRouter from "./src/speedtest/speedtest.router";
@@ -17,14 +18,17 @@ import * as swaggerDoc from "./public/swagger.json";
 import { SocketServer } from "./src/server/socketServer";
 import SpeedTestController from "./src/speedtest/speedtest.controller";
 import { Exception } from "./src/util/exception";
+import { CreateUserInput } from "./src/types/types";
 
 class App {
   private app: express.Application;
   private server: HttpServer;
   private socket: SocketServer;
+  private authDao: AuthDAO;
 
   constructor() {
     this.app = express();
+    this.authDao = new AuthDAO();
     this.server = createServer(this.app);
     this.socket = SocketServer.getInstance();
     this.socket.attachHttpServer(this.server);
@@ -104,6 +108,14 @@ class App {
     await database.initializeDatabase();
   }
 
+  private async registerCreateDefaultAdmin(): Promise<void> {
+    const defaultAdmin: CreateUserInput = {
+      username: "ESNAdmin",
+      password: "admin",
+    };
+    this.authDao.createUser(defaultAdmin, true);
+  }
+
   async start(): Promise<void> {
     await this.registerDatabase();
 
@@ -113,6 +125,7 @@ class App {
     this.registerBodyParser();
     this.registerRoutes();
     this.registerErrorMiddleware();
+    this.registerCreateDefaultAdmin();
   }
 }
 

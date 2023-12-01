@@ -33,6 +33,16 @@ export default class UserDAO {
     return userToUpdate;
   }
 
+  async getAllActivatedUsername(): Promise<ESNUser[]> {
+    const allUsers = await this.ESNUserDatabase.find({
+      where: {
+        isActivated: true,
+      },
+      select: ["username"],
+    });
+    return allUsers;
+  }
+
   async getAllESNUserStatus(): Promise<ESNUser[]> {
     const allUsers = await this.ESNUserDatabase.find({
       select: ["username", "lastStatus"],
@@ -56,6 +66,15 @@ export default class UserDAO {
     return users;
   }
 
+  async getAllAdmin(): Promise<ESNUser[]> {
+    const users: ESNUser[] = await this.ESNUserDatabase.find({
+      where: {
+        role: "admin",
+      },
+    });
+    return users;
+  }
+
   async getUsersByPartialUsername(username: string): Promise<ESNUser[]> {
     const users: ESNUser[] = await this.ESNUserDatabase.find({
       where: { username: Like(`%${username}%`) },
@@ -70,5 +89,37 @@ export default class UserDAO {
       select: ["username", "lastStatus"],
     });
     return users;
+  }
+
+  async updateUserProfile(
+    username: string,
+    newUsername?: string,
+    password?: string,
+    role?: string,
+    isActivated?: boolean
+  ): Promise<ESNUser | null> {
+    const userToUpdate = await this.ESNUserDatabase.findOneBy({
+      username,
+    });
+    if (userToUpdate) {
+      // Update user properties
+      if (newUsername) {
+        userToUpdate.username = newUsername.toLowerCase();
+      }
+
+      if (password) {
+        userToUpdate.password = password;
+      }
+      if (role) {
+        userToUpdate.role = role;
+      }
+      if (isActivated) {
+        userToUpdate.isActivated = isActivated;
+      }
+
+      // Save the updated user
+      await this.ESNUserDatabase.save(userToUpdate);
+    }
+    return userToUpdate;
   }
 }

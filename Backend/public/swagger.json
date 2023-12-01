@@ -64,6 +64,26 @@
         "type": "object",
         "additionalProperties": false
       },
+      "UserProfile": {
+        "properties": {
+          "newUsername": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+
+          "role": {
+            "type": "string"
+          },
+          "isActivated": {
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "type": "object",
+        "additionalProperties": false
+      },
       "JwtToken": {
         "properties": {
           "token": {
@@ -569,6 +589,38 @@
             "description": "Name of the group to be deleted"
           }
         ]
+      }
+    }
+  },
+  "/api/users/:username/profile": {
+    "put": {
+      "operationId": "update user profile",
+      "responses": {
+        "200": {
+          "description": "updateUserProfile"
+        }
+      },
+      "description": "update user profile",
+      "security": [],
+      "parameters": [
+        {
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "name": "username",
+          "in": "path"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserProfile"
+            }
+          }
+        }
       }
     }
   },

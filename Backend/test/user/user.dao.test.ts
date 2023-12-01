@@ -14,6 +14,8 @@ const defaultESNUser = {
   lastStatus: "GREEN",
   lastTimeUpdateStatus: new Date(),
   lastOnlineTime: new Date().getTime().toString(),
+  isActivated: true,
+  role: "citizen",
 };
 const testUser1: ESNUser = {
   ...defaultESNUser,
@@ -119,8 +121,10 @@ describe("getUsersByPartialUsername", () => {
     await authController.createUser(testUser2);
     const users = await userDao.getUsersByPartialUsername("aaa");
     expect(users).not.toBeNull();
-    expect([...users.map((u) => u.username)])
-      .toEqual([testUser1.username, testUser2.username]);
+    expect([...users.map((u) => u.username)]).toEqual([
+      testUser1.username,
+      testUser2.username,
+    ]);
   });
 });
 
@@ -137,7 +141,9 @@ describe("getUsersByStatus", () => {
     await userDao.updateUserStatus(testUser2.username, UserStatus.RED);
     const users = await userDao.getUsersByStatus(UserStatus.RED);
     expect(users).not.toBeNull();
-    expect([...users.map((u) => u.username)])
-      .toEqual([testUser1.username, testUser2.username]);
+    expect([...users.map((u) => u.username)]).toEqual([
+      testUser1.username,
+      testUser2.username,
+    ]);
   });
 });

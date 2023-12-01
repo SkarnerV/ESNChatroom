@@ -3,11 +3,13 @@ import LikesDAO from "../likes/likes.dao";
 import { Likes } from "../likes/likes.entity";
 import { SocketServer } from "../server/socketServer";
 import { LikesMessageInput, PostMessageInput } from "../types/types";
+import UserController from "../user/user.controller";
 import { ESNUser } from "../user/user.entity";
 import {
   BadRequestException,
   ErrorMessage,
   NotFoundException,
+  UnauthorizedException,
 } from "../util/exception";
 import MessageDAO from "./message.dao";
 import { Message } from "./message.entity";
@@ -22,6 +24,7 @@ export default class MessageController {
   private messageDao: MessageDAO;
   private likesDao: LikesDAO;
   private authDao: AuthDAO;
+  private userController: UserController;
   private publicFactory: PublicFacotry;
   private privateFactory: PrivateFacotry;
   private groupFactory: PublicFacotry;
@@ -36,6 +39,7 @@ export default class MessageController {
     this.privateFactory = new PrivateFacotry();
     this.announcementFactory = new AnnouncementFacotry();
     this.postFactory = new PostFacotry();
+    this.userController = new UserController();
   }
 
   async postMessage(message: PostMessageInput): Promise<Message> {
@@ -50,6 +54,14 @@ export default class MessageController {
     if (message.sendee === "Lobby") {
       newMessage = this.publicFactory.createMessage(message);
     } else if (message.sendee === "Announcement") {
+      const role = await this.userController.getUserRoleByUsername(
+        message.sender
+      );
+      if (role === "citizen") {
+        throw new UnauthorizedException(
+          ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE
+        );
+      }
       newMessage = this.announcementFactory.createMessage(message);
     } else if (message.sendee.startsWith("Group")) {
       newMessage = this.groupFactory.createMessage(message);
@@ -70,6 +82,7 @@ export default class MessageController {
 
   async getAllMessages(sender: string, sendee: string): Promise<Message[]> {
     let allMessages: Message[] = [];
+    const allActivatedUsers = await this.userController.getAllActivatedUsers();
     // const decodeToekn = jwt.decode(senderToken) as Token;
     if (
       sendee === "Lobby" ||
@@ -85,6 +98,10 @@ export default class MessageController {
         .getAllMessages(sender, sendee)
         .then((response) => (allMessages = response));
     }
+
+    allMessages = allMessages.filter((message) =>
+      allActivatedUsers.includes(message.sender)
+    );
 
     return allMessages;
   }

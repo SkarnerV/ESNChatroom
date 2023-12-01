@@ -14,6 +14,8 @@ const defaultESNUser = {
   lastStatus: "GREEN",
   lastTimeUpdateStatus: new Date(),
   lastOnlineTime: new Date().getTime().toString(),
+  isActivated: true,
+  role: "citizen",
 };
 
 beforeEach(async () => {
@@ -183,6 +185,8 @@ describe("createUser", () => {
       lastStatus: "",
       lastTimeUpdateStatus: new Date(),
       lastOnlineTime: new Date().getTime().toString(),
+      role: "citizen",
+      isActivated: true,
     };
 
     try {
@@ -220,6 +224,8 @@ describe("loginUser", () => {
       lastStatus: "GREEN",
       lastOnlineTime: new Date().getTime().toString(),
       lastTimeUpdateStatus: new Date(),
+      role: "citizen",
+      isActivated: true,
     };
 
     const authResponse: AuthResponse =
@@ -236,6 +242,8 @@ describe("loginUser", () => {
       lastStatus: "GREEN",
       lastOnlineTime: new Date().getTime().toString(),
       lastTimeUpdateStatus: new Date(),
+      role: "citizen",
+      isActivated: true,
     };
 
     const authResponse: AuthResponse =
@@ -252,6 +260,8 @@ describe("loginUser", () => {
       lastStatus: "GREEN",
       lastOnlineTime: new Date().getTime().toString(),
       lastTimeUpdateStatus: new Date(),
+      role: "citizen",
+      isActivated: true,
     };
 
     try {

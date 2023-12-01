@@ -1,20 +1,29 @@
 import SpeedTestDAO from "./speedtest.dao";
 import { Message } from "../message/message.entity";
 import { PostMessageInput } from "../types/types";
+import { ErrorMessage, UnauthorizedException } from "../util/exception";
 import MessageController from "../message/message.controller";
+import UserController from "../user/user.controller";
 
 export default class SpeedTestController {
   private testDao: SpeedTestDAO;
   private messageController: MessageController | null;
   private static isTestMode: boolean = false;
+  userController: UserController;
 
   constructor() {
     this.testDao = new SpeedTestDAO();
     this.messageController = null;
+    this.userController = new UserController();
   }
 
-  async enterTestMode(): Promise<string> {
+  async enterTestMode(currentUsername: string): Promise<string> {
     let message: string = "";
+    const role =
+      await this.userController.getUserRoleByUsername(currentUsername);
+    if (role !== "admin") {
+      throw new UnauthorizedException(ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE);
+    }
     await this.testDao.enterTestMode().then((response) => (message = response));
     this.messageController = new MessageController();
     this.setTestMode(true);

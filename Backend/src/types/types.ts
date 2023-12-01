@@ -53,3 +53,20 @@ export interface FoodScheduleInput {
   time: string;
   status: string;
 }
+
+export interface ProfileUpdateInput {
+  username?: string;
+  password?: string;
+  role?: string;
+}
+
+export interface UserAccountStatus {
+  username: string;
+  isActivated: boolean;
+}
+
+export interface JwtPayload {
+  id: string;
+  username: string;
+  role: string;
+}

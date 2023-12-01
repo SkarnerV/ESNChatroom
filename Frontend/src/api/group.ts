@@ -11,7 +11,6 @@ export const createGroup = async (name: string, description: string) => {
     name: name,
     description: description,
   }).then((response) => {
-    console.log(response);
     return response.json();
   });
 };
@@ -20,7 +19,6 @@ export const updateGroup = async (
   newName: string,
   newDescription: string
 ) => {
-  console.log(curName, newName, newDescription);
   return await fetchRequest(groupApi, "PUT", {
     curname: curName,
     name: newName,
@@ -34,7 +32,6 @@ export const deleteGroup = async (name: string) => {
   return await fetchRequest(groupApi, "DELETE", {
     name: name,
   }).then((response) => {
-    console.log(response);
     return response.json();
   });
 };

@@ -24,6 +24,8 @@ const defaultESNUser = {
   lastStatus: UserStatus.UNDEFINE,
   lastTimeUpdateStatus: new Date(),
   lastOnlineTime: new Date().getTime().toString(),
+  isActivated: true,
+  role: "citizen",
 };
 
 const testUser1: ESNUser = {
@@ -37,7 +39,7 @@ const testMessage1: Message = {
   id: 1,
   content: "this is a test message1 ",
   time: "12:11 PM",
-  sender: "1",
+  sender: "aaa1",
   sendee: "Lobby",
   senderStatus: "GREEN",
 };
@@ -46,7 +48,7 @@ const testMessage2: Message = {
   id: 2,
   content: "this is a test message2 ",
   time: "12:11 PM",
-  sender: "1",
+  sender: "aaa1",
   sendee: "Lobby",
   senderStatus: "GREEN",
 };
@@ -55,7 +57,7 @@ const testMessage3: Message = {
   id: 3,
   content: "this is a test message3 ",
   time: "12:11 PM",
-  sender: "1",
+  sender: "aaa1",
   sendee: "2",
   senderStatus: "YELLOW",
 };
@@ -64,7 +66,7 @@ const testMessage4: Message = {
   id: 4,
   content: "this is a test Announcement ",
   time: "12:11 PM",
-  sender: "1",
+  sender: "aaa1",
   sendee: "Announcement",
   senderStatus: "GREEN",
 };
@@ -77,11 +79,12 @@ beforeEach(async () => {
   authController = new AuthController();
   messageController = new MessageController();
   searchRouter = new SearchRouter().getRouter();
+  await authController.createUser(testUser1, true);
   await messageController.postMessage(testMessage1);
   await messageController.postMessage(testMessage2);
   await messageController.postMessage(testMessage3);
   await messageController.postMessage(testMessage4);
-  await authController.createUser(testUser1);
+
   app.use("/api/search", searchRouter);
 });
 
@@ -96,12 +99,12 @@ describe("SearchRouter", () => {
         .get("/api/search/citizens?criteria=aaa1")
         .send()
         .expect(200);
-      expect(res.body).toEqual([{ username: "aaa1", lastStatus: "UNDEFINE" }]);
+      expect(res.body).toEqual([{ username: "aaa1", lastStatus: "GREEN" }]);
     });
 
     it("should get all messages", async () => {
       const res = await request(app)
-        .get("/api/search/messages?criteria=message&sender=1&sendee=Lobby")
+        .get("/api/search/messages?criteria=message&sender=aaa1&sendee=Lobby")
         .send()
         .expect(200);
 
@@ -112,7 +115,7 @@ describe("SearchRouter", () => {
     it("should get all Announcement", async () => {
       const res = await request(app)
         .get(
-          "/api/search/announcements?criteria=Announcement&sender=1&sendee=Announcement"
+          "/api/search/announcements?criteria=Announcement&sender=aaa1&sendee=Announcement"
         )
         .send()
         .expect(200);

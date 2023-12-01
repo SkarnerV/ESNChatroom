@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import { Server as HttpServer } from "http";
 import { Message } from "../message/message.entity";
 import { WaitlistUser } from "../waitlist/waitlist.entity";
-import { waitlistUserUpdateInput } from "../types/types";
+import { UserAccountStatus, waitlistUserUpdateInput } from "../types/types";
 import UserController from "../user/user.controller";
 
 export class SocketServer {
@@ -38,6 +38,10 @@ export class SocketServer {
   private listenStatusEvent(socket: Socket): void {
     socket.on("last status", (lastStatus: string[]) => {
       this.io.emit("last status", lastStatus);
+    });
+
+    socket.on("changed account status", (user: UserAccountStatus) => {
+      this.io.emit("changed account status", user);
     });
   }
 
@@ -82,6 +86,10 @@ export class SocketServer {
     this.io.emit("drop waitlist", username);
   }
 
+  async broadcastChangedAccountStatus(user: UserAccountStatus): Promise<void> {
+    this.io.emit("changed account status", user);
+  }
+
   async broadcastUserUpdateWaitlist(
     username: string,
     foodDonor: string
@@ -94,7 +102,12 @@ export class SocketServer {
   }
 
   async broadcastMessage(sendee: string, message: Message): Promise<void> {
-    if (sendee !== "Lobby" && sendee !== "Announcement" && !sendee.startsWith("Group") && sendee !== "Post") {
+    if (
+      sendee !== "Lobby" &&
+      sendee !== "Announcement" &&
+      !sendee.startsWith("Group") &&
+      sendee !== "Post"
+    ) {
       this.io.emit("private message", message);
     }
     this.io.emit(sendee, message);

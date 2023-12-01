@@ -18,7 +18,7 @@ const testMessage1: Message = {
   id: 1,
   content: "this is a test message1",
   time: "12:11 PM",
-  sender: "1",
+  sender: "aaa1",
   sendee: "Lobby",
   senderStatus: "GREEN",
 };
@@ -27,7 +27,7 @@ const testMessage2: Message = {
   id: 2,
   content: "this is a test message2",
   time: "12:15 PM",
-  sender: "1",
+  sender: "aaa1",
   sendee: "Lobby",
   senderStatus: "GREEN",
 };
@@ -36,21 +36,21 @@ const testMessage3: Message = {
   id: 3,
   content: "this is a test message3",
   time: "12:20 PM",
-  sender: "1",
-  sendee: "2",
+  sender: "aaa1",
+  sendee: "aaa2",
   senderStatus: "GREEN",
 };
 
 const testMessage4: PostMessageInput = {
   content: "this is a test message4",
-  sender: "1",
+  sender: "aaa1",
   sendee: "aaa",
   senderStatus: "GREEN",
 };
 
 const testMessage5: PostMessageInput = {
   content: "this is a test message5",
-  sender: "1",
+  sender: "aaa1",
   sendee: "aaa",
   senderStatus: "GREEN",
 };
@@ -67,6 +67,16 @@ beforeEach(async () => {
     password: "aaaa",
   };
   await authController.createUser(exampleUserinput1);
+  const exampleUserinput2: CreateUserInput = {
+    username: "aaa1",
+    password: "aaaa",
+  };
+  await authController.createUser(exampleUserinput2);
+  const exampleUserinput3: CreateUserInput = {
+    username: "aaa2",
+    password: "aaaa",
+  };
+  await authController.createUser(exampleUserinput3);
   messageRouter = new MessageRouter().getRouter();
   app.use("/api/messages", messageRouter);
 });
@@ -105,9 +115,8 @@ describe("MessageRouter", () => {
       await messageController.postMessage(testMessage2);
       await messageController.postMessage(testMessage3);
 
-      let user1 = "1";
-      let user2 = "2";
-      let lobby = "Lobby";
+      let user1 = "aaa1";
+      let user2 = "aaa2";
       const res = await request(app)
         .get(`/api/messages/${user1}/${user2}`)
         .expect(200);

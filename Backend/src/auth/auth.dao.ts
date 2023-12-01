@@ -12,7 +12,10 @@ export default class AuthDAO {
   }
 
   // Create user and store in the DB
-  async createUser(userInput: CreateUserInput): Promise<ESNUser> {
+  async createUser(
+    userInput: CreateUserInput,
+    isAdmin?: boolean
+  ): Promise<ESNUser> {
     const newUser = this.userDatabase.create();
     newUser.username = userInput.username;
     newUser.password = userInput.password;
@@ -21,6 +24,13 @@ export default class AuthDAO {
     newUser.lastStatus = "UNDEFINE";
     newUser.lastTimeUpdateStatus = new Date();
     newUser.lastOnlineTime = new Date().getTime().toString();
+    newUser.isActivated = true;
+    if (isAdmin) {
+      newUser.role = "admin";
+      newUser.lastStatus = "GREEN";
+    } else {
+      newUser.role = "citizen";
+    }
 
     const createdUser = await this.userDatabase.save(newUser);
     return createdUser;

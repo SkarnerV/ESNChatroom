@@ -19,4 +19,10 @@ export class ESNUser {
 
   @Column()
   lastOnlineTime!: string;
+
+  @Column()
+  role!: string;
+
+  @Column()
+  isActivated!: boolean;
 }

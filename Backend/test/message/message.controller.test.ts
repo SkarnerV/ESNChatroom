@@ -12,7 +12,7 @@ const testMessage1: Message = {
   id: 1,
   content: "this is a test message1 ",
   time: "12:11 PM",
-  sender: "1",
+  sender: "aaa1",
   sendee: "Lobby",
   senderStatus: "GREEN",
 };
@@ -21,7 +21,7 @@ const testMessage2: Message = {
   id: 2,
   content: "this is a test message2 ",
   time: "12:11 PM",
-  sender: "1",
+  sender: "aaa1",
   sendee: "Lobby",
   senderStatus: "GREEN",
 };
@@ -30,42 +30,42 @@ const testMessage3: Message = {
   id: 3,
   content: "this is a test message3 ",
   time: "12:11 PM",
-  sender: "1",
+  sender: "aaa1",
   sendee: "2",
   senderStatus: "GREEN",
 };
 
 const testMessage4: PostMessageInput = {
   content: "this is a test message4 ",
-  sender: "1",
+  sender: "aaa1",
   sendee: "aaa",
   senderStatus: "GREEN",
 };
 
 const testMessage5: PostMessageInput = {
   content: "this is a test message5 ",
-  sender: "1",
+  sender: "aaa1",
   sendee: "aaa",
   senderStatus: "GREEN",
 };
 
 const testPostMessage6: PostMessageInput = {
   content: "this is a post 6 ",
-  sender: "1",
+  sender: "aaa1",
   sendee: "Post",
   senderStatus: "GREEN",
 };
 
 const testPostMessage7: PostMessageInput = {
   content: "this is a post 7 ",
-  sender: "2",
+  sender: "aaa1",
   sendee: "Post",
   senderStatus: "GREEN",
 };
 
 const testPostMessage8: PostMessageInput = {
   content: "this is a post 8",
-  sender: "3",
+  sender: "aaa1",
   sendee: "Post",
   senderStatus: "GREEN",
 };
@@ -83,7 +83,7 @@ const testBadMessage3: Message = {
   id: 3,
   content: "this is a bad message3 ",
   time: "12:33PM",
-  sender: "2",
+  sender: "aaa2",
   sendee: "Lobby",
   senderStatus: "",
 };
@@ -93,12 +93,24 @@ beforeEach(async () => {
   await databaseInstance.getDataSource().initialize();
   messageController = new MessageController();
   authController = new AuthController();
-  const exampleUserinput: CreateUserInput = {
+  const exampleUserinput1: CreateUserInput = {
     username: "aaa",
     password: "aaaa",
   };
 
-  await authController.createUser(exampleUserinput);
+  const exampleUserinput2: CreateUserInput = {
+    username: "aaa1",
+    password: "aaaa",
+  };
+
+  const exampleUserinput3: CreateUserInput = {
+    username: "aaa2",
+    password: "aaaa",
+  };
+
+  await authController.createUser(exampleUserinput1);
+  await authController.createUser(exampleUserinput2, true);
+  await authController.createUser(exampleUserinput3, true);
 });
 
 afterEach(async () => {
@@ -178,7 +190,7 @@ describe("getUnreadMessages", () => {
 describe("getLastMessage", () => {
   it("Should get empty messages if no message exits in database.", async () => {
     const lastMessage: Message[] = await messageController.getLastMessage(
-      "1",
+      "aaa1",
       "Lobby"
     );
     expect(lastMessage).toEqual([]);
@@ -206,16 +218,16 @@ describe("likesPost", () => {
     const createdPost: Message =
       await messageController.postMessage(testPostMessage8);
     const originalMessages = await messageController.getAllMessages(
-      "a",
+      "aaa1",
       "Post"
     );
     expect(originalMessages[0].likes?.length).toEqual(0);
     await messageController.likesPost({
       postId: createdPost.id,
-      username: "a",
+      username: "aaa1",
     });
 
-    const allMessages = await messageController.getAllMessages("a", "Post");
+    const allMessages = await messageController.getAllMessages("aaa1", "Post");
     expect(allMessages[0].likes?.length).toEqual(1);
   });
 
@@ -223,17 +235,17 @@ describe("likesPost", () => {
     const createdPost: Message =
       await messageController.postMessage(testPostMessage8);
     const originalMessages = await messageController.getAllMessages(
-      "a",
+      "aaa1",
       "Post"
     );
     expect(originalMessages[0].likes?.length).toEqual(0);
     await messageController.likesPost({
       postId: createdPost.id,
-      username: "a",
+      username: "aaa1",
     });
     await messageController.likesPost({
       postId: createdPost.id,
-      username: "a",
+      username: "aaa1",
     });
 
     const allMessages = await messageController.getAllMessages("a", "Post");
@@ -244,7 +256,7 @@ describe("likesPost", () => {
     try {
       await messageController.likesPost({
         postId: 10,
-        username: "a",
+        username: "aaa1",
       });
     } catch (error) {
       expect((error as Exception).status).toEqual(StatusCode.NOT_FOUND_CODE);
@@ -259,13 +271,13 @@ describe("deletePost", () => {
     await messageController.postMessage(testPostMessage7);
     await messageController.postMessage(testPostMessage8);
     const originalMessages = await messageController.getAllMessages(
-      "a",
+      "aaa1",
       "Post"
     );
     expect(originalMessages.length).toEqual(3);
     await messageController.deletePost(deletePost.id);
 
-    const allMessages = await messageController.getAllMessages("a", "Post");
+    const allMessages = await messageController.getAllMessages("aaa1", "Post");
     expect(allMessages.length).toEqual(2);
   });
 

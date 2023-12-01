@@ -45,7 +45,6 @@ const settingsModal = document.getElementById("group-settings-modal");
 settingsButton!.onclick = () => {
   const temp = contactName?.split(":");
   const groupCreator = localStorage.getItem(`${temp![1]} Creator`);
-  console.log(groupCreator, currentUser.username);
   if (groupCreator === currentUser.username)
     settingsModal!.classList.remove("hidden");
 };
