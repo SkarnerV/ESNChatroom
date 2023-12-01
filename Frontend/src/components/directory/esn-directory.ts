@@ -2,7 +2,7 @@ import { esnDirectoryContainer } from "../../templates/directory/esn-directory-t
 
 import { getAllUserStatus } from "../../api/user";
 import { UserStatusIcon } from "../../constant/user-status";
-import { ESNMessage, ESNUserStatus } from "../../types";
+import { ESNMessage, ESNUserProfile, ESNUserStatus } from "../../types";
 
 import jwt from "jsonwebtoken";
 import { socket } from "../../util/socket";
@@ -105,6 +105,7 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
   const statusBody = renderedElements[0];
   const userStatusInfoBody = renderedElements[1];
   const usernameText = renderedElements[2];
+  const editButton = renderedElements[3];
 
   if (isCurrentUser) {
     usernameText.textContent = "Me";
@@ -122,7 +123,37 @@ const renderStatus = (userStatus: ESNUserStatus): void => {
   statusBody.appendChild(unreadSign);
   statusBody.appendChild(userStatusInfoBody);
 
-  userStatusList?.appendChild(statusBody);
+  const container = document.createElement("div");
+  container.id = `user-${userStatus.username}-${userStatus.lastStatus}`;
+  container.className = "flex items-center justify-between w-full";
+  container.appendChild(statusBody);
+
+  // test data
+  const testData: ESNUserProfile = {
+    username: userStatus.username,
+    account_status: "Active",
+    privilege_level: "Administrator",
+  };
+
+  // use username to check if admin for now, will need to change to privilege
+  if (currentUser.username === "esnadmin") {
+    container.appendChild(editButton);
+    editButton.addEventListener("click", function () {
+      const profileModal = document.getElementById("profile-modal");
+      // Set a data attribute 'context' to 'citizens' on the modal
+      profileModal!.style.display = "block";
+      const accountElement = document.getElementById("account-status");
+      accountElement!.textContent = testData.account_status;
+      const privilegeElement = document.getElementById("privilege-level");
+      privilegeElement!.textContent = testData.privilege_level;
+      const usernameElement = document.getElementById(
+        "username-input"
+      ) as HTMLInputElement;
+      usernameElement!.value = testData.username;
+    });
+  }
+  userStatusList?.appendChild(container);
+
   if (!isCurrentUser) {
     statusBody.onclick = () => {
       unreadUsersList = unreadUsersList.filter(

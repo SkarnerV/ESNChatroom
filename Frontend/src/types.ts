@@ -31,3 +31,14 @@ export interface FoodSharingSchedule {
   time: string;
   status: string;
 }
+export interface ESNUserProfile {
+  username: string;
+  account_status: string;
+  privilege_level: string;
+}
+export interface ESNUserUpdateProfile {
+  username: string;
+  password: string;
+  account_status: string;
+  privilege_level: string;
+}

@@ -23,7 +23,8 @@ export const generateUser = (userStatus: ESNUserStatus): HTMLElement[] => {
   // statusBody.id = `user-${userStatus.username}-${userStatus.lastStatus}`;
   statusBody.id = `user-${userStatus.username}-${userStatus.lastStatus}`;
   statusBody.className =
-    "flex bg-gray-700 justify-between rounded-lg py-5 px-4 mt-2 mb-2 ml-1 mr-1";
+    "flex bg-gray-700 justify-between rounded-lg py-5 px-4 mt-2 mb-2 ml-1 mr-1 flex-grow";
+
   usernameBody.className = "flex items-center gap-x-2";
   userAvatarBody.className = "relative";
   userAvatar.className = "h-8 w-8 flex-none rounded-full bg-gray-50";
@@ -54,8 +55,13 @@ export const generateUser = (userStatus: ESNUserStatus): HTMLElement[] => {
   usernameText.textContent = Formatter.formatLongUsername(
     usernameText.textContent
   );
+  const editButton = document.createElement("button");
+  editButton.textContent = "Edit";
+  editButton.className =
+    "w-12 h-16 text-sm font-semibold bg-gray-500 text-white p-1 mr-1 rounded flex-none";
+  editButton.id = `edit-${userStatus.username}`;
 
-  return [statusBody, userStatusInfoBody, usernameText];
+  return [statusBody, userStatusInfoBody, usernameText, editButton];
 };
 
 export const generateMessage = (message: ESNMessage): HTMLElement[] => {
