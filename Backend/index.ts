@@ -19,6 +19,7 @@ import { SocketServer } from "./src/server/socketServer";
 import SpeedTestController from "./src/speedtest/speedtest.controller";
 import { Exception } from "./src/util/exception";
 import { CreateUserInput } from "./src/types/types";
+import CryptoJS from "crypto-js";
 
 class App {
   private app: express.Application;
@@ -109,10 +110,14 @@ class App {
   }
 
   private async registerCreateDefaultAdmin(): Promise<void> {
+    const adminUsername = "ESNAdmin";
+    const adminPassword = "admin";
+    const hashedPassword = CryptoJS.MD5(adminPassword).toString();
     const defaultAdmin: CreateUserInput = {
-      username: "ESNAdmin",
-      password: "admin",
+      username: adminUsername.toLowerCase(),
+      password: hashedPassword,
     };
+
     this.authDao.createUser(defaultAdmin, true);
   }
 
